@@ -1,0 +1,29 @@
+{
+    "855160466452381696": {
+        "server_name": "BotTesting",
+        "notify_channel": 906685915332751372,
+        "mod_channel": 882721258301685790,
+        "msg_channel": 872945922743619657,
+        "welcome_channel": 855515768341921818,
+        "join_role": 860959983788490752,
+        "watchlist": [
+            "letshugotv",
+            "wichtiger",
+            "norisk",
+            "nqrmvn",
+            "kenjih_",
+            "froovo"
+        ]
+    },
+    "694525386129801256": {
+        "server_name": "Die r\u00f6mische Verfassung",
+        "notify_channel": 949396002882867271,
+        "msg_channel": 949396002882867271,
+        "mod_channel": 949396002882867271,
+        "welcome_channel": 949396002882867271,
+        "join_role": 920390539432558593,
+        "watchlist": [
+            "bastighg"
+        ]
+    }
+}
