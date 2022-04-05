@@ -1,0 +1,10 @@
+{
+    "token": {
+        "token": "discord token"
+    },
+    "twitch": {
+        "client_id": "client_id",
+        "client_secret": "client-secret",
+        "access_token": "access-token"
+    }
+}
