@@ -518,17 +518,6 @@ class ticket_message(disnake.ui.View):
             embed=log_embed
         )
 
-    # DROPDOWN MENU
-    # @disnake.ui.select(
-    #    options=[
-    #        disnake.SelectOption(label="General", value=1, emoji="📩"),
-    #        disnake.SelectOption(label="Moderation", value=2, emoji="🔨"),
-    #        disnake.SelectOption(label="Support", value=3, emoji="❔")
-    #    ]
-    # )
-    # async def ticket_select(self, select: disnake.ui.Select, interaction: disnake.MessageInteraction):
-    #    pass
-
 
 class ticketCreator(commands.Cog):
     def __init__(self, bot):
