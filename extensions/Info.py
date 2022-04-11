@@ -72,9 +72,9 @@ class Info(commands.Cog):
         )
         server_embed.add_field(
             name="__Daten__",
-            value=f"`»`Erstellt: `{inter.guild.created_at.strftime('\%d.%m.%Y')}`\n"
+            value=f"`»`Erstellt: `{inter.guild.created_at.strftime('%d.%m.%Y')}`\n"
                   f"`»` Rollen: `{len(inter.guild.roles)}`\n"
-                  f"`»`Boost Status: `{inter.guild.premium_subscription_count}/30`",
+                  f"`»`Boost Status: `{inter.guild.premium_subscription_count} von 30`",
             inline=True
         )
         server_embed.add_field(
