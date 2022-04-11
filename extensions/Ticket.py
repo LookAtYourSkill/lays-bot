@@ -551,27 +551,30 @@ class ticketCreator(commands.Cog):
         name="sendticket",
         description="Send a ticket to the support team"
     )
-    @commands.has_permissions(
-        manage_channels=True
-    )
     async def sendTicket(
         self,
-        interaction
+        interaction: disnake.ApplicationCommandInteraction
     ):
+        if interaction.author.guild_permissions.manage_channels:
 
-        # Create embed
-        view = ticket_message()
-        ticket_embed = disnake.Embed(
-            title="Ticketsystem",
-            description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
-            color=disnake.Color.green()
-        )
+            # Create embed
+            view = ticket_message()
+            ticket_embed = disnake.Embed(
+                title="Ticketsystem",
+                description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
+                color=disnake.Color.green()
+            )
 
-        # send embed with buttons
-        await interaction.send(
-            embed=ticket_embed,
-            view=view
-        )
+            # send embed with buttons
+            await interaction.send(
+                embed=ticket_embed,
+                view=view
+            )
+        else:
+            await interaction.response.send_message(
+                content="You don't have the permissions to use this command!",
+                ephemeral=True
+            )
 
 
 def setup(bot):

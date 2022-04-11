@@ -62,61 +62,87 @@ class hide_component(disnake.ui.View):
         )
 
 
-
 class Channel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     @commands.slash_command(name="close")
-    async def close(self, interaction: disnake.ApplicationCommandInteraction):
-        await interaction.channel.set_permissions(
-            interaction.guild.default_role,
-            read_messages=True,
-            send_messages=False
-        )
-        close_embed = disnake.Embed(
-            description=f"The channel <#{interaction.channel.id}> was closed by {interaction.author.mention}!",
-            color=disnake.Color.red()
-        )
-        view = close_component()
-        await interaction.response.send_message(
-            embed=close_embed,
-            view=view
-        )
+    async def close(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        if interaction.author.guild_permissions.manage_channels:
+            await interaction.channel.set_permissions(
+                interaction.guild.default_role,
+                read_messages=True,
+                send_messages=False
+            )
+            close_embed = disnake.Embed(
+                description=f"The channel <#{interaction.channel.id}> was closed by {interaction.author.mention}!",
+                color=disnake.Color.red()
+            )
+            view = close_component()
+            await interaction.response.send_message(
+                embed=close_embed,
+                view=view
+            )
+        else:
+            await interaction.response.send_message(
+                content="You don't have the permissions to do that!",
+                ephemeral=True
+            )
 
     @commands.slash_command(name="hide")
-    async def hide(self, interaction: disnake.ApplicationCommandInteraction):
-        await interaction.channel.set_permissions(
-            interaction.guild.default_role,
-            read_messages=False,
-            send_messages=False
-        )
-        close_embed = disnake.Embed(
-            description=f"The channel <#{interaction.channel.id}> was hidden from {interaction.author.mention}!",
-            color=disnake.Color.red()
-        )
-        view = hide_component()
-        await interaction.response.send_message(
-            embed=close_embed,
-            view=view
-        )
+    async def hide(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        if interaction.author.guild_permissions.manage_channels:
+            await interaction.channel.set_permissions(
+                interaction.guild.default_role,
+                read_messages=False,
+                send_messages=False
+            )
+            close_embed = disnake.Embed(
+                description=f"The channel <#{interaction.channel.id}> was hidden from {interaction.author.mention}!",
+                color=disnake.Color.red()
+            )
+            view = hide_component()
+            await interaction.response.send_message(
+                embed=close_embed,
+                view=view
+            )
+        else:
+            await interaction.response.send_message(
+                content="You don't have the permissions to do that!",
+                ephemeral=True
+            )
 
     @commands.slash_command(name="open")
-    async def open(self, interaction: disnake.ApplicationCommandInteraction):
-        await interaction.channel.set_permissions(
-            interaction.guild.default_role,
-            read_messages=True,
-            send_messages=True
-        )
-        open_embed = disnake.Embed(
-            description=f"The channel <#{interaction.channel.id}> was opened by {interaction.author.mention}!",
-            color=disnake.Color.red()
-        )
-        view = open_component()
-        await interaction.response.send_message(
-            embed=open_embed,
-            view=view
-        )
+    async def open(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        if interaction.author.guild_permissions.manage_channels:
+            await interaction.channel.set_permissions(
+                interaction.guild.default_role,
+                read_messages=True,
+                send_messages=True
+            )
+            open_embed = disnake.Embed(
+                description=f"The channel <#{interaction.channel.id}> was opened by {interaction.author.mention}!",
+                color=disnake.Color.red()
+            )
+            view = open_component()
+            await interaction.response.send_message(
+                embed=open_embed,
+                view=view
+            )
+        else:
+            await interaction.response.send_message(
+                content="You don't have the permissions to do that!",
+                ephemeral=True
+            )
 
 
 def setup(bot):
