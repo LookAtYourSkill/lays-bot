@@ -21,7 +21,7 @@ async def on_ready():
     )
     await bot.change_presence(
         activity=disnake.Activity(
-            type=disnake.ActivityType.watching,
+            type=disnake.ActivityType.listening,
             name=f"{len(bot.guilds)} servers"),
         status=disnake.Status.idle
     )

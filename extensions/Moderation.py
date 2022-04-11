@@ -1,4 +1,3 @@
-from tokenize import Ignore
 import disnake
 from disnake.ext import commands
 
@@ -87,12 +86,12 @@ class Moderation(commands.Cog):
         limit: int
     ):
 
-        check_func = lambda msg: not msg.pinned
+        check = lambda msg: not msg.pinned
 
         await interaction.channel.purge(
 
             limit=limit,
-            check=check_func
+            check=check
         )
         purge_embed = disnake.Embed(
             description=f"Es wurden `{limit} Nachrichten` erfolgreich gelöscht!",
