@@ -68,7 +68,7 @@ class open_message(disnake.ui.View):
         await ticket_log_channel.send(
             embed=log_embed
         )
-        await interaction.channel.edit(name=str(ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]["channel_name"]))
+        # await interaction.channel.edit(name=f"closed-{ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]['channel_name']}")
 
     @disnake.ui.button(
         label="Delete",
@@ -245,14 +245,14 @@ class close_message(disnake.ui.View):
         )
 
         # edit channel and create embed
-        # await interaction.channel.edit(name=f"closed {ticket_id}")
+        # await interaction.channel.edit(name=f"closed-{ticket_data[str(interaction.guild.id)][str(ticket_id)]['ticket_number']}")
 
         close_embed = disnake.Embed(
             description=f"Ticket Closed by {interaction.author.mention}",
             color=disnake.Color.yellow()
         )
         view = open_message()
-        await interaction.send(
+        await interaction.response.send_message(
             embed=close_embed,
             view=view
         )
@@ -305,7 +305,7 @@ class ticket_message(disnake.ui.View):
             id=guild_data[str(interaction.guild.id)]["ticket_category"]
         )
         ticket = await interaction.guild.create_text_channel(
-            name=f"Gen Ticket {interaction.author.name}",
+            name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
             reason="Ticketsystem",
             category=ticket_category_id,
             overwrites={
@@ -319,7 +319,10 @@ class ticket_message(disnake.ui.View):
         ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
         ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
         ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
+        ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
         ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
+
+        ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
 
         with open("json/tickets.json", "w", encoding="UTF-8") as f:
             json.dump(ticket_data, f, indent=4)
@@ -331,6 +334,16 @@ class ticket_message(disnake.ui.View):
                         "Please ask your question",
             color=disnake.Color.green()
         )
+        begin_embed.add_field(
+            name="Category",
+            value=f"`{button.label}`",
+            inline=True
+        )
+        begin_embed.add_field(
+            name="Author",
+            value=interaction.author.mention,
+            inline=True
+        )
         await ticket.send(
             content=f"{interaction.author.mention} please ask your question!",
             embed=begin_embed,
@@ -338,7 +351,7 @@ class ticket_message(disnake.ui.View):
         )
 
         await interaction.response.send_message(
-            content="_General Ticket erstetllt!_",
+            content=f"_General Ticket successfully created!_ <#{ticket.id}>",
             ephemeral=True
         )
 
@@ -399,7 +412,10 @@ class ticket_message(disnake.ui.View):
         ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
         ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
         ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
+        ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
         ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
+
+        ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
 
         with open("json/tickets.json", "w", encoding="UTF-8") as f:
             json.dump(ticket_data, f, indent=4)
@@ -420,7 +436,7 @@ class ticket_message(disnake.ui.View):
         )
 
         await interaction.response.send_message(
-            content="_Moderation Ticket erstetllt!_",
+            content=f"_Moderation ticket successfully created!_ <#{ticket.id}>",
             ephemeral=True
         )
 
@@ -478,7 +494,10 @@ class ticket_message(disnake.ui.View):
         ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
         ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
         ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
+        ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
         ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
+
+        ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
 
         with open("json/tickets.json", "w", encoding="UTF-8") as f:
             json.dump(ticket_data, f, indent=4)
@@ -499,7 +518,7 @@ class ticket_message(disnake.ui.View):
         )
 
         await interaction.response.send_message(
-            content="_Support Ticket erstetllt!_",
+            content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
             ephemeral=True
         )
 
@@ -533,7 +552,7 @@ class ticketCreator(commands.Cog):
         description="Send a ticket to the support team"
     )
     @commands.has_permissions(
-        manage_guild=True
+        manage_channels=True
     )
     async def sendTicket(
         self,
