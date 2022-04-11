@@ -1,0 +1,6 @@
+other/*
+extensions/pycache/*
+utils/pycache/*
+events/pycache/*
+json/*
+etc/config.json
