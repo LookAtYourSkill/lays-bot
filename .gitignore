@@ -1,6 +1,3 @@
-other/*
-extensions/pycache/*
-utils/pycache/*
-events/pycache/*
-json/*
+__pycache__
+json
 etc/config.json
