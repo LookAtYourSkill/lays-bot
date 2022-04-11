@@ -127,7 +127,7 @@ class Twitch(commands.Cog):
                             **Title :** __{stream["title"]}__
                             **Viewer :** ``{stream["viewer_count"]}``
                             **Game :** ``{stream["game_name"]}``
-                            **Streamt seit:** ``{stream["started_at"][11:][:5]} Uhr am {stream["started_at"][8:][:2]}.{stream["started_at"][5:][:2]}.{stream["started_at"][:4]}``
+                            **Streamt gestartet:** ``{stream["started_at"][11:][:5]} Uhr am {stream["started_at"][8:][:2]}.{stream["started_at"][5:][:2]}.{stream["started_at"][:4]}``
                             **Link :** https://www.twitch.tv/{stream["user_login"]}
                             >-------------------------------------------------------------------------<
                         """
