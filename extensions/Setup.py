@@ -23,6 +23,7 @@ class Setup(commands.Cog):
             value=f"`{self.prefix}setup_mod_channel` [`channelid`]\n"
                   f"`{self.prefix}setup_msg_channel` [`channelid`]\n"
                   f"`{self.prefix}setup_ticket_category` [`categoryid`]\n"
+                  f"`{self.prefix}setup_ticket_close_category` [`categoryid`]\n"
                   f"`{self.prefix}setup_ticket_log_channel` [`channelid`]\n"
                   f"`{self.prefix}setup_ticket_save_channel` [`channelid`]\n"
                   f"`{self.prefix}setup_notify_channel` [`channelid`]\n"
@@ -35,6 +36,7 @@ class Setup(commands.Cog):
             value=f"`{self.prefix}change_mod_channel` [`new channelid`]\n"
                   f"`{self.prefix}change_msg_channel` [`new channelid`]\n"
                   f"`{self.prefix}change_ticket_category` [`categoryid`]\n"
+                  f"`{self.prefix}change_ticket_close_category` [`categoryid`]\n"
                   f"`{self.prefix}change_ticket_log_channel` [`channelid`]\n"
                   f"`{self.prefix}change_ticket_save_channel` [`channelid`]\n"
                   f"`{self.prefix}change_notify_channel` [`new channelid`]\n"
@@ -491,6 +493,63 @@ class Setup(commands.Cog):
         else:
             not_channel_set_embed = disnake.Embed(
                 description=f"Für `diesen Server` wurde noch kein `Ticket Save Channel` festgelgt. Das kannst du mit `{self.prefix}setup_ticket_save_channel` machen.",
+                color=disnake.Color.red()
+            )
+            await inter.send(
+                embed=not_channel_set_embed
+            )
+
+    @commands.command(description="Changes the ticket close category")
+    @commands.has_permissions(administrator=True)
+    async def setup_ticket_close_category(self, inter, channel_id):
+        with open("json/guild.json", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        if guild_data[str(inter.guild.id)]["closed_ticket_category"]:
+
+            guild_data[str(inter.guild.id)]["closed_ticket_category"] = int(channel_id)
+            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
+
+            change_embed = disnake.Embed(
+                description=f"Die `Closed Ticket Category` wurde erfolgreich auf <#{channel_id}> geändert!",
+                color=disnake.Color.green()
+            )
+            await inter.send(
+                embed=change_embed
+            )
+        else:
+            already_embed = disnake.Embed(
+                description=f"Die `Closed Ticket Category` wurde bereits auf <#{guild_data[str(inter.guild.id)]['closed_ticket_category']}> festgelegt! Benutze `{self.prefix}change_ticket_close_category` um diese zu verändern!",
+                color=disnake.Color.red()
+            )
+            await inter.send(
+                embed=already_embed
+            )
+
+
+    @commands.command(description="Changes the ticket close category")
+    @commands.has_permissions(administrator=True)
+    async def change_ticket_close_category(self, inter, channel_id):
+        with open("json/guild.json", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        if guild_data[str(inter.guild.id)]["closed_ticket_category"]:
+
+            guild_data[str(inter.guild.id)]["closed_ticket_category"] = int(channel_id)
+            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
+
+            change_embed = disnake.Embed(
+                description=f"Die `Ticket Close Category` wurde erfolgreich auf <#{channel_id}> geändert!",
+                color=disnake.Color.green()
+            )
+            await inter.send(
+                embed=change_embed
+            )
+        else:
+            not_channel_set_embed = disnake.Embed(
+                description=f"Für `diesen Server` wurde noch keine `Ticket Close Category` festgelgt. Das kannst du mit `{self.prefix}setup_ticket_close_category` machen.",
                 color=disnake.Color.red()
             )
             await inter.send(
