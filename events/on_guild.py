@@ -18,6 +18,7 @@ class on_guild(commands.Cog):
             "server_name": f"{str(guild.name)}",
             "notify_channel": (),
             "ticket_category": (),
+            "closed_ticket_category": (),
             "ticket_log_channel": (),
             "ticket_save_channel": (),
             "msg_channel": (),
@@ -34,7 +35,9 @@ class on_guild(commands.Cog):
         with open("json/tickets.json", "r") as f:
             ticket_data = json.load(f)
 
-        new_ticket = {}
+        new_ticket = {
+            "ticket_counter": 0,
+        }
 
         ticket_data[str(guild.id)] = new_ticket
         with open("json/tickets.json", "w") as f:
