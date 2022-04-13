@@ -1,13 +1,14 @@
 import json
 import os
-from termcolor import colored
 import disnake
 from disnake.ext import commands
+import logging
 
+log = logging.getLogger(__name__)
 
 bot = commands.Bot(
     intents=disnake.Intents.all(),
-    command_prefix=commands.when_mentioned_or(">"),
+    command_prefix=commands.when_mentioned_or("%"),
     owner_id=493370963807830016,
     sync_commands=True
 )
@@ -15,10 +16,8 @@ bot = commands.Bot(
 
 @bot.event
 async def on_ready():
-    print(colored(
-        f"Botid: {bot.user.id} - Name: {bot.user}",
-        "green")
-    )
+    print("Logged in!")
+    log.info("Bot online")
     await bot.change_presence(
         activity=disnake.Activity(
             type=disnake.ActivityType.listening,
@@ -27,45 +26,27 @@ async def on_ready():
     )
 
 
-print(colored("COGS", "yellow"))
+log.info("Loading extensions")
 for filename in os.listdir("./extensions"):
     if filename.endswith(".py"):
         try:
             bot.load_extension(f"extensions.{filename[:-3]}")
-            print(
-                "Loaded " + colored(
-                    f"{filename} ", "green"
-                ) + "Successful"
-            )
-        except disnake.Forbidden:
-            print(
-                colored(
-                    f"Error, something went wrong with {filename}!", "red"
-                )
-            )
+            log.info(f"Loaded extension {filename}")
+        except Exception as e:
+            log.error(f"Failed to load extension {filename}, {e}")
 
-print(colored("EVENT PART", "yellow"))
+
+log.info("Loaded events")
 for filename in os.listdir("./events"):
     if filename.endswith(".py"):
         try:
             bot.load_extension(f"events.{filename[:-3]}")
-            print(
-                "Loaded " + colored(
-                    f"{filename} ", "green"
-                ) + "Successful"
-            )
+            log.info(f"Loaded event {filename}")
         except Exception as e:
-            print(
-                colored(
-                    f"Error, something went wrong with {filename}! {e}", "red"
-                )
-            )
+            log.error(f"Failed to load event {filename}, {e}")
 
-print(
-    colored(
-        "Finished setting up files!", "green"
-    )
-)
+log.info("Finished")
+
 
 with open("etc/config.json", "r") as config:
     config = json.load(config)
