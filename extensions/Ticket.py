@@ -57,7 +57,7 @@ class open_message(disnake.ui.View):
                 color=disnake.Color.green()
             )
             view = close_message()
-            await interaction.send(
+            await interaction.response.send_message(
                 embed=open_embed,
                 view=view
             )
@@ -81,16 +81,15 @@ class open_message(disnake.ui.View):
                     embed=log_embed
                 )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_No ticket log channel set_. Skipped it!",
                     ephemeral=True
                 )
         else:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 content="_No ticket category set_. Skipped it!",
                 ephemeral=True
             )
-        # await interaction.channel.edit(name=f"{ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]['channel_name']}")
 
     @disnake.ui.button(
         label="Delete",
@@ -120,7 +119,7 @@ class open_message(disnake.ui.View):
                 description="Ticket will be deleted in a few seconds",
                 color=disnake.Color.red()
             )
-            await interaction.send(
+            await interaction.response.send_message(
                 embed=delete_embed
             )
 
@@ -147,12 +146,12 @@ class open_message(disnake.ui.View):
                     embed=log_embed
                 )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_No ticket log channel set_",
                     ephemeral=True
                 )
         else:
-            await interaction.send(
+            await interaction.followup.send(
                 "You do not have the permissions to use this button",
                 ephemeral=True
             )
@@ -198,29 +197,27 @@ class open_message(disnake.ui.View):
                     embed=log_embed
                 )
 
-                # create and send embed
-                save_embed = disnake.Embed(
-                    description=f"Ticket Saved in <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}>",
-                    color=disnake.Color.blue()
-                )
-                await interaction.send(
-                    embed=save_embed
-                )
-
                 if guild_data[str(interaction.guild.id)]["ticket_save_channel"]:
-                    pass
-                else:
+                    # create and send embed
+                    save_embed = disnake.Embed(
+                        description=f"Ticket Saved in <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}>",
+                        color=disnake.Color.blue()
+                    )
                     await interaction.response.send_message(
+                        embed=save_embed
+                    )
+                else:
+                    await interaction.followup.send(
                         content="_No ticket save channel set_. Skipped it!",
                         ephemeral=True
                     )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_No ticket log channel set_. Skipped it!",
                     ephemeral=True
                 )
         else:
-            await interaction.send(
+            await interaction.followup.send(
                 "You do not have the permissions to use this button",
                 ephemeral=True
             )
@@ -275,7 +272,7 @@ class close_message(disnake.ui.View):
             color=disnake.Color.yellow()
         )
         view = open_message()
-        await interaction.send(
+        await interaction.response.send_message(
             embed=close_embed,
             view=view
         )
@@ -304,12 +301,12 @@ class close_message(disnake.ui.View):
                     embed=log_embed
                 )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_No ticket log channel set_! Skipped it!",
                     ephemeral=True
                 )
         else:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 content="_No category for closed tickets set_! Skiped it!",
                 ephemeral=True
             )
@@ -416,12 +413,12 @@ class ticket_message(disnake.ui.View):
                     embed=log_embed
                 )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_Ticket Logging channel not set!_ Skipped it!",
                     ephemeral=True
                 )
         else:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 content="_Ticket Category not set!_ Skipped it!",
                 ephemeral=True
             )
@@ -510,12 +507,12 @@ class ticket_message(disnake.ui.View):
                     embed=log_embed
                 )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_Ticket Logging channel not set!_ Skipped it!",
                     ephemeral=True
                 )
         else:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 content="_Ticket category not set!_ Skipped it!",
                 ephemeral=True
             )
@@ -604,12 +601,12 @@ class ticket_message(disnake.ui.View):
                     embed=log_embed
                 )
             else:
-                await interaction.response.send_message(
+                await interaction.followup.send(
                     content="_Ticket Logging channel not set!_ Skipped it!",
                     ephemeral=True
                 )
         else:
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 content="_Ticket category not set!_ Skipped it!",
                 ephemeral=True
             )
