@@ -123,10 +123,6 @@ class open_message(disnake.ui.View):
                 embed=delete_embed
             )
 
-            # delete channel
-            await asyncio.sleep(3.5)
-            await interaction.channel.delete()
-
             # create log
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
                 ticket_log_channel = disnake.utils.get(
@@ -150,6 +146,11 @@ class open_message(disnake.ui.View):
                     content="_No ticket log channel set_",
                     ephemeral=True
                 )
+
+            # delete channel
+            await asyncio.sleep(3.5)
+            await interaction.channel.delete()
+
         else:
             await interaction.followup.send(
                 "You do not have the permissions to use this button",
