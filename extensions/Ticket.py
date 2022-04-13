@@ -1,4 +1,5 @@
 import asyncio
+from errno import EPERM
 import disnake
 from disnake.ext import commands
 import json
@@ -31,44 +32,65 @@ class open_message(disnake.ui.View):
         with open("json/tickets.json", "w") as f:
             json.dump(ticket_data, f, indent=4)
 
-        # setup variables and perms
-        target = disnake.utils.get(
-            interaction.guild.members,
-            id=ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]["author"]
-        )
-        await interaction.channel.set_permissions(
-            target, send_messages=True, read_messages=True
-        )
+        if guild_data[str(interaction.guild.id)]["ticket_category"]:
+            # setup variables and perms
+            ticket_category = disnake.utils.get(
+                interaction.guild.categories,
+                id=int(guild_data[str(interaction.guild.id)]["ticket_category"])
+            )
 
-        # create and send embed
-        open_embed = disnake.Embed(
-            description=f"Ticket Opened by {interaction.author.mention}",
-            color=disnake.Color.green()
-        )
-        view = close_message()
-        await interaction.send(
-            embed=open_embed,
-            view=view
-        )
+            target = disnake.utils.get(
+                interaction.guild.members,
+                id=ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]["author"]
+            )
 
-        # create log
-        ticket_log_channel = disnake.utils.get(
-            interaction.guild.channels,
-            id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-        )
-        log_embed = disnake.Embed(
-            title="Ticket Logging",
-            description=f"Ticket <#{interaction.channel.id}> reopened | Action: `{button.label}`",
-            color=disnake.Color.green()
-        )
-        log_embed.set_author(
-            name=interaction.author.name,
-            icon_url=interaction.author.avatar.url
-        )
-        await ticket_log_channel.send(
-            embed=log_embed
-        )
-        # await interaction.channel.edit(name=f"closed-{ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]['channel_name']}")
+            await interaction.channel.set_permissions(
+                target, send_messages=True, read_messages=True
+            )
+            await interaction.channel.edit(
+                category=ticket_category
+            )
+
+            # create and send embed
+            open_embed = disnake.Embed(
+                description=f"Ticket Opened by {interaction.author.mention}",
+                color=disnake.Color.green()
+            )
+            view = close_message()
+            await interaction.send(
+                embed=open_embed,
+                view=view
+            )
+
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+                # create log
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket <#{interaction.channel.id}> reopened | Action: `{button.label}`",
+                    color=disnake.Color.green()
+                )
+                log_embed.set_author(
+                    name=interaction.author.name,
+                    icon_url=interaction.author.avatar.url
+                )
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+            else:
+                await interaction.response.send_message(
+                    content="_No ticket log channel set_. Skipped it!",
+                    ephemeral=True
+                )
+        else:
+            await interaction.response.send_message(
+                content="_No ticket category set_. Skipped it!",
+                ephemeral=True
+            )
+        # await interaction.channel.edit(name=f"{ticket_data[str(interaction.guild.id)][str(interaction.channel.id)]['channel_name']}")
 
     @disnake.ui.button(
         label="Delete",
@@ -107,25 +129,32 @@ class open_message(disnake.ui.View):
             await interaction.channel.delete()
 
             # create log
-            ticket_log_channel = disnake.utils.get(
-                interaction.guild.channels,
-                id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-            )
-            log_embed = disnake.Embed(
-                title="Ticket Logging",
-                description=f"Ticket `{interaction.channel.name}` deleted | Action: `{button.label}`",
-                color=disnake.Color.red()
-            )
-            log_embed.set_author(
-                name=interaction.author.name,
-                icon_url=interaction.author.avatar.url
-            )
-            await ticket_log_channel.send(
-                embed=log_embed
-            )
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket `{interaction.channel.name}` deleted | Action: `{button.label}`",
+                    color=disnake.Color.red()
+                )
+                log_embed.set_author(
+                    name=interaction.author.name,
+                    icon_url=interaction.author.avatar.url
+                )
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+            else:
+                await interaction.response.send_message(
+                    content="_No ticket log channel set_",
+                    ephemeral=True
+                )
         else:
             await interaction.send(
-                "You do not have the permissions to use this button"
+                "You do not have the permissions to use this button",
+                ephemeral=True
             )
 
     @disnake.ui.button(
@@ -150,58 +179,51 @@ class open_message(disnake.ui.View):
             with open("json/tickets.json", "w") as f:
                 json.dump(ticket_data, f, indent=4)
 
-            # create log
-            ticket_log_channel = disnake.utils.get(
-                interaction.guild.channels,
-                id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-            )
-            log_embed = disnake.Embed(
-                title="Ticket Logging",
-                description=f"Ticket `{interaction.channel.name}` saved | Action: `{button.label}`",
-                color=disnake.Color.green()
-            )
-            log_embed.set_author(
-                name=interaction.author.name,
-                icon_url=interaction.author.avatar.url
-            )
-            await ticket_log_channel.send(
-                embed=log_embed
-            )
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+                # create log
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket `{interaction.channel.name}` saved | Action: `{button.label}`",
+                    color=disnake.Color.green()
+                )
+                log_embed.set_author(
+                    name=interaction.author.name,
+                    icon_url=interaction.author.avatar.url
+                )
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+
+                # create and send embed
+                save_embed = disnake.Embed(
+                    description=f"Ticket Saved in <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}>",
+                    color=disnake.Color.blue()
+                )
+                await interaction.send(
+                    embed=save_embed
+                )
+
+                if guild_data[str(interaction.guild.id)]["ticket_save_channel"]:
+                    pass
+                else:
+                    await interaction.response.send_message(
+                        content="_No ticket save channel set_. Skipped it!",
+                        ephemeral=True
+                    )
+            else:
+                await interaction.response.send_message(
+                    content="_No ticket log channel set_. Skipped it!",
+                    ephemeral=True
+                )
         else:
             await interaction.send(
-                "You do not have the permissions to use this button"
+                "You do not have the permissions to use this button",
+                ephemeral=True
             )
-
-        # Load all jsons
-        with open("json/guild.json", "r") as f:
-            guild_data = json.load(f)
-
-        # create and send embed
-        save_embed = disnake.Embed(
-            description=f"Ticket Saved in <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}>",
-            color=disnake.Color.blue()
-        )
-        await interaction.send(
-            embed=save_embed
-        )
-
-        # create log
-        ticket_log_channel = disnake.utils.get(
-            interaction.guild.channels,
-            id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-        )
-        log_embed = disnake.Embed(
-            title="Ticket Logging",
-            description=f"Ticket <#{interaction.channel.id}> saved | Action: `{button.label}`",
-            color=disnake.Color.blue()
-        )
-        log_embed.set_author(
-            name=interaction.author.name,
-            icon_url=interaction.author.avatar.url
-        )
-        await ticket_log_channel.send(
-            embed=log_embed
-        )
 
 
 class close_message(disnake.ui.View):
@@ -237,6 +259,10 @@ class close_message(disnake.ui.View):
             interaction.guild.members,
             id=int(ticket_data[str(interaction.guild.id)][str(ticket_id)]["author"])
         )
+        close_ticket_category = disnake.utils.get(
+            interaction.guild.categories,
+            id=int(guild_data[str(interaction.guild.id)]["closed_ticket_category"])
+        )
 
         await interaction.channel.set_permissions(
             ticket_author,
@@ -244,36 +270,49 @@ class close_message(disnake.ui.View):
             read_messages=False
         )
 
-        # edit channel and create embed
-        # await interaction.channel.edit(name=f"closed-{ticket_data[str(interaction.guild.id)][str(ticket_id)]['ticket_number']}")
-
         close_embed = disnake.Embed(
             description=f"Ticket Closed by {interaction.author.mention}",
             color=disnake.Color.yellow()
         )
         view = open_message()
-        await interaction.response.send_message(
+        await interaction.send(
             embed=close_embed,
             view=view
         )
 
-        # create log
-        ticket_log_channel = disnake.utils.get(
-            interaction.guild.channels,
-            id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-        )
-        log_embed = disnake.Embed(
-            title="Ticket Logging",
-            description=f"Ticket <#{interaction.channel.id}> closed | Action: `{button.label}`",
-            color=disnake.Color.yellow()
-        )
-        log_embed.set_author(
-            name=interaction.author.name,
-            icon_url=interaction.author.avatar.url
-        )
-        await ticket_log_channel.send(
-            embed=log_embed
-        )
+        if guild_data[str(interaction.guild.id)]["closed_ticket_category"]:
+            await interaction.channel.edit(
+                category=close_ticket_category
+            )
+
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+                # create log
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket <#{interaction.channel.id}> closed | Action: `{button.label}`",
+                    color=disnake.Color.yellow()
+                )
+                log_embed.set_author(
+                    name=interaction.author.name,
+                    icon_url=interaction.author.avatar.url
+                )
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+            else:
+                await interaction.response.send_message(
+                    content="_No ticket log channel set_! Skipped it!",
+                    ephemeral=True
+                )
+        else:
+            await interaction.response.send_message(
+                content="_No category for closed tickets set_! Skiped it!",
+                ephemeral=True
+            )
 
 
 class ticket_message(disnake.ui.View):
@@ -299,79 +338,93 @@ class ticket_message(disnake.ui.View):
         with open("json/tickets.json", "r", encoding="UTF-8") as f:
             ticket_data = json.load(f)
 
-        # Setup variables and perms
-        ticket_category_id = disnake.utils.get(
-            interaction.guild.categories,
-            id=guild_data[str(interaction.guild.id)]["ticket_category"]
-        )
-        ticket = await interaction.guild.create_text_channel(
-            name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
-            reason="Ticketsystem",
-            category=ticket_category_id,
-            overwrites={
-                interaction.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
-                interaction.author: disnake.PermissionOverwrite(read_messages=True, send_messages=True),
-                interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
-            }
-        )
-        # Json Stuff
-        ticket_data[str(interaction.guild.id)][ticket.id] = {}
-        ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
-        ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
-        ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
-        ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
-        ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
+        if guild_data[str(interaction.guild.id)]["ticket_category"]:
 
-        ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
+            # Setup variables and perms
+            ticket_category_id = disnake.utils.get(
+                interaction.guild.categories,
+                id=guild_data[str(interaction.guild.id)]["ticket_category"]
+            )
+            ticket = await interaction.guild.create_text_channel(
+                name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
+                reason="Ticketsystem",
+                category=ticket_category_id,
+                overwrites={
+                    interaction.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
+                    interaction.author: disnake.PermissionOverwrite(read_messages=True, send_messages=True),
+                    interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
+                }
+            )
+            # Json Stuff
+            ticket_data[str(interaction.guild.id)][ticket.id] = {}
+            ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
+            ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
+            ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
+            ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
+            ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
 
-        with open("json/tickets.json", "w", encoding="UTF-8") as f:
-            json.dump(ticket_data, f, indent=4)
+            ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
 
-        # Change channel name and create embed
-        await ticket.edit(topic=f"General Ticket | {interaction.author.name}")
-        begin_embed = disnake.Embed(
-            description="Support will be shortly with you! To close the ticket react with 🔒\n"
-                        "Please ask your question",
-            color=disnake.Color.green()
-        )
-        begin_embed.add_field(
-            name="Category",
-            value=f"`{button.label}`",
-            inline=True
-        )
-        begin_embed.add_field(
-            name="Author",
-            value=interaction.author.mention,
-            inline=True
-        )
-        await ticket.send(
-            content=f"{interaction.author.mention} please ask your question!",
-            embed=begin_embed,
-            view=close_message()
-        )
+            with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                json.dump(ticket_data, f, indent=4)
 
-        await interaction.response.send_message(
-            content=f"_General Ticket successfully created!_ <#{ticket.id}>",
-            ephemeral=True
-        )
+            # Change channel and create embed
+            await ticket.edit(topic=f"General Ticket | {interaction.author.name}")
+            begin_embed = disnake.Embed(
+                description="Support will be shortly with you! To close the ticket react with 🔒\n"
+                            "Please ask your question",
+                color=disnake.Color.green()
+            )
+            begin_embed.add_field(
+                name="Category",
+                value=f"`{button.label}`",
+                inline=True
+            )
+            begin_embed.add_field(
+                name="Author",
+                value=interaction.author.mention,
+                inline=True
+            )
+            await ticket.send(
+                content=f"{interaction.author.mention} please ask your question!",
+                embed=begin_embed,
+                view=close_message()
+            )
 
-        # create log
-        ticket_log_channel = disnake.utils.get(
-            interaction.guild.channels,
-            id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-        )
-        log_embed = disnake.Embed(
-            title="Ticket Logging",
-            description=f"Ticket created | Action: `{button.label}`",
-            color=disnake.Color.green()
-        )
-        log_embed.set_author(
-            name=interaction.author.name,
-            icon_url=interaction.author.avatar.url
-        )
-        await ticket_log_channel.send(
-            embed=log_embed
-        )
+            await interaction.response.send_message(
+                content=f"_General Ticket successfully created!_ <#{ticket.id}>",
+                ephemeral=True
+            )
+
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+
+                # create log
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket created | Action: `{button.label}`",
+                    color=disnake.Color.green()
+                )
+                log_embed.set_author(
+                    name=interaction.author.name,
+                    icon_url=interaction.author.avatar.url
+                )
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+            else:
+                await interaction.response.send_message(
+                    content="_Ticket Logging channel not set!_ Skipped it!",
+                    ephemeral=True
+                )
+        else:
+            await interaction.response.send_message(
+                content="_Ticket Category not set!_ Skipped it!",
+                ephemeral=True
+            )
 
     # BUTTONS
     @disnake.ui.button(
@@ -391,69 +444,81 @@ class ticket_message(disnake.ui.View):
         with open("json/tickets.json", "r", encoding="UTF-8") as f:
             ticket_data = json.load(f)
 
-        # Setup variables and perms
-        ticket_category_id = disnake.utils.get(
-            interaction.guild.categories,
-            id=guild_data[str(interaction.guild.id)]["ticket_category"]
-        )
-        ticket = await interaction.guild.create_text_channel(
-            name=f"Mod Ticket {interaction.author.name}",
-            reason="Ticketsystem",
-            category=ticket_category_id,
-            overwrites={
-                interaction.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
-                interaction.author: disnake.PermissionOverwrite(read_messages=True, send_messages=True),
-                interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
-            }
-        )
+        if guild_data[str(interaction.guild.id)]["ticket_category"]:
+            # Setup variables and perms
+            ticket_category_id = disnake.utils.get(
+                interaction.guild.categories,
+                id=guild_data[str(interaction.guild.id)]["ticket_category"]
+            )
+            ticket = await interaction.guild.create_text_channel(
+                name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
+                reason="Ticketsystem",
+                category=ticket_category_id,
+                overwrites={
+                    interaction.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
+                    interaction.author: disnake.PermissionOverwrite(read_messages=True, send_messages=True),
+                    interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
+                }
+            )
 
-        # Json Stuff
-        ticket_data[str(interaction.guild.id)][ticket.id] = {}
-        ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
-        ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
-        ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
-        ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
-        ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
+            # Json Stuff
+            ticket_data[str(interaction.guild.id)][ticket.id] = {}
+            ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
+            ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
+            ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
+            ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
+            ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
 
-        ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
+            ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
 
-        with open("json/tickets.json", "w", encoding="UTF-8") as f:
-            json.dump(ticket_data, f, indent=4)
+            with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                json.dump(ticket_data, f, indent=4)
 
-        # Change channel name and create embed
-        await ticket.edit(
-            topic=f"Moderation Ticket | {interaction.author.name}"
-        )
-        begin_embed = disnake.Embed(
-            description="Support will be shortly with you! To close the ticket react with 🔒\n"
-                        "Please ask your question",
-            color=disnake.Color.green()
-        )
-        await ticket.send(
-            content=f"{interaction.author.mention} please ask your question!",
-            embed=begin_embed,
-            view=close_message()
-        )
+            # Change channel name and create embed
+            await ticket.edit(
+                topic=f"Moderation Ticket | {interaction.author.name}"
+            )
+            begin_embed = disnake.Embed(
+                description="Support will be shortly with you! To close the ticket react with 🔒\n"
+                            "Please ask your question",
+                color=disnake.Color.green()
+            )
+            await ticket.send(
+                content=f"{interaction.author.mention} please ask your question!",
+                embed=begin_embed,
+                view=close_message()
+            )
 
-        await interaction.response.send_message(
-            content=f"_Moderation ticket successfully created!_ <#{ticket.id}>",
-            ephemeral=True
-        )
+            await interaction.response.send_message(
+                content=f"_Moderation ticket successfully created!_ <#{ticket.id}>",
+                ephemeral=True
+            )
 
-        # create log
-        ticket_log_channel = disnake.utils.get(
-            interaction.guild.channels,
-            id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-        )
-        log_embed = disnake.Embed(
-            title="Ticket Logging",
-            description=f"Ticket Created by {interaction.author.mention} | Action: `{button.label}`",
-            color=disnake.Color.green()
-        )
-        log_embed.set_author(name=interaction.author.name, icon_url=interaction.author.avatar.url)
-        await ticket_log_channel.send(
-            embed=log_embed
-        )
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+                # create log
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket Created by {interaction.author.mention} | Action: `{button.label}`",
+                    color=disnake.Color.green()
+                )
+                log_embed.set_author(name=interaction.author.name, icon_url=interaction.author.avatar.url)
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+            else:
+                await interaction.response.send_message(
+                    content="_Ticket Logging channel not set!_ Skipped it!",
+                    ephemeral=True
+                )
+        else:
+            await interaction.response.send_message(
+                content="_Ticket category not set!_ Skipped it!",
+                ephemeral=True
+            )
 
     # BUTTONS
     @disnake.ui.button(
@@ -473,69 +538,81 @@ class ticket_message(disnake.ui.View):
         with open("json/tickets.json", "r", encoding="UTF-8") as f:
             ticket_data = json.load(f)
 
-        # Setup variables and perms
-        ticket_category_id = disnake.utils.get(
-            interaction.guild.categories,
-            id=guild_data[str(interaction.guild.id)]["ticket_category"]
-        )
-        ticket = await interaction.guild.create_text_channel(
-            name=f"Sup Ticket {interaction.author.name}",
-            reason="Ticketsystem",
-            category=ticket_category_id,
-            overwrites={
-                interaction.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
-                interaction.author: disnake.PermissionOverwrite(read_messages=True, send_messages=True),
-                interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
-            }
-        )
+        if guild_data[str(interaction.guild.id)]["ticket_category"]:
+            # Setup variables and perms
+            ticket_category_id = disnake.utils.get(
+                interaction.guild.categories,
+                id=guild_data[str(interaction.guild.id)]["ticket_category"]
+            )
+            ticket = await interaction.guild.create_text_channel(
+                name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
+                reason="Ticketsystem",
+                category=ticket_category_id,
+                overwrites={
+                    interaction.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
+                    interaction.author: disnake.PermissionOverwrite(read_messages=True, send_messages=True),
+                    interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
+                }
+            )
 
-        # Json Stuff
-        ticket_data[str(interaction.guild.id)][ticket.id] = {}
-        ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
-        ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
-        ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
-        ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
-        ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
+            # Json Stuff
+            ticket_data[str(interaction.guild.id)][ticket.id] = {}
+            ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
+            ticket_data[str(interaction.guild.id)][ticket.id]["channel_id"] = ticket.id
+            ticket_data[str(interaction.guild.id)][ticket.id]["channel_name"] = ticket.name
+            ticket_data[str(interaction.guild.id)][ticket.id]["ticket_number"] = ticket_data[str(interaction.guild.id)]["ticket_counter"]
+            ticket_data[str(interaction.guild.id)][ticket.id]["status"] = "open"
 
-        ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
+            ticket_data[str(interaction.guild.id)]["ticket_counter"] += 1
 
-        with open("json/tickets.json", "w", encoding="UTF-8") as f:
-            json.dump(ticket_data, f, indent=4)
+            with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                json.dump(ticket_data, f, indent=4)
 
-        # Change channel name and create embed
-        await ticket.edit(
-            topic=f"Support Ticket | {interaction.author.name}"
-        )
-        begin_embed = disnake.Embed(
-            description="Support will be shortly with you! To close the ticket react with 🔒\n"
-                        "Please ask your question",
-            color=disnake.Color.green()
-        )
-        await ticket.send(
-            content=f"{interaction.author.mention} please ask your question!",
-            embed=begin_embed,
-            view=close_message()
-        )
+            # Change channel name and create embed
+            await ticket.edit(
+                topic=f"Support Ticket | {interaction.author.name}"
+            )
+            begin_embed = disnake.Embed(
+                description="Support will be shortly with you! To close the ticket react with 🔒\n"
+                            "Please ask your question",
+                color=disnake.Color.green()
+            )
+            await ticket.send(
+                content=f"{interaction.author.mention} please ask your question!",
+                embed=begin_embed,
+                view=close_message()
+            )
 
-        await interaction.response.send_message(
-            content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
-            ephemeral=True
-        )
+            await interaction.response.send_message(
+                content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
+                ephemeral=True
+            )
 
-        # create log
-        ticket_log_channel = disnake.utils.get(
-            interaction.guild.channels,
-            id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
-        )
-        log_embed = disnake.Embed(
-            title="Ticket Logging",
-            description=f"Ticket Created by {interaction.author.mention} | Action: `{button.label}`",
-            color=disnake.Color.green()
-        )
-        log_embed.set_author(name=interaction.author.name, icon_url=interaction.author.avatar.url)
-        await ticket_log_channel.send(
-            embed=log_embed
-        )
+            if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+                # create log
+                ticket_log_channel = disnake.utils.get(
+                    interaction.guild.channels,
+                    id=guild_data[str(interaction.guild.id)]["ticket_log_channel"]
+                )
+                log_embed = disnake.Embed(
+                    title="Ticket Logging",
+                    description=f"Ticket Created by {interaction.author.mention} | Action: `{button.label}`",
+                    color=disnake.Color.green()
+                )
+                log_embed.set_author(name=interaction.author.name, icon_url=interaction.author.avatar.url)
+                await ticket_log_channel.send(
+                    embed=log_embed
+                )
+            else:
+                await interaction.response.send_message(
+                    content="_Ticket Logging channel not set!_ Skipped it!",
+                    ephemeral=True
+                )
+        else:
+            await interaction.response.send_message(
+                content="_Ticket category not set!_ Skipped it!",
+                ephemeral=True
+            )
 
 
 class ticketCreator(commands.Cog):
