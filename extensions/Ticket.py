@@ -1,5 +1,4 @@
 import asyncio
-from errno import EPERM
 import disnake
 from disnake.ext import commands
 import json
