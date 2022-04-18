@@ -31,9 +31,9 @@ for filename in os.listdir("./extensions"):
     if filename.endswith(".py"):
         try:
             bot.load_extension(f"extensions.{filename[:-3]}")
-            log.info(f"Loaded extension {filename}")
+            print(f"Loaded extension {filename}")
         except Exception as e:
-            log.error(f"Failed to load extension {filename}, {e}")
+            print(f"Failed to load extension {filename}, {e}")
 
 
 log.info("Loaded events")
@@ -41,9 +41,9 @@ for filename in os.listdir("./events"):
     if filename.endswith(".py"):
         try:
             bot.load_extension(f"events.{filename[:-3]}")
-            log.info(f"Loaded event {filename}")
+            print(f"Loaded event {filename}")
         except Exception as e:
-            log.error(f"Failed to load event {filename}, {e}")
+            print(f"Failed to load event {filename}, {e}")
 
 log.info("Finished")
 
