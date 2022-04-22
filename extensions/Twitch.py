@@ -4,7 +4,6 @@ from textwrap import dedent
 import json
 from utils.twitch import get_streams, get_users
 
-
 class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
