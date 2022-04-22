@@ -16,7 +16,13 @@ class onTimeout(commands.Cog):
 
         log_channel = self.bot.get_channel(guild[str(before.guild.id)]["mod_channel"])
 
-        if before.timeout:
+        if str(before.status).upper() != str(after.status).upper():
+            pass
+
+        elif before.display_name != after.display_name:
+            pass
+
+        elif before.timeout:
             # print(before.current_timeout)
             # print("#######################")
             # print(after.current_timeout)
