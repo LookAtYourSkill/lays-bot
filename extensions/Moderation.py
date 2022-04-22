@@ -1,5 +1,7 @@
 import disnake
 from disnake.ext import commands
+import humanfriendly
+from datetime import datetime
 
 
 class Moderation(commands.Cog):
@@ -101,6 +103,32 @@ class Moderation(commands.Cog):
             embed=purge_embed,
             ephemeral=True
         )
+
+    @commands.slash_command(
+        name="timeout",
+        description="Timeouts a user"
+    )
+    @commands.has_permissions(kick_members=True)
+    async def timeout(
+        interaction: disnake.ApplicationCommandInteraction,
+        member: disnake.Member,
+        time: None,
+        reason=None
+    ):
+        time = humanfriendly.parse_timespan(time)
+        await member.timeout(
+            until=disnake.utils.utcnow() + datetime.timedelta(seconds=time),
+            reason=reason
+        )
+        timeout_embed = disnake.Embed(
+            description=f"Der User {member.mention} [`{member.id}`] wurde von `{interaction.author.mention}` für {time} getimed!",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=timeout_embed,
+            ephemeral=True
+        )
+
 
 
 def setup(bot):
