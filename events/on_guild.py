@@ -1,5 +1,6 @@
 import json
 from disnake.ext import commands
+import disnake
 
 
 class on_guild(commands.Cog):
@@ -11,6 +12,15 @@ class on_guild(commands.Cog):
         self,
         guild
     ):
+        on_join_embed = disnake.Embed(
+            title="Successful invite!",
+            description="You sccessfully invited me to your server!\n"
+                        "To set me perfectly up, use the `/setup` command!"
+        )
+        await guild.owner.send(
+            embed=on_join_embed
+        )
+
         with open("json/guild.json", "r") as f:
             guild_data = json.load(f)
 
