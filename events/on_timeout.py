@@ -16,10 +16,17 @@ class onTimeout(commands.Cog):
 
         log_channel = self.bot.get_channel(guild[str(before.guild.id)]["mod_channel"])
 
+        old_roles = " ".join([role.mention for role in before.roles])
+
+        new_roles  =" ".join([role.mention for role in after.roles])
+
         if str(before.status).upper() != str(after.status).upper():
             pass
 
         elif before.display_name != after.display_name:
+            pass
+
+        elif old_roles != new_roles:
             pass
 
         elif before.timeout:
