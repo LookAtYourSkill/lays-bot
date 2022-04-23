@@ -29,6 +29,12 @@ class onTimeout(commands.Cog):
         elif old_roles != new_roles:
             pass
 
+        elif before.activity != after.activity:
+            pass
+
+        elif before.activities != after.activities:
+            pass
+
         elif before.timeout:
             # print(before.current_timeout)
             # print("#######################")
