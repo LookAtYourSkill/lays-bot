@@ -18,7 +18,7 @@ class onTimeout(commands.Cog):
 
         old_roles = " ".join([role.mention for role in before.roles])
 
-        new_roles  =" ".join([role.mention for role in after.roles])
+        new_roles = " ".join([role.mention for role in after.roles])
 
         if str(before.status).upper() != str(after.status).upper():
             pass
@@ -33,6 +33,12 @@ class onTimeout(commands.Cog):
             pass
 
         elif before.activities != after.activities:
+            pass
+
+        elif before.status != after.status:
+            pass
+
+        elif before.nick != after.nick:
             pass
 
         elif before.timeout:
