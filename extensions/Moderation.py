@@ -1,7 +1,9 @@
 import disnake
 from disnake.ext import commands
 import humanfriendly
-from datetime import datetime
+import datetime
+
+import humanize
 
 
 class Moderation(commands.Cog):
@@ -9,6 +11,7 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(
+        name="ban",
         description="Bans a user"
     )
     @commands.has_permissions(
@@ -36,6 +39,7 @@ class Moderation(commands.Cog):
         )
 
     @commands.slash_command(
+        name="unban",
         description="Unban a banned user"
     )
     @commands.has_permissions(
@@ -77,34 +81,6 @@ class Moderation(commands.Cog):
             )
 
     @commands.slash_command(
-        description="clears messages"
-    )
-    @commands.has_permissions(
-        manage_messages=True
-    )
-    async def clear(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        limit: int
-    ):
-
-        check = lambda msg: not msg.pinned
-
-        await interaction.channel.purge(
-
-            limit=limit,
-            check=check
-        )
-        purge_embed = disnake.Embed(
-            description=f"Es wurden `{limit} Nachrichten` erfolgreich gelöscht!",
-            color=disnake.Color.red()
-        )
-        await interaction.response.send_message(
-            embed=purge_embed,
-            ephemeral=True
-        )
-
-    @commands.slash_command(
         name="timeout",
         description="Timeouts a user"
     )
@@ -112,8 +88,8 @@ class Moderation(commands.Cog):
     async def timeout(
         interaction: disnake.ApplicationCommandInteraction,
         member: disnake.Member,
-        time: None,
-        reason=None
+        time: str,
+        reason=str
     ):
         time = humanfriendly.parse_timespan(time)
         await member.timeout(
@@ -121,14 +97,13 @@ class Moderation(commands.Cog):
             reason=reason
         )
         timeout_embed = disnake.Embed(
-            description=f"Der User {member.mention} [`{member.id}`] wurde von `{interaction.author.mention}` für {time} getimed!",
+            description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] für `{humanize.precisedelta(time)}` getimed!",
             color=disnake.Color.green()
         )
         await interaction.response.send_message(
             embed=timeout_embed,
             ephemeral=True
         )
-
 
 
 def setup(bot):
