@@ -41,6 +41,12 @@ class onTimeout(commands.Cog):
         elif before.nick != after.nick:
             pass
 
+        elif before.activity.type != after.activity.type:
+            pass
+
+        elif before.activity.name != after.activity.name:
+            pass
+
         elif before.timeout:
             # print(before.current_timeout)
             # print("#######################")
