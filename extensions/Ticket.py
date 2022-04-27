@@ -12,7 +12,8 @@ class open_message(disnake.ui.View):
     @disnake.ui.button(
         label="Open",
         style=disnake.ButtonStyle.green,
-        emoji="🔓"
+        emoji="🔓",
+        custom_id="persistent_view:open"
     )
     async def open_ticket(
         self,
@@ -93,7 +94,8 @@ class open_message(disnake.ui.View):
     @disnake.ui.button(
         label="Delete",
         style=disnake.ButtonStyle.red,
-        emoji="🗑"
+        emoji="🗑",
+        custom_id="persistent_view:delete"
     )
     async def delete_ticket(
         self,
@@ -159,7 +161,8 @@ class open_message(disnake.ui.View):
     @disnake.ui.button(
         label="Save",
         style=disnake.ButtonStyle.grey,
-        emoji="💾"
+        emoji="💾",
+        custom_id="persistent_view:save"
     )
     async def save_ticket(
         self,
@@ -231,7 +234,8 @@ class close_message(disnake.ui.View):
     @disnake.ui.button(
         label="Close",
         style=disnake.ButtonStyle.grey,
-        emoji="🔒"
+        emoji="🔒",
+        custom_id="persistent_view:close"
     )
     async def close_ticket(
         self,
@@ -321,7 +325,8 @@ class ticket_message(disnake.ui.View):
     @disnake.ui.button(
         label="General",
         style=disnake.ButtonStyle.green,
-        emoji="📩"
+        emoji="📩",
+        custom_id="persistent_view:general_ticket"
     )
     async def tickets(
         self,
@@ -427,7 +432,8 @@ class ticket_message(disnake.ui.View):
     @disnake.ui.button(
         label="Moderation",
         style=disnake.ButtonStyle.green,
-        emoji="🔨"
+        emoji="🔨",
+        custom_id="persistent_view:moderation_ticket"
     )
     async def tickets1(
         self,
@@ -521,7 +527,8 @@ class ticket_message(disnake.ui.View):
     @disnake.ui.button(
         label="Support",
         style=disnake.ButtonStyle.green,
-        emoji="❔"
+        emoji="❔",
+        custom_id="persistent_view:support_ticket"
     )
     async def tickets2(
         self,
@@ -615,6 +622,7 @@ class ticket_message(disnake.ui.View):
 class ticketCreator(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.persistent_views_added = False
 
     # Load all jsons
     with open("json/guild.json", "r") as f:
@@ -649,6 +657,17 @@ class ticketCreator(commands.Cog):
                 content="You don't have the permissions to use this command!",
                 ephemeral=True
             )
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        if not self.persistent_views_added:
+            view1 = ticket_message()
+            view2 = close_message()
+            view3 = open_message()
+            self.bot.add_view(view1)
+            self.bot.add_view(view2)
+            self.bot.add_view(view3)
+            self.persistent_views_added = True
 
 
 def setup(bot):
