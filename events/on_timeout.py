@@ -44,7 +44,16 @@ class onTimeout(commands.Cog):
         elif before.activity.type != after.activity.type:
             pass
 
+        elif before.activity.type is None and after.activity.type is None:
+            pass
+
         elif before.activity.name != after.activity.name:
+            pass
+
+        elif before.status.value != after.status.value:
+            pass
+
+        elif before.status.name != after.status.name:
             pass
 
         elif before.timeout:
@@ -104,6 +113,9 @@ class onTimeout(commands.Cog):
                 await log_channel.send(
                     embed=time_embed
                 )
+
+        else:
+            pass
 
 
 def setup(bot):
