@@ -8,8 +8,8 @@ class About(commands.Cog):
         bot
     ):
         self.bot = bot
-        self.author = "LookAtYourSkill#8691"
-        self.version = 1.14
+        self.author = "LookAtYourSkill#0001"
+        self.version = 1.56
         self.prefix = "/"
 
     @commands.slash_command(
@@ -37,7 +37,8 @@ class About(commands.Cog):
             name=self.author
         )
         await interaction.response.send_message(
-            embed=about_embed
+            embed=about_embed,
+            ephemeral=True
         )
 
 
