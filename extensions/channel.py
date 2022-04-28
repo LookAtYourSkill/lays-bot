@@ -51,7 +51,7 @@ class hide_component(disnake.ui.View):
         label="Channel Hidden",
         style=disnake.ButtonStyle.grey
     )
-    async def close_channel(
+    async def hide_channel(
         self,
         button: disnake.ui.Button,
         interaction: disnake.MessageInteraction
@@ -66,8 +66,8 @@ class Channel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="close")
-    async def close(
+    @commands.slash_command(name="close_channel")
+    async def close_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
@@ -92,8 +92,8 @@ class Channel(commands.Cog):
                 ephemeral=True
             )
 
-    @commands.slash_command(name="hide")
-    async def hide(
+    @commands.slash_command(name="hide_channel")
+    async def hide_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
@@ -118,8 +118,8 @@ class Channel(commands.Cog):
                 ephemeral=True
             )
 
-    @commands.slash_command(name="open")
-    async def open(
+    @commands.slash_command(name="open_channel")
+    async def open_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
