@@ -13,6 +13,7 @@ bot = commands.Bot(
     sync_commands=True,
     sync_commands_debug=True
 )
+bot.remove_command("help")
 
 
 @bot.event

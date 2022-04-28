@@ -280,7 +280,7 @@ class Setup(commands.Cog):
             )
 
     @categories.sub_command(
-        name="cloed_ticket_category",
+        name="closed_ticket_category",
         description="Sets the closed ticket category"
     )
     async def set_closed_ticket_category(
