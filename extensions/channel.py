@@ -66,7 +66,11 @@ class Channel(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="close_channel")
+    @commands.slash_command(
+        name="close_channel",
+        description="Closes the channel"
+    )
+    @commands.has_permissions(manage_channels=True)
     async def close_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction
@@ -92,7 +96,11 @@ class Channel(commands.Cog):
                 ephemeral=True
             )
 
-    @commands.slash_command(name="hide_channel")
+    @commands.slash_command(
+        name="hide_channel",
+        description="Hides the channel"
+    )
+    @commands.has_permissions(manage_channels=True)
     async def hide_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction
@@ -118,7 +126,10 @@ class Channel(commands.Cog):
                 ephemeral=True
             )
 
-    @commands.slash_command(name="open_channel")
+    @commands.slash_command(
+        name="open_channel",
+        description="Opens the channel"
+    )
     async def open_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction
