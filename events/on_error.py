@@ -22,7 +22,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.send(
+            await interaction.response.send_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -36,7 +36,21 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.send(
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+        if isinstance(
+            error,
+            commands.CommandOnCooldown
+        ):
+            embed = disnake.Embed(
+                description=f"Der Befehl ist noch {round(error.retry_after)} gesperrt!",
+                color=disnake.Color.red()
+            )
+
+            await interaction.response.send_message(
                 embed=embed,
                 ephemeral=True
             )
