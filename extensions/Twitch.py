@@ -3,6 +3,8 @@ from disnake.ext import commands
 from textwrap import dedent
 import json
 from utils.twitch import get_streams, get_users
+from disnake.ext.tasks import loop
+
 
 class Twitch(commands.Cog):
     def __init__(self, bot):
@@ -95,6 +97,7 @@ class Twitch(commands.Cog):
     @commands.slash_command(
         description="Checks the twitch stream watchlist from this server"
     )
+    @commands.cooldown(1, 3600, commands.BucketType.user)
     async def check(
         self,
         interaction: disnake.ApplicationCommandInteraction
@@ -150,6 +153,65 @@ class Twitch(commands.Cog):
                 f"{interaction.author.mention} Dein Stream Check. Es sind insgesamt **{len(streams)} Streamer Live!**",
                 embed=embed
             )
+
+    @commands.slash_command(
+        name="list",
+        description="Lists all streamers from your watchlist"
+    )
+    @commands.cooldown(1, 3600, commands.BucketType.user)
+    async def list(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        loading_embed = disnake.Embed(
+            description="Lade Antwort...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        with open("json/guild.json", "r", encoding="UTF-8") as file:
+            data = json.load(file)
+
+        if data[str(interaction.guild.id)]["watchlist"]:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} the watchlist from {interaction.guild.name}",
+                color=disnake.Color.blurple()
+            )
+            streamer_list = []
+            for streamer in data[str(interaction.guild.id)]["watchlist"]:
+                streamer_list.append(streamer)
+
+            embed.add_field(
+                name="__Streamer__",
+                value="\n".join(streamer_list),
+                inline=False
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+        else:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention}",
+                color=disnake.Color.red()
+            )
+            embed.add_field(
+                name="__Watchlist is empty!__",
+                value="There wasnt added a streamer to the watchlist till now!",
+                inline=False
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+    @loop(seconds=90)
+    async def check_streams(self):
+        with open("json/guild.json", "r", encoding="UTF-8") as file:
+            guild_data = json.load(file)
+
+        pass
 
 
 def setup(bot):
