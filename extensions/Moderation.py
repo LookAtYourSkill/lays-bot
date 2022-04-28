@@ -129,10 +129,10 @@ class Moderation(commands.Cog):
                 ephemeral=True
             )
 
-    @commands.slash_command()
+    @commands.slash_command(invoke_without_command=True)
     async def clear(
         self,
-        interaction: disnake.CommandInteraction
+        interaction: disnake.ApplicationCommandInteraction
     ):
         pass
 
@@ -167,6 +167,7 @@ class Moderation(commands.Cog):
                 embed=purge_embed,
                 ephemeral=True
             )
+
     @clear.sub_command()
     async def pinned(
         self,
