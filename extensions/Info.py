@@ -6,9 +6,16 @@ class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="info", description="Give information about a user")
+    @commands.slash_command(
+        name="info",
+        description="Give information about a user"
+    )
     @commands.guild_only()
-    async def user_info(self, inter: disnake.ApplicationCommandInteraction, user: disnake.User):
+    async def user_info(
+        self,
+        inter: disnake.ApplicationCommandInteraction,
+        user: disnake.User
+    ):
         members = sorted(inter.guild.members, key=lambda m: m.joined_at)
 
         if not user:
@@ -53,9 +60,15 @@ class Info(commands.Cog):
             ephemeral=True
         )
 
-    @commands.slash_command(name="server", description="Give information about the server")
+    @commands.slash_command(
+        name="server",
+        description="Give information about the server"
+    )
     @commands.guild_only()
-    async def server_info(self, inter: disnake.ApplicationCommandInteraction):
+    async def server_info(
+        self,
+        inter: disnake.ApplicationCommandInteraction
+    ):
         server_embed = disnake.Embed(
             description=f"```Informationen über {inter.guild.name}```",
             color=disnake.Color.orange()

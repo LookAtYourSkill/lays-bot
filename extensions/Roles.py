@@ -54,6 +54,16 @@ class Roles(commands.Cog):
                 ephemeral=True
             )
 
+        else:
+            top_role_under_role_embed = disnake.Embed(
+                description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest",
+                color=disnake.Color.red()
+            )
+            await interaction.response.send_message(
+                embed=top_role_under_role_embed,
+                ephemeral=True
+            )
+
 
 def setup(bot):
     bot.add_cog(Roles(bot))
