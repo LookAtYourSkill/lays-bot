@@ -9,7 +9,7 @@ class About(commands.Cog):
     ):
         self.bot = bot
         self.author = "LookAtYourSkill#0001"
-        self.version = 1.56
+        self.version = 1.6
         self.prefix = "/"
 
     @commands.slash_command(
