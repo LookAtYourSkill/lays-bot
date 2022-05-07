@@ -9,6 +9,7 @@ from disnake.ext.tasks import loop
 class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.check_streams.start()
 
     @commands.slash_command(
         description="Adds a streamer to your watchlist"
@@ -210,8 +211,52 @@ class Twitch(commands.Cog):
     async def check_streams(self):
         with open("json/guild.json", "r", encoding="UTF-8") as file:
             guild_data = json.load(file)
+        with open("json/watchlist.json", "r", encoding="UTF-8") as file:
+            watchlist_data = json.load(file)
 
-        pass
+        print("[1] Checking streams...")
+
+        for guild in guild_data.values():
+            print("[2] Going through guilds...")
+            users = get_users(watchlist_data["overall_watchlist"])
+            streams = get_streams(users)
+
+            if streams:
+                print("[3] Check for streams...")
+                for stream in streams.values():
+                    print(f"[!] {stream['user_name']} is live!")
+                    print("[4] Going through values...")
+                    if stream["user_name"] not in guild["watchlist"]:
+                        print("[5] No stream found...")
+                        return
+                    else:
+                        if stream["user_name"] in guild["watchlist"]:
+                            print("[5] Stream found")
+                            notify_channel = self.bot.get_channel(guild["notify_channel"])
+
+                            embed = disnake.Embed(
+                                title="Watchlist Notification :alarm_clock:",
+                                description=f"{stream['title']}\n"
+                                            f"{stream['user_name']} is streaming for {stream['viewer_count']} viewers\n",
+                                color=disnake.Color.purple(),
+                                url=f"https://www.twitch.tv/{stream['user_login']}"
+                            )
+                            embed.set_author(
+                                name="Twitch Notification",
+                                icon_url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png",
+                            )
+                            embed.set_image(
+                                url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
+                            )
+                            print("[6] Sending message...")
+                            await notify_channel.send_message(
+                                embed=embed
+                            )
+                        else:
+                            return
+            else:
+                print("[3] No streams found...")
+                return
 
 
 def setup(bot):
