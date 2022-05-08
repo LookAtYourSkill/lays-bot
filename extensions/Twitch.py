@@ -213,8 +213,11 @@ class Twitch(commands.Cog):
 
     @loop(seconds=90)
     async def check_streams(self):
+        await self.bot.wait_until_ready()
+
+        # load json files and setup local variables
         online_users = []
-        # load json files
+
         with open("json/watchlist.json", "r", encoding="UTF-8") as file:
             watchlist_data = json.load(file)
 
@@ -239,6 +242,7 @@ class Twitch(commands.Cog):
                         # check if streamer is in not in watchlist, and if so, break and do nothing
                         if stream["user_login"] not in i['watchlist']:
                             print("[5] No stream found for guild...")
+                            print()
                             break
                         else:
                             # check if streamer is in watchlist and if so, create embed and send it to channel
@@ -295,10 +299,12 @@ class Twitch(commands.Cog):
                                     else:
                                         # if anything else happend, do nothing
                                         print("[5] Already in list")
+                                        print()
                                         break
                 else:
                     # if no streamer is live, do nothing
                     print("[3] No streams found...")
+                    print()
                     break
 
 
