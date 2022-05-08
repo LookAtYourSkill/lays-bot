@@ -19,6 +19,15 @@ class About(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        loading_embed = disnake.Embed(
+            description="Fetching information about the bot...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         about_embed = disnake.Embed(
             color=interaction.author.color
         )
@@ -36,9 +45,8 @@ class About(commands.Cog):
         about_embed.set_author(
             name=self.author
         )
-        await interaction.response.send_message(
-            embed=about_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=about_embed
         )
 
 
