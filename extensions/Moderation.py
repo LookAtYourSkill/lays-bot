@@ -23,6 +23,15 @@ class Moderation(commands.Cog):
         reason=None,
         delete_message_days: int = None
     ):
+        loading_embed = disnake.Embed(
+            description="Preparing to ban the member...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         try:
             await interaction.guild.ban(
                 user=user,
@@ -33,14 +42,12 @@ class Moderation(commands.Cog):
                 description=f"Der User `{user}` [`{user.id}`] wurde wegen `{reason}` erfolgreich von `{interaction.author}` **gebannt**! Die Nachrichten von `{delete_message_days} Tag/en` wurden **gelöscht**.",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=ban_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=ban_embed
             )
         except disnake.errors.Forbidden:
-            await interaction.response.send_message(
-                "Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!",
-                ephemeral=True
+            await interaction.edit_original_message(
+                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
             )
 
     @commands.slash_command(
@@ -55,6 +62,14 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         user
     ):
+        loading_embed = disnake.Embed(
+            description="Preparing to unban the member...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
         if not user.isdigit():
             banned_users = await interaction.guild.bans()
             member_name, member_discriminator = user.split("#")
@@ -68,14 +83,12 @@ class Moderation(commands.Cog):
                             description=f"Der User `{user}` [`{user.id}`] wurde von `{interaction.author}` entbannt.",
                             color=disnake.Color.green()
                         )
-                        await interaction.response.send_message(
-                            embed=unban_embed,
-                            ephemeral=True
+                        await interaction.edit_original_message(
+                            embed=unban_embed
                         )
                     except disnake.errors.Forbidden:
-                        await interaction.response.send_message(
-                            "Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!",
-                            ephemeral=True
+                        await interaction.edit_original_message(
+                            content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
                         )
 
         elif user.isdigit():
@@ -87,14 +100,12 @@ class Moderation(commands.Cog):
                     description=f"Der User `{user_id}` [`{user}`] wurde von `{interaction.author}` entbannt.",
                     color=disnake.Color.green()
                 )
-                await interaction.response.send_message(
-                    embed=unban_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=unban_embed
                 )
             except disnake.errors.Forbidden:
-                await interaction.response.send_message(
-                    "Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!",
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
                 )
 
 
@@ -109,6 +120,15 @@ class Moderation(commands.Cog):
         time: str,
         reason=str
     ):
+        loading_embed = disnake.Embed(
+            description="Preparing to timeout the member...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         time = humanfriendly.parse_timespan(time)
         try:
             await member.timeout(
@@ -119,14 +139,12 @@ class Moderation(commands.Cog):
                 description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] für `{humanize.precisedelta(time)}` getimed!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=timeout_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=timeout_embed
             )
         except disnake.errors.Forbidden:
-            await interaction.response.send_message(
-                "Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!",
-                ephemeral=True
+            await interaction.edit_original_message(
+                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
             )
 
     @commands.slash_command(invoke_without_command=True)
@@ -142,6 +160,15 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        loading_embed = disnake.Embed(
+            description=f"Deleting {amount} embeds...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         check = lambda msg: msg.embeds
 
         await interaction.channel.purge(
@@ -154,18 +181,16 @@ class Moderation(commands.Cog):
                 description="Es wurde `1 Embed` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=purge_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=purge_embed
             )
         else:
             purge_embed = disnake.Embed(
                 description=f"Es wurden `{amount} Embeds` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=purge_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=purge_embed
             )
 
     @clear.sub_command()
@@ -174,6 +199,15 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        loading_embed = disnake.Embed(
+            description=f"Deleting {amount} pinned messages...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         check = lambda msg: msg.pinned and not msg.embeds
 
         await interaction.channel.purge(
@@ -186,7 +220,7 @@ class Moderation(commands.Cog):
                 description="Es wurde `1 gepinnte Nachricht` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=purge_embed,
                 ephemeral=True
             )
@@ -195,7 +229,7 @@ class Moderation(commands.Cog):
                 description=f"Es wurden `{amount} gepinnte Nachrichten` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=purge_embed,
                 ephemeral=True
             )
@@ -206,6 +240,15 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        loading_embed = disnake.Embed(
+            description=f"Deleting {amount} messages...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         check = lambda msg: not msg.pinned and not msg.embeds
 
         await interaction.channel.purge(
@@ -219,18 +262,16 @@ class Moderation(commands.Cog):
                 description="Es wurde `1 Nachricht` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=purge_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=purge_embed
             )
         else:
             purge_embed = disnake.Embed(
                 description=f"Es wurden `{amount} Nachrichten` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=purge_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=purge_embed
             )
 
     @clear.sub_command()
@@ -239,6 +280,15 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        loading_embed = disnake.Embed(
+            description=f"Deleting {amount} images...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         check = lambda msg: not msg.pinned and msg.attachments
 
         await interaction.channel.purge(
@@ -251,18 +301,16 @@ class Moderation(commands.Cog):
                 description="Es wurde `1 Bild` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=purge_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=purge_embed
             )
         else:
             purge_embed = disnake.Embed(
                 description=f"Es wurden `{amount} Bilder` erfolgreich gelöscht!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=purge_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=purge_embed
             )
 
 

@@ -16,6 +16,15 @@ class Info(commands.Cog):
         inter: disnake.ApplicationCommandInteraction,
         user: disnake.User
     ):
+        loading_embed = disnake.Embed(
+            description="Fetching information about the user...",
+            color=disnake.Color.green()
+        )
+        await inter.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         members = sorted(inter.guild.members, key=lambda m: m.joined_at)
 
         if not user:
@@ -55,9 +64,8 @@ class Info(commands.Cog):
                   f"`»`Booster: `{('Ja' if user.premium_since else 'Nein')}`",
             inline=False
         )
-        await inter.response.send_message(
-            embed=info_embed,
-            ephemeral=True
+        await inter.edit_original_message(
+            embed=info_embed
         )
 
     @commands.slash_command(
@@ -69,6 +77,15 @@ class Info(commands.Cog):
         self,
         inter: disnake.ApplicationCommandInteraction
     ):
+        loading_embed = disnake.Embed(
+            description="Fetching information about the server...",
+            color=disnake.Color.green()
+        )
+        await inter.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         server_embed = disnake.Embed(
             description=f"```Informationen über {inter.guild.name}```",
             color=disnake.Color.orange()
@@ -98,9 +115,8 @@ class Info(commands.Cog):
                   f"`»` Kategorien: `{len(inter.guild.categories)}`",
             inline=False
         )
-        await inter.response.send_message(
-            embed=server_embed,
-            ephemeral=False
+        await inter.edit_original_message(
+            embed=server_embed
         )
 
 
