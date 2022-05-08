@@ -22,6 +22,16 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer
     ):
+
+        loading_embed = disnake.Embed(
+            description="Füge Streamer zur Watchlist hinzu...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         try:
             with open("json/guild.json", "r", encoding="UTF-8") as file:
                 data = json.load(file)
@@ -33,9 +43,8 @@ class Twitch(commands.Cog):
                     description=f"Der Streamer [`{streamer}`] **ist bereits** in der **Watchlist**!",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=alreday_streamer_error_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=alreday_streamer_error_embed
                 )
             elif streamer not in data[str(interaction.guild.id)]["watchlist"]:
                 data[str(interaction.guild.id)]["watchlist"].append(streamer.lower())
@@ -50,9 +59,8 @@ class Twitch(commands.Cog):
                     description=f"Der Streamer [`{streamer}`] wurde zur Watchlist **hinzugefügt**!",
                     color=disnake.Color.blurple()
                 )
-                await interaction.response.send_message(
-                    embed=add_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=add_embed
                 )
         except ValueError:
             pass
@@ -68,6 +76,16 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer
     ):
+
+        loading_embed = disnake.Embed(
+            description="Entferne Steramer von Watchlist...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         try:
             with open("json/guild.json", "r", encoding="UTF-8") as file:
                 data = json.load(file)
@@ -90,9 +108,8 @@ class Twitch(commands.Cog):
                     description=f"Der Streamer [`{streamer}`] wurde aus der Watchlist **entfernt**!",
                     color=disnake.Color.blurple()
                 )
-                await interaction.response.send_message(
-                    embed=remove_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=remove_embed
                 )
         except ValueError:
             pass
@@ -105,6 +122,16 @@ class Twitch(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+
+        loading_embed = disnake.Embed(
+            description="Erhalte Daten von Twitch...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
         with open("json/guild.json", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -147,13 +174,13 @@ class Twitch(commands.Cog):
             )
 
         if len(streams) == 1:
-            await interaction.response.send_message(
-                f"{interaction.author.mention} Dein Stream Check. Es ist **1 Streamer Live!**",
+            await interaction.edit_original_message(
+                content=f"{interaction.author.mention} Dein Stream Check. Es ist **1 Streamer Live!**",
                 embed=embed
             )
         else:
-            await interaction.response.send_message(
-                f"{interaction.author.mention} Dein Stream Check. Es sind insgesamt **{len(streams)} Streamer Live!**",
+            await interaction.edit_original_message(
+                content=f"{interaction.author.mention} Dein Stream Check. Es sind insgesamt **{len(streams)} Streamer Live!**",
                 embed=embed
             )
 
@@ -264,34 +291,38 @@ class Twitch(commands.Cog):
                                             print("[5] Stream found")
                                             notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
-                                            embed = disnake.Embed(
-                                                title=f"{stream['title']}",
-                                                color=disnake.Color.purple(),
-                                                url=f"https://www.twitch.tv/{stream['user_login']}"
-                                            )
-                                            embed.add_field(
-                                                name="Game",
-                                                value=f"`{stream['game_name']}`",
-                                                inline=True
-                                            )
-                                            embed.add_field(
-                                                name="Viewer",
-                                                value=f"`{stream['viewer_count']}`",
-                                                inline=True
-                                            )
-                                            embed.set_author(
-                                                name="Notification",
-                                                icon_url="https://www.google.com/url?sa=i&url=https%3A%2F%2Fmobile.twitter.com%2Ftwitchsupport&psig=AOvVaw3lBKonaxjmC9OVaff2Y67k&ust=1652057565274000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCNDrtZTYzvcCFQAAAAAdAAAAABAI",
-                                            )
-                                            embed.set_image(
-                                                url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
-                                            )
+                                            if notify_channel:
 
-                                            # send embed to channel
-                                            print("[6] Sending message...")
-                                            await notify_channel.send(
-                                                embed=embed
-                                            )
+                                                embed = disnake.Embed(
+                                                    title=f"{stream['title']}",
+                                                    color=disnake.Color.purple(),
+                                                    url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                )
+                                                embed.add_field(
+                                                    name="Game",
+                                                    value=f"`{stream['game_name']}`",
+                                                    inline=True
+                                                )
+                                                embed.add_field(
+                                                    name="Viewer",
+                                                    value=f"`{stream['viewer_count']}`",
+                                                    inline=True
+                                                )
+                                                embed.set_author(
+                                                    name="Notification",
+                                                    icon_url="https://www.google.com/url?sa=i&url=https%3A%2F%2Fmobile.twitter.com%2Ftwitchsupport&psig=AOvVaw3lBKonaxjmC9OVaff2Y67k&ust=1652057565274000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCNDrtZTYzvcCFQAAAAAdAAAAABAI",
+                                                )
+                                                embed.set_image(
+                                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
+                                                )
+
+                                                # send embed to channel
+                                                print("[6] Sending message...")
+                                                await notify_channel.send(
+                                                    embed=embed
+                                                )
+                                            else:
+                                                print("[6] No channel found...")
                                         else:
                                             # if anything else happend, do nothing
                                             print("[5] Time from streamer is too high")
