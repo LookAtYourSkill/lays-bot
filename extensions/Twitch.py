@@ -257,28 +257,30 @@ class Twitch(commands.Cog):
             for i in json.load(file).values():
 
                 print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
-                print(f"{colorama.Fore.YELLOW} {i['watchlist']} {colorama.Fore.RESET}")
-                print(f"{colorama.Fore.GREEN} [2] Going through guilds... {colorama.Fore.RESET}")
+                print(f"{colorama.Fore.MAGENTA} {i['watchlist']} {colorama.Fore.RESET}")
+                print(f"{colorama.Fore.BLUE} [PENDING] [2] Going through guilds... {colorama.Fore.RESET}")
+
                 # get all streamers from watchlist
                 users = get_users(watchlist_data["overall_watchlist"])
                 streams = get_streams(users)
 
                 # check if any streamer of the watchlist is live
                 if streams:
-                    print(f"{colorama.Fore.GREEN} [3] Check for streams... {colorama.Fore.RESET}")
+                    print(f"{colorama.Fore.BLUE} [PENDING] [3] Check for streams... {colorama.Fore.RESET}")
 
+                    # for logging purposes
                     # !! print('---------------------------------------------------------------------------------')
                     # !! print(f"Online User List: {online_users}")
                     # !! print('---------------------------------------------------------------------------------')
 
                     # go through all streams
                     for stream in streams.values():
-                        print(f"{colorama.Fore.LIGHTYELLOW_EX} [!] {stream['user_login']} is live! {colorama.Fore.RESET}")
-                        print(f"{colorama.Fore.BLUE} [4] Check if stream is in watchlist... {colorama.Fore.RESET}")
+                        print(f"{colorama.Fore.LIGHTYELLOW_EX} [DATA] [!] {stream['user_login']} is live! {colorama.Fore.RESET}")
+                        print(f"{colorama.Fore.BLUE} [PENDING] [4] Check if streamer is in watchlist... , '{stream['user_login']}' {colorama.Fore.RESET}")
 
                         # check if streamer is in not in watchlist, and if so, break and do nothing
                         if stream["user_login"] not in i['watchlist']:
-                            print(f"{colorama.Fore.LIGHTRED_EX} [5] Streamer not in watchlist... {colorama.Fore.RESET}")
+                            print(f"{colorama.Fore.LIGHTRED_EX} [ERROR] [5] Streamer not in watchlist... , '{stream['user_login']}' {colorama.Fore.RESET}")
                             # print()
                         else:
                             # check if streamer is in watchlist and if so, create embed and send it to channel
@@ -286,8 +288,10 @@ class Twitch(commands.Cog):
 
                                 notification = []
                                 for user_name in watchlist_data["overall_watchlist"]:
-                                    print(stream["user_login"])
-                                    print(user_name)
+
+                                    # for logging purposes
+                                    # ! print(stream["user_login"])
+                                    # ! print(user_name)
 
                                     # check if streamer is in streams and in local variable
                                     if user_name in streams:  # ! and user_name not in online_users:
@@ -295,16 +299,16 @@ class Twitch(commands.Cog):
                                         giga_time = datetime.strptime(streams[user_name]['started_at'], "%Y-%m-%dT%H:%M:%SZ")
                                         # convert time aswell to readable format
                                         started_at = time.mktime(giga_time.timetuple()) + giga_time.microsecond / 1E6
-                                        # check if time is in the past
+                                        # check if username is the streamer, which get asked for
                                         print(f"{colorama.Fore.LIGHTGREEN_EX} [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
-                                        if time.time() - started_at < 7380:
-                                            # check if username is the streamer, which get asked for
-                                            if user_name == stream["user_login"]:
+                                        if user_name == stream["user_login"]:
+                                            # check if stream is too long in past
+                                            if time.time() - started_at < 7300:
                                                 # if so append streamer to list, so its not sent again
                                                 notification.append(streams[user_name])
                                                 online_users.append(user_name)
 
-                                                print(f"{colorama.Fore.GREEN} [5] Stream found {colorama.Fore.RESET}")
+                                                print(f"{colorama.Fore.GREEN} [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
                                                 notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
                                                 if notify_channel:
@@ -338,24 +342,25 @@ class Twitch(commands.Cog):
                                                     )
 
                                                     # send embed to channel
-                                                    print(f"{colorama.Fore.GREEN} [6] Sending message... {colorama.Fore.RESET}")
-                                                    # print()
+                                                    print(f"{colorama.Fore.GREEN} [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
+                                                    # ! print()
                                                     await notify_channel.send(
                                                         embed=embed
                                                     )
                                                 else:
-                                                    print(f"{colorama.Fore.RED} [7] No channel found... {colorama.Fore.RESET}")
+                                                    # if there's not a channel, do nothing
+                                                    print(f"{colorama.Fore.RED} [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
                                             else:
-                                                print(f"{colorama.Fore.RED} [6] Wrong name... {colorama.Fore.RESET}")
+                                                # if stream is too long inthe past, do nothing
+                                                print(f"{colorama.Fore.RED} [ERROR] [6] Timeout: Stream started too long ago... , '{user_name}' {colorama.Fore.RESET}")
                                         else:
-                                            print(f"{colorama.Fore.RED} [6] Timeout: Stream started too long ago... {colorama.Fore.RESET}")
+                                            print(f"{colorama.Fore.RED} [ERROR] [6] Wrong streamer name... , '{user_name}' {colorama.Fore.RESET}")
                                             # if anything else happend, do nothing
                                     else:
-                                        print(f"{colorama.Fore.RED} [5] Not in streams {colorama.Fore.RESET}")
+                                        print(f"{colorama.Fore.RED} [ERROR] [5] Not in streams... , '{user_name}' {colorama.Fore.RESET}")
                 else:
                     # if no streamer is live, do nothing
-                    # print("[3] No streams found...")
-                    break
+                    print(f"{colorama.Fore.RED} [ERROR] [3] No streams found... 'GENERAL ERROR' {colorama.Fore.RESET}")
 
 
 def setup(bot):
