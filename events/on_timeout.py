@@ -16,50 +16,50 @@ class onTimeout(commands.Cog):
 
         log_channel = self.bot.get_channel(guild[str(before.guild.id)]["mod_channel"])
 
-        old_roles = " ".join([role.mention for role in before.roles])
+        # old_roles = " ".join([role.mention for role in before.roles])
 
-        new_roles = " ".join([role.mention for role in after.roles])
+        # new_roles = " ".join([role.mention for role in after.roles])
 
-        if str(before.status).upper() != str(after.status).upper():
-            pass
+        # if str(before.status).upper() != str(after.status).upper():
+            # pass
 
-        elif before.display_name != after.display_name:
-            pass
+        # elif before.display_name != after.display_name:
+            # pass
 
-        elif old_roles != new_roles:
-            pass
+        # elif old_roles != new_roles:
+            # pass
 
-        elif before.activity != after.activity:
-            pass
+        # elif before.activity != after.activity:
+            # pass
 
-        elif before.activities != after.activities:
-            pass
+        # elif before.activities != after.activities:
+            # pass
 
-        elif before.status != after.status:
-            pass
+        # elif before.status != after.status:
+            # pass
 
-        elif before.nick != after.nick:
-            pass
+        # elif before.nick != after.nick:
+            # pass
 
-        elif before.activity.type != after.activity.type:
-            pass
+        # elif before.activity.type != after.activity.type:
+            # pass
 
-        elif before.activity.type is None and after.activity.type is None:
-            pass
+        # elif before.activity.type is None and after.activity.type is None:
+            # pass
 
-        elif before.activity.name != after.activity.name:
-            pass
+        # elif before.activity.name != after.activity.name:
+            # pass
 
-        elif before.status.value != after.status.value:
-            pass
+        # elif before.status.value != after.status.value:
+            # pass
 
-        elif before.status.name != after.status.name:
-            pass
+        # elif before.status.name != after.status.name:
+            # pass
 
-        elif before.voice != after.voice:
-            pass
+        # elif before.voice != after.voice:
+            # pass
 
-        elif before.timeout:
+        if before.timeout:
             # print(before.current_timeout)
             # print("#######################")
             # print(after.current_timeout)
