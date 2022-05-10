@@ -52,9 +52,14 @@ class Twitch(commands.Cog):
                 with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
                     json.dump(data, dump_file, indent=4)
 
-                data2["overall_watchlist"].append(streamer.lower())
-                with open("json/watchlist.json", "w", encoding="UTF-8") as dump_file2:
-                    json.dump(data2, dump_file2, indent=4)
+                if streamer in data2["overall_watchlist"]:
+                    pass
+
+                else:
+                    data2["overall_watchlist"].append(streamer.lower())
+
+                    with open("json/watchlist.json", "w", encoding="UTF-8") as dump_file2:
+                        json.dump(data2, dump_file2, indent=4)
 
                 add_embed = disnake.Embed(
                     description=f"Der Streamer [`{streamer}`] wurde zur Watchlist **hinzugefügt**!",
@@ -251,7 +256,7 @@ class Twitch(commands.Cog):
         with open("json/guild.json", "r", encoding="UTF-8") as file:
             for i in json.load(file).values():
 
-                print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} {i['notify_channel']} {colorama.Fore.RESET}")
+                print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
                 print(f"{colorama.Fore.YELLOW} {i['watchlist']} {colorama.Fore.RESET}")
                 print(f"{colorama.Fore.GREEN} [2] Going through guilds... {colorama.Fore.RESET}")
                 # get all streamers from watchlist
@@ -262,14 +267,18 @@ class Twitch(commands.Cog):
                 if streams:
                     print(f"{colorama.Fore.GREEN} [3] Check for streams... {colorama.Fore.RESET}")
 
+                    # !! print('---------------------------------------------------------------------------------')
+                    # !! print(f"Online User List: {online_users}")
+                    # !! print('---------------------------------------------------------------------------------')
+
                     # go through all streams
                     for stream in streams.values():
-                        print(f"{colorama.Fore.BLACK} [!] {stream['user_name']} is live! {colorama.Fore.RESET}")
+                        print(f"{colorama.Fore.LIGHTYELLOW_EX} [!] {stream['user_login']} is live! {colorama.Fore.RESET}")
                         print(f"{colorama.Fore.BLUE} [4] Check if stream is in watchlist... {colorama.Fore.RESET}")
 
                         # check if streamer is in not in watchlist, and if so, break and do nothing
                         if stream["user_login"] not in i['watchlist']:
-                            print(f"{colorama.Fore.LIGHTRED_EX} [5] Stream not in watchlist... {colorama.Fore.RESET}")
+                            print(f"{colorama.Fore.LIGHTRED_EX} [5] Streamer not in watchlist... {colorama.Fore.RESET}")
                             # print()
                         else:
                             # check if streamer is in watchlist and if so, create embed and send it to channel
@@ -277,70 +286,72 @@ class Twitch(commands.Cog):
 
                                 notification = []
                                 for user_name in watchlist_data["overall_watchlist"]:
+                                    print(stream["user_login"])
+                                    print(user_name)
 
                                     # check if streamer is in streams and in local variable
-                                    if user_name in streams and user_name not in online_users:
+                                    if user_name in streams:  # ! and user_name not in online_users:
                                         # convert time to readable format
                                         giga_time = datetime.strptime(streams[user_name]['started_at'], "%Y-%m-%dT%H:%M:%SZ")
                                         # convert time aswell to readable format
                                         started_at = time.mktime(giga_time.timetuple()) + giga_time.microsecond / 1E6
                                         # check if time is in the past
-                                        print(time.time() - started_at, user_name)
-                                        if time.time() - started_at < 7400:
-                                            # if so append streamer to list, so its not sent again
-                                            notification.append(streams[user_name])
-                                            online_users.append(user_name)
+                                        print(f"{colorama.Fore.LIGHTGREEN_EX} [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
+                                        if time.time() - started_at < 7380:
+                                            # check if username is the streamer, which get asked for
+                                            if user_name == stream["user_login"]:
+                                                # if so append streamer to list, so its not sent again
+                                                notification.append(streams[user_name])
+                                                online_users.append(user_name)
 
-                                            print("[5] Stream found")
-                                            notify_channel = await self.bot.fetch_channel(i["notify_channel"])
+                                                print(f"{colorama.Fore.GREEN} [5] Stream found {colorama.Fore.RESET}")
+                                                notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
-                                            if notify_channel:
+                                                if notify_channel:
 
-                                                embed = disnake.Embed(
-                                                    title=f"{stream['title']}",
-                                                    color=disnake.Color.purple(),
-                                                    url=f"https://www.twitch.tv/{stream['user_login']}"
-                                                )
-                                                embed.add_field(
-                                                    name="Streamer",
-                                                    value=f"`{stream['user_name']}`",
-                                                    inline=True
-                                                )
-                                                embed.add_field(
-                                                    name="Game",
-                                                    value=f"`{stream['game_name']}`",
-                                                    inline=True
-                                                )
-                                                embed.add_field(
-                                                    name="Viewer",
-                                                    value=f"`{stream['viewer_count']}`",
-                                                    inline=True
-                                                )
-                                                embed.set_author(
-                                                    name="Twitch Notification",
-                                                    icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
-                                                )
-                                                embed.set_image(
-                                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
-                                                )
+                                                    embed = disnake.Embed(
+                                                        title=f"{stream['title']}",
+                                                        color=disnake.Color.purple(),
+                                                        url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                    )
+                                                    embed.add_field(
+                                                        name="Streamer",
+                                                        value=f"`{stream['user_name']}`",
+                                                        inline=True
+                                                    )
+                                                    embed.add_field(
+                                                        name="Game",
+                                                        value=f"`{stream['game_name']}`",
+                                                        inline=True
+                                                    )
+                                                    embed.add_field(
+                                                        name="Viewer",
+                                                        value=f"`{stream['viewer_count']}`",
+                                                        inline=True
+                                                    )
+                                                    embed.set_author(
+                                                        name="Twitch Notification",
+                                                        icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                                                    )
+                                                    embed.set_image(
+                                                        url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
+                                                    )
 
-                                                # send embed to channel
-                                                print(f"{colorama.Fore.GREEN} [6] Sending message... {colorama.Fore.RESET}")
-                                                # print()
-                                                await notify_channel.send(
-                                                    embed=embed
-                                                )
+                                                    # send embed to channel
+                                                    print(f"{colorama.Fore.GREEN} [6] Sending message... {colorama.Fore.RESET}")
+                                                    # print()
+                                                    await notify_channel.send(
+                                                        embed=embed
+                                                    )
+                                                else:
+                                                    print(f"{colorama.Fore.RED} [7] No channel found... {colorama.Fore.RESET}")
                                             else:
-                                                print(f"{colorama.Fore.RED} [6] No channel found... {colorama.Fore.RESET}")
-                                                break
+                                                print(f"{colorama.Fore.RED} [6] Wrong name... {colorama.Fore.RESET}")
                                         else:
-                                            print(f"{colorama.Fore.RED} [6] Stream started too long ago... {colorama.Fore.RESET}")
+                                            print(f"{colorama.Fore.RED} [6] Timeout: Stream started too long ago... {colorama.Fore.RESET}")
                                             # if anything else happend, do nothing
-                                            break
                                     else:
-                                        # if time over datetime or is in list, do nothing
-                                        # print("[5] Already in list")
-                                        break
+                                        print(f"{colorama.Fore.RED} [5] Not in streams {colorama.Fore.RESET}")
                 else:
                     # if no streamer is live, do nothing
                     # print("[3] No streams found...")
