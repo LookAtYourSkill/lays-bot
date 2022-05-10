@@ -354,7 +354,7 @@ class Twitch(commands.Cog):
                                                 # if stream is too long inthe past, do nothing
                                                 print(f"{colorama.Fore.RED} [ERROR] [6] Timeout: Stream started too long ago... , '{user_name}' {colorama.Fore.RESET}")
                                         else:
-                                            print(f"{colorama.Fore.RED} [ERROR] [6] Wrong streamer name... , '{user_name}' {colorama.Fore.RESET}")
+                                            print(f"{colorama.Fore.RED} [ERROR] [6] Wrong streamer name... [given: '{user_name}' | needed: '{stream['user_login']}'] {colorama.Fore.RESET}")
                                             # if anything else happend, do nothing
                                     else:
                                         print(f"{colorama.Fore.RED} [ERROR] [5] Not in streams... , '{user_name}' {colorama.Fore.RESET}")
