@@ -56,6 +56,9 @@ class onTimeout(commands.Cog):
         elif before.status.name != after.status.name:
             pass
 
+        elif before.voice != after.voice:
+            pass
+
         elif before.timeout:
             # print(before.current_timeout)
             # print("#######################")
