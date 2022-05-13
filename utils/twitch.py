@@ -1,5 +1,6 @@
 import json
 import requests
+import colorama
 
 
 with open("json/watchlist.json", 'r', encoding='UTF-8') as data_file:
@@ -24,7 +25,10 @@ def get_users(login_names):
         params=params,
         headers=headers
     )
-    return {entry["login"]: entry["id"] for entry in response.json()["data"]}
+    if response.status_code == 200:
+        return {entry["login"]: entry["id"] for entry in response.json()["data"]}
+    else:
+        print(f"{colorama.Fore.RED} [ERROR] Failed to get users from Twitch API, possible new access token needed {colorama.Fore.RESET}")
 
 
 def get_streams(users):
@@ -41,4 +45,7 @@ def get_streams(users):
         params=params,
         headers=headers
     )
-    return {entry["user_login"]: entry for entry in response.json()["data"]}
+    if response.status_code == 200:
+        return {entry["user_login"]: entry for entry in response.json()["data"]}
+    else:
+        print(f"{colorama.Fore.RED} [ERROR] Failed to get streams from Twitch API, possible new access token needed {colorama.Fore.RESET}")
