@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import humanfriendly
 import datetime
+import asyncio
 import humanize
 
 
@@ -137,6 +138,47 @@ class Moderation(commands.Cog):
             )
             timeout_embed = disnake.Embed(
                 description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] für `{humanize.precisedelta(time)}` getimed!",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=timeout_embed
+            )
+
+            await asyncio.sleep(time)
+            await member.timeout(
+                until=disnake.utils.utcnow(),
+                reason="Timeout Expired"
+            )
+
+        except disnake.errors.Forbidden:
+            await interaction.edit_original_message(
+                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
+            )
+
+    @commands.slash_command(
+        name="untimeout",
+        description="Timeouts a user"
+    )
+    @commands.has_permissions(kick_members=True)
+    async def untime(
+        interaction: disnake.ApplicationCommandInteraction,
+        member: disnake.Member
+    ):
+        loading_embed = disnake.Embed(
+            description="Preparing to timeout the member...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        try:
+            await member.timeout(
+                until=disnake.utils.utcnow()
+            )
+            timeout_embed = disnake.Embed(
+                description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] entimed!",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
