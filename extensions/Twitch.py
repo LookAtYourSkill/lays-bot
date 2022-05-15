@@ -1,3 +1,4 @@
+from unittest import async_case
 import disnake
 from disnake.ext import commands
 from textwrap import dedent
@@ -361,6 +362,21 @@ class Twitch(commands.Cog):
                 else:
                     # if no streamer is live, do nothing
                     print(f"{colorama.Fore.RED} [ERROR] [3] No streams found... 'GENERAL ERROR' {colorama.Fore.RESET}")
+
+    @loop(seconds=300)
+    async def update(self):
+        # TODO create function, that updates the embed as long as the streamer is live
+        # TODO store the message in a json file, so it can be used later (for every streamer and server)
+        # ! EXAMPLE:
+        # streamer_name = {
+        #     guild_id: {
+        #         message_id: message_id
+        #     },
+        #     guild_id: {
+        #         message_id: message_id
+        #     }
+        # TODO what to update? - title, viewer count, game name, time
+        pass
 
 
 def setup(bot):
