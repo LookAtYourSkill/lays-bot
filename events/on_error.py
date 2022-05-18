@@ -55,6 +55,9 @@ class onError(commands.Cog):
                 ephemeral=True
             )
 
+        else:
+            print(error)
+
 
 def setup(bot):
     bot.add_cog(onError(bot))
