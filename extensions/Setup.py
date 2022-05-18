@@ -16,6 +16,58 @@ class Setup(commands.Cog):
     ):
         pass
 
+    @setup.sub_command(
+        name="check",
+        description="Gives back, what channels are set and which are not"
+    )
+    @commands.has_permissions(administrator=True)
+    async def setup_check(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        loading_embed = disnake.Embed(
+            description="Fetching data from server...",
+            color=disnake.Color.orange()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        check_embed = disnake.Embed(
+            title="Setup Check",
+            description="Here are the channels that are set up :white_check_mark:",
+            color=disnake.Color.green()
+        )
+        check_embed.add_field(
+            name="> Channels",
+            value=f"`Ticket Log`: <#{guild_data[str(interaction.author.guild.id)]['ticket_log_channel']}>\n"
+                  f"`Ticket Save`: <#{guild_data[str(interaction.author.guild.id)]['ticket_save_channel']}>\n"
+                  f"`Notification`: <#{guild_data[str(interaction.author.guild.id)]['notify_channel']}>\n"
+                  f"`Moderation`: <#{guild_data[str(interaction.author.guild.id)]['mod_channel']}>\n"
+                  f"`Message`: <#{guild_data[str(interaction.author.guild.id)]['msg_channel']}>\n"
+                  f"`Welcome`: <#{guild_data[str(interaction.author.guild.id)]['welcome_channel']}>",
+            inline=False
+        )
+        check_embed.add_field(
+            name="> Categories",
+            value=f"`Open Ticket`: <#{guild_data[str(interaction.author.guild.id)]['ticket_category']}>\n"
+                  f"`Closed Ticket`: <#{guild_data[str(interaction.author.guild.id)]['closed_ticket_category']}>",
+            inline=False
+        )
+        check_embed.add_field(
+            name="> Roles",
+            value=f"`Join`: <@&{guild_data[str(interaction.author.guild.id)]['join_role']}>",
+            inline=False
+        )
+
+        await interaction.edit_original_message(
+            embed=check_embed
+        )
+
     @setup.sub_command_group()
     async def channel(
         self,
