@@ -7,7 +7,7 @@ class onError(commands.Cog):
         self.bot = bot
 
     @commands.Cog.listener()
-    async def on_command_error(
+    async def on_slash_command_error(
         self,
         interaction: disnake.ApplicationCommandInteraction,
         error: commands.CommandError
@@ -18,7 +18,7 @@ class onError(commands.Cog):
             commands.BotMissingPermissions
         ):
             embed = disnake.Embed(
-                description="Um diesen Befehl auszuführen, fehlen ``mir die Berechtigungen``!",
+                description=f"Um diesen Befehl auszuführen, fehlen mir folgende Berechtigungen: `` {''.join(error.missing_permissions)}``!",
                 color=disnake.Color.red()
             )
 
@@ -32,7 +32,7 @@ class onError(commands.Cog):
             commands.MissingPermissions
         ):
             embed = disnake.Embed(
-                description="Um diesen Befehl auszuführen, fehlen ``dir die Berechtigungen``!",
+                description=f"Um diesen Befehl auszuführen, fehlen dir folgende Berechtigungen: ``{''.join(error.missing_permissions)}``!",
                 color=disnake.Color.red()
             )
 
