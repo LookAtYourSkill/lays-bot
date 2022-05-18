@@ -15,7 +15,7 @@ class on_guild(commands.Cog):
         on_join_embed = disnake.Embed(
             title="Successful invite!",
             description="You sccessfully invited me to your server!\n"
-                        "To set me perfectly up, use the `/setup` command!"
+                        "To set me perfectly up, use all of the `/setup` commands!"
         )
         await guild.owner.send(
             embed=on_join_embed
