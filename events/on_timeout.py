@@ -27,7 +27,9 @@ class onTimeout(commands.Cog):
             pass
 
         elif old_roles != new_roles:
-            pass
+            await log_channel.send(
+                f"{before.mention} got their roles updated to: `{''.join(new_roles)}`"
+            )
 
         elif before.activity != after.activity:
             pass
@@ -48,7 +50,6 @@ class onTimeout(commands.Cog):
                 pass
 
         if after.current_timeout:
-            print("SIUUU 1")
             async for author in before.guild.audit_logs(
                 limit=1,
                 action=disnake.AuditLogAction.member_update
@@ -77,31 +78,61 @@ class onTimeout(commands.Cog):
             )
 
         if not after.current_timeout:
-            print("SIUUU 2")
-            async for author in before.guild.audit_logs(
-                limit=1,
-                action=disnake.AuditLogAction.member_update
-            ):
-                punisher = author.user
+            if str(before.status).upper() != str(after.status).upper():
+                pass
 
-            untime_embed = disnake.Embed(
-                title="Timeout Log",
-                description=f"> **User:** {before.mention}'s timeout ended!\n"
-                            f"> **ID**: `{before.id}`\n"
-                            f"> **Untimed from:** {punisher.mention}",
-                timestamp=datetime.now(timezone.utc),
-                color=disnake.Color.green()
-            )
-            untime_embed.set_thumbnail(
-                url=before.avatar.url
-            )
-            untime_embed.set_footer(
-                text=punisher,
-                icon_url=punisher.avatar.url
-            )
-            await log_channel.send(
-                embed=untime_embed
-            )
+            elif before.display_name != after.display_name:
+                pass
+
+            elif old_roles != new_roles:
+                # await log_channel.send(
+                #     f"{before.mention} got their roles updated to: `{''.join(new_roles)}`"
+                # )
+                pass
+
+            elif before.activity != after.activity:
+                pass
+
+            elif before.activities != after.activities:
+                pass
+
+            elif before.status != after.status:
+                pass
+
+            elif before.nick != after.nick:
+                pass
+
+            elif before.voice != after.voice:
+                try:
+                    pass
+                except AttributeError:
+                    pass
+            else:
+                print("SIUUU 2")
+                async for author in before.guild.audit_logs(
+                    limit=1,
+                    action=disnake.AuditLogAction.member_update
+                ):
+                    punisher = author.user
+
+                untime_embed = disnake.Embed(
+                    title="Timeout Log",
+                    description=f"> **User:** {before.mention}'s timeout ended!\n"
+                                f"> **ID**: `{before.id}`\n"
+                                f"> **Untimed from:** {punisher.mention}",
+                    timestamp=datetime.now(timezone.utc),
+                    color=disnake.Color.green()
+                )
+                untime_embed.set_thumbnail(
+                    url=before.avatar.url
+                )
+                untime_embed.set_footer(
+                    text=punisher,
+                    icon_url=punisher.avatar.url
+                )
+                await log_channel.send(
+                    embed=untime_embed
+                )
 
         else:
             pass
