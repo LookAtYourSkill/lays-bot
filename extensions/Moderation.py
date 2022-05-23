@@ -146,7 +146,7 @@ class Moderation(commands.Cog):
 
             await asyncio.sleep(time)
             await member.timeout(
-                until=disnake.utils.utcnow(),
+                until=None,
                 reason="Timeout Expired"
             )
 
