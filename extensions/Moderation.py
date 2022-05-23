@@ -40,7 +40,7 @@ class Moderation(commands.Cog):
                 delete_message_days=1 if not delete_message_days else delete_message_days
             )
             ban_embed = disnake.Embed(
-                description=f"Der User `{user}` [`{user.id}`] wurde wegen `{reason}` erfolgreich von `{interaction.author}` **gebannt**! Die Nachrichten von `{delete_message_days} Tag/en` wurden **gelöscht**.",
+                description=f"Der User `{user}` [`{user.id}`] wurde wegen `{reason}` erfolgreich von `{interaction.author}` **gebannt**! Die Nachrichten von `{delete_message_days} Tag/en` wurden **gelöscht** ✅",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -48,7 +48,7 @@ class Moderation(commands.Cog):
             )
         except disnake.errors.Forbidden:
             await interaction.edit_original_message(
-                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
+                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
             )
 
     @commands.slash_command(
@@ -81,7 +81,7 @@ class Moderation(commands.Cog):
                         await interaction.guild.unban(user)
 
                         unban_embed = disnake.Embed(
-                            description=f"Der User `{user}` [`{user.id}`] wurde von `{interaction.author}` entbannt.",
+                            description=f"Der User `{user}` [`{user.id}`] wurde von `{interaction.author}` entbannt ✅",
                             color=disnake.Color.green()
                         )
                         await interaction.edit_original_message(
@@ -89,7 +89,7 @@ class Moderation(commands.Cog):
                         )
                     except disnake.errors.Forbidden:
                         await interaction.edit_original_message(
-                            content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
+                            content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                         )
 
         elif user.isdigit():
@@ -98,7 +98,7 @@ class Moderation(commands.Cog):
                 await interaction.guild.unban(user_id)
 
                 unban_embed = disnake.Embed(
-                    description=f"Der User `{user_id}` [`{user}`] wurde von `{interaction.author}` entbannt.",
+                    description=f"Der User `{user_id}` [`{user}`] wurde von `{interaction.author}` entbannt ✅",
                     color=disnake.Color.green()
                 )
                 await interaction.edit_original_message(
@@ -106,7 +106,7 @@ class Moderation(commands.Cog):
                 )
             except disnake.errors.Forbidden:
                 await interaction.edit_original_message(
-                    content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
+                    content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                 )
 
 
@@ -137,7 +137,7 @@ class Moderation(commands.Cog):
                 reason=reason
             )
             timeout_embed = disnake.Embed(
-                description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] für `{humanize.precisedelta(time)}` getimed!",
+                description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] für `{humanize.precisedelta(time)}` getimed ✅",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -152,7 +152,7 @@ class Moderation(commands.Cog):
 
         except disnake.errors.Forbidden:
             await interaction.edit_original_message(
-                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
+                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
             )
 
     @commands.slash_command(
@@ -178,7 +178,7 @@ class Moderation(commands.Cog):
                 until=disnake.utils.utcnow()
             )
             timeout_embed = disnake.Embed(
-                description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] entimed!",
+                description=f"Der User {member.mention} [`{member.id}`] wurde von {interaction.author.mention} [`{interaction.author.id}`] entimed ✅",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -186,7 +186,7 @@ class Moderation(commands.Cog):
             )
         except disnake.errors.Forbidden:
             await interaction.edit_original_message(
-                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen!"
+                content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
             )
 
     @commands.slash_command(invoke_without_command=True)
@@ -220,7 +220,7 @@ class Moderation(commands.Cog):
         )
         if amount == 1:
             purge_embed = disnake.Embed(
-                description="Es wurde `1 Embed` erfolgreich gelöscht!",
+                description="Es wurde `1 Embed` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -228,7 +228,7 @@ class Moderation(commands.Cog):
             )
         else:
             purge_embed = disnake.Embed(
-                description=f"Es wurden `{amount} Embeds` erfolgreich gelöscht!",
+                description=f"Es wurden `{amount} Embeds` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -259,7 +259,7 @@ class Moderation(commands.Cog):
         )
         if amount == 1:
             purge_embed = disnake.Embed(
-                description="Es wurde `1 gepinnte Nachricht` erfolgreich gelöscht!",
+                description="Es wurde `1 gepinnte Nachricht` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -268,7 +268,7 @@ class Moderation(commands.Cog):
             )
         else:
             purge_embed = disnake.Embed(
-                description=f"Es wurden `{amount} gepinnte Nachrichten` erfolgreich gelöscht!",
+                description=f"Es wurden `{amount} gepinnte Nachrichten` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -301,7 +301,7 @@ class Moderation(commands.Cog):
 
         if amount == 1:
             purge_embed = disnake.Embed(
-                description="Es wurde `1 Nachricht` erfolgreich gelöscht!",
+                description="Es wurde `1 Nachricht` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -309,7 +309,7 @@ class Moderation(commands.Cog):
             )
         else:
             purge_embed = disnake.Embed(
-                description=f"Es wurden `{amount} Nachrichten` erfolgreich gelöscht!",
+                description=f"Es wurden `{amount} Nachrichten` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -340,7 +340,7 @@ class Moderation(commands.Cog):
         )
         if amount == 1:
             purge_embed = disnake.Embed(
-                description="Es wurde `1 Bild` erfolgreich gelöscht!",
+                description="Es wurde `1 Bild` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
@@ -348,7 +348,7 @@ class Moderation(commands.Cog):
             )
         else:
             purge_embed = disnake.Embed(
-                description=f"Es wurden `{amount} Bilder` erfolgreich gelöscht!",
+                description=f"Es wurden `{amount} Bilder` erfolgreich gelöscht ✅",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
