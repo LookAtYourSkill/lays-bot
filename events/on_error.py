@@ -18,7 +18,7 @@ class onError(commands.Cog):
             commands.BotMissingPermissions
         ):
             embed = disnake.Embed(
-                description=f"Um diesen Befehl auszuführen, fehlen mir folgende Berechtigungen: `` {''.join(error.missing_permissions)}``!",
+                description=f"Um diesen Befehl auszuführen, fehlen mir folgende Berechtigungen: `` {''.join(error.missing_permissions)}`` ⛔",
                 color=disnake.Color.red()
             )
 
@@ -32,7 +32,7 @@ class onError(commands.Cog):
             commands.MissingPermissions
         ):
             embed = disnake.Embed(
-                description=f"Um diesen Befehl auszuführen, fehlen dir folgende Berechtigungen: ``{''.join(error.missing_permissions)}``!",
+                description=f"Um diesen Befehl auszuführen, fehlen dir folgende Berechtigungen: ``{''.join(error.missing_permissions)}`` ⛔",
                 color=disnake.Color.red()
             )
 
@@ -46,7 +46,7 @@ class onError(commands.Cog):
             commands.CommandOnCooldown
         ):
             embed = disnake.Embed(
-                description=f"Der Befehl ist noch {round(error.retry_after)} gesperrt!",
+                description=f"Der Befehl ist noch {round(error.retry_after)} gesperrt ⛔",
                 color=disnake.Color.red()
             )
 
