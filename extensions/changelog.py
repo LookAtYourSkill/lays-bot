@@ -32,6 +32,7 @@ class Changelog(commands.Cog):
                         "- **Added** new commands\n"
                         "- **Changed** twitch notification\n"
                         "- **Changed** old commands\n"
+                        "- **Fixxed** onTimeout\n"
         )
         await interaction.edit_original_message(
             embed=changelog_embed
