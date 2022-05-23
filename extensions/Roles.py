@@ -36,7 +36,7 @@ class Roles(commands.Cog):
             elif role not in member.roles:
                 await member.add_roles(role, reason=reason)
                 add_embed = disnake.Embed(
-                    description=f"{member.mention} wurde die Rolle `{role}` hinzugefügt!",
+                    description=f"{member.mention} wurde die Rolle `{role}` hinzugefügt ✅",
                     color=disnake.Color.green()
                 )
                 await interaction.edit_original_message(
@@ -44,7 +44,7 @@ class Roles(commands.Cog):
                 )
             else:
                 top_role_under_role_embed = disnake.Embed(
-                    description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest",
+                    description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest ❌",
                     color=disnake.Color.red()
                 )
                 await interaction.edit_original_message(
@@ -53,7 +53,7 @@ class Roles(commands.Cog):
 
         elif role not in interaction.guild.roles:
             not_role_embed = disnake.Embed(
-                description=f"Die Rolle `{role}` konnte auf diesen Server nicht gefunden werden!"
+                description=f"Die Rolle `{role}` konnte auf diesen Server nicht gefunden werden ❌"
             )
             await interaction.edit_original_message(
                 embed=not_role_embed
@@ -61,7 +61,7 @@ class Roles(commands.Cog):
 
         else:
             top_role_under_role_embed = disnake.Embed(
-                description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest",
+                description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest ❌",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
