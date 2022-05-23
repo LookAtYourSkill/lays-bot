@@ -85,9 +85,6 @@ class onTimeout(commands.Cog):
                 pass
 
             elif old_roles != new_roles:
-                # await log_channel.send(
-                #     f"{before.mention} got their roles updated to: `{''.join(new_roles)}`"
-                # )
                 pass
 
             elif before.activity != after.activity:
@@ -103,11 +100,9 @@ class onTimeout(commands.Cog):
                 pass
 
             elif before.voice != after.voice:
-                try:
-                    pass
-                except AttributeError:
-                    pass
-            else:
+                pass
+
+            elif before.current_timeout:
                 async for author in before.guild.audit_logs(
                     limit=1,
                     action=disnake.AuditLogAction.member_update
@@ -132,6 +127,9 @@ class onTimeout(commands.Cog):
                 await log_channel.send(
                     embed=untime_embed
                 )
+
+            else:
+                pass
 
         else:
             pass
