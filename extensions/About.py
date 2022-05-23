@@ -8,8 +8,8 @@ class About(commands.Cog):
         bot
     ):
         self.bot = bot
-        self.author = "LookAtYourSkill#0001"
-        self.version = 1.6
+        self.author = "LookAtYourSkill#6388"
+        self.version = 1.7
         self.prefix = "/"
 
     @commands.slash_command(
@@ -32,12 +32,12 @@ class About(commands.Cog):
             color=interaction.author.color
         )
         about_embed.add_field(
-            name="> Autor",
+            name="> ❓ Autor",
             value=f"`»` Der Bot wurde von `{self.author}` geschrieben",
             inline=False
         )
         about_embed.add_field(
-            name="> Informationen",
+            name="> ❓ Informationen",
             value=f"`»` Momentane Version: `{self.version}`\n"
                   f"`»` Momentanes Prefix: `{self.prefix}`",
             inline=False

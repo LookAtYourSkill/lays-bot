@@ -57,7 +57,7 @@ class onTimeout(commands.Cog):
                 punisher = author.user
 
             time_embed = disnake.Embed(
-                title="Timeout Log",
+                title="⚔️ Timeout Log",
                 description=f"> **User:** {before.mention} was timed out!\n"
                             f"> **ID:** `{before.id}`\n"
                             f"> **Timeout Duration:** {str(humanize.precisedelta(after.current_timeout - datetime.now(timezone.utc)))}\n"
@@ -108,7 +108,6 @@ class onTimeout(commands.Cog):
                 except AttributeError:
                     pass
             else:
-                print("SIUUU 2")
                 async for author in before.guild.audit_logs(
                     limit=1,
                     action=disnake.AuditLogAction.member_update
@@ -116,7 +115,7 @@ class onTimeout(commands.Cog):
                     punisher = author.user
 
                 untime_embed = disnake.Embed(
-                    title="Timeout Log",
+                    title="⚔️ Timeout Log",
                     description=f"> **User:** {before.mention}'s timeout ended!\n"
                                 f"> **ID**: `{before.id}`\n"
                                 f"> **Untimed from:** {punisher.mention}",
