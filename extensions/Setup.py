@@ -39,7 +39,7 @@ class Setup(commands.Cog):
 
         check_embed = disnake.Embed(
             title="Setup Check",
-            description="Here are the channels that are set up :white_check_mark:",
+            description="Here are all the things that are set up so far ✅",
             color=disnake.Color.green()
         )
         check_embed.add_field(
