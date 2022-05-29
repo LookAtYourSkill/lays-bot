@@ -2,6 +2,8 @@ import asyncio
 import disnake
 from disnake.ext import commands
 import json
+import pytz
+import os
 
 
 class open_message(disnake.ui.View):
@@ -209,6 +211,34 @@ class open_message(disnake.ui.View):
                     await interaction.response.send_message(
                         embed=save_embed
                     )
+
+                    transcript_channel_id = guild_data[str(interaction.guild.id)]["ticket_save_channel"]
+
+                    transcript_channel = disnake.utils.get(
+                        interaction.guild.channels,
+                        id=transcript_channel_id
+                    )
+
+                    tz = pytz.timezone('Europe/Berlin')
+                    fileName = f"{interaction.channel.name}.txt"
+                    with open(fileName, "w+", encoding="UTF-8") as file:
+                        file.write(
+                            f"[INFO] \n "
+                            f"Server : {interaction.guild.name} ({interaction.guild.id}) \n "
+                            f"Channel: {interaction.channel.name} ({interaction.channel.id}) \n \n \n "
+                        )
+                        async for msg in interaction.channel.history(limit=9999999):
+                            file.write(
+                                f"{msg.created_at.astimezone(tz=tz).strftime('%d.%m.%Y %H:%M:%S')} - {msg.author.display_name}: {msg.content}\n"
+                            )
+
+                        file.close()
+
+                        await transcript_channel.send(
+                            file=disnake.File(fileName)
+                        )
+
+                        os.remove(fileName)
                 else:
                     await interaction.followup.send(
                         content="_No ticket save channel set_. Skipped it!",
@@ -486,6 +516,16 @@ class ticket_message(disnake.ui.View):
                             "Please ask your question",
                 color=disnake.Color.green()
             )
+            begin_embed.add_field(
+                name="Category",
+                value=f"`{button.label}`",
+                inline=True
+            )
+            begin_embed.add_field(
+                name="Author",
+                value=interaction.author.mention,
+                inline=True
+            )
             await ticket.send(
                 content=f"{interaction.author.mention} please ask your question!",
                 embed=begin_embed,
@@ -580,6 +620,16 @@ class ticket_message(disnake.ui.View):
                 description="Support will be shortly with you! To close the ticket react with 🔒\n"
                             "Please ask your question",
                 color=disnake.Color.green()
+            )
+            begin_embed.add_field(
+                name="Category",
+                value=f"`{button.label}`",
+                inline=True
+            )
+            begin_embed.add_field(
+                name="Author",
+                value=interaction.author.mention,
+                inline=True
             )
             await ticket.send(
                 content=f"{interaction.author.mention} please ask your question!",
