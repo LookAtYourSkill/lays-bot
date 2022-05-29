@@ -223,9 +223,9 @@ class open_message(disnake.ui.View):
                     fileName = f"{interaction.channel.name}.txt"
                     with open(fileName, "w+", encoding="UTF-8") as file:
                         file.write(
-                            f"[INFO] \n "
-                            f"Server : {interaction.guild.name} ({interaction.guild.id}) \n "
-                            f"Channel: {interaction.channel.name} ({interaction.channel.id}) \n \n \n "
+                            f"[INFO]\n "
+                            f"Server : {interaction.guild.name} ({interaction.guild.id})\n "
+                            f"Channel: {interaction.channel.name} ({interaction.channel.id})\n\n\n"
                         )
                         async for msg in interaction.channel.history(limit=9999999):
                             file.write(
