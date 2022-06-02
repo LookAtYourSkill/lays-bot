@@ -44,7 +44,7 @@ class Music(commands.Cog):
             value=f"{track.uri}",
             inline=False
         )
-        now_playing.set_thumbnail(url=track.thumbnail)
+        # now_playing.set_thumbnail(url=track.thumbnail)
 
         channel = await self.client.fetch_channel(self.channel)
 
@@ -282,6 +282,15 @@ class Music(commands.Cog):
         if vc.queue.is_empty and not vc.is_playing():
             await vc.play(track[0])
 
+            embed = disnake.Embed(
+                description=f"Playing ``{track[0].author} - {track[0].title}``",
+                color=disnake.Color.green()
+            )
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
     @commands.slash_command(name="queue")
     async def queue_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
@@ -406,14 +415,15 @@ class Music(commands.Cog):
 
     @commands.slash_command(name="pause", description="Pause the current track")
     async def pause(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer()
+
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
                 color=disnake.Color.red()
             )
-            return await interaction.response.send_message(
-                embed=bad_embed,
-                ephemeral=True
+            return await interaction.edit_original_message(
+                embed=bad_embed
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
@@ -422,19 +432,27 @@ class Music(commands.Cog):
                     description="The player is already paused",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(embed=embed, ephemeral=True)
-            await vc.pause()
+                await interaction.edit_original_message(embed=embed)
+            else:
+                vc.pause()
+                embed = disnake.Embed(
+                    description="Paused the player",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(embed=embed)
+                await vc.pause()
 
     @commands.slash_command(name="resume", description="Resume the current track")
     async def resume(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer()
+
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
                 color=disnake.Color.red()
             )
-            return await interaction.response.send_message(
-                embed=bad_embed,
-                ephemeral=True
+            return await interaction.edit_original_message(
+                embed=bad_embed
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
@@ -443,8 +461,14 @@ class Music(commands.Cog):
                     description="The player is already playing",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(embed=embed, ephemeral=True)
-            await vc.resume()
+                await interaction.edit_original_message(embed=embed)
+            else:
+                embed = disnake.Embed(
+                    description="Resuming the player",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(embed=embed)
+                await vc.resume()
 
     @commands.slash_command(name="volume", description="Changes the volume of the player")
     async def volume(self, interaction: disnake.ApplicationCommandInteraction, volume: int):
