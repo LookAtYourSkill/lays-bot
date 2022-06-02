@@ -3,6 +3,7 @@ import wavelink
 from wavelink.ext import spotify
 from disnake.ext import commands
 import datetime
+import asyncio
 
 
 class Music(commands.Cog):
@@ -52,12 +53,12 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, vc: wavelink.Player, track: wavelink.Track, reason):
-        print(f"Track {track.title} ended with reason {reason}")
+        # print(f"Track {track.title} ended with reason {reason}")
 
         if self.loop:
             await vc.play(track)
 
-        elif vc.queue.is_empty():
+        elif vc.queue.is_empty:
             await vc.stop()
             empty = disnake.Embed(
                 description="There are no more tracks in the queue.",
@@ -65,6 +66,8 @@ class Music(commands.Cog):
             )
             channel = await self.client.fetch_channel(self.channel)
             await channel.send(embed=empty)
+
+            await asyncio.sleep(120)
             await vc.disconnect()
 
         else:
@@ -80,7 +83,7 @@ class Music(commands.Cog):
         await interaction.response.defer()
 
         first_embed = disnake.Embed(
-            description="Searching for song..."
+            description="Searching for song... Please wait.\nQueue another song and then skip this one with /skip"
         )
         await interaction.edit_original_message(embed=first_embed)
 
@@ -427,20 +430,19 @@ class Music(commands.Cog):
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
-            if vc.is_paused:
-                embed = disnake.Embed(
-                    description="The player is already paused",
-                    color=disnake.Color.red()
-                )
-                await interaction.edit_original_message(embed=embed)
-            else:
-                vc.pause()
-                embed = disnake.Embed(
-                    description="Paused the player",
-                    color=disnake.Color.green()
-                )
-                await interaction.edit_original_message(embed=embed)
-                await vc.pause()
+            # if vc.is_paused:
+            #     embed = disnake.Embed(
+            #         description="The player is already paused",
+            #         color=disnake.Color.red()
+            #     )
+            #     await interaction.edit_original_message(embed=embed)
+            # else:
+            embed = disnake.Embed(
+                description="Paused the player",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(embed=embed)
+            await vc.pause()
 
     @commands.slash_command(name="resume", description="Resume the current track")
     async def resume(self, interaction: disnake.ApplicationCommandInteraction):
@@ -456,19 +458,20 @@ class Music(commands.Cog):
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
-            if not vc.is_paused:
-                embed = disnake.Embed(
-                    description="The player is already playing",
-                    color=disnake.Color.red()
-                )
-                await interaction.edit_original_message(embed=embed)
-            else:
-                embed = disnake.Embed(
-                    description="Resuming the player",
-                    color=disnake.Color.green()
-                )
-                await interaction.edit_original_message(embed=embed)
-                await vc.resume()
+            # if not vc.is_paused:
+            #     embed = disnake.Embed(
+            #         description="The player is already playing",
+            #        color=disnake.Color.red()
+            #     )
+            #     await vc.resume()
+            #     await interaction.edit_original_message(embed=embed)
+            # else:
+            embed = disnake.Embed(
+                description="Resuming the player",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(embed=embed)
+            await vc.resume()
 
     @commands.slash_command(name="volume", description="Changes the volume of the player")
     async def volume(self, interaction: disnake.ApplicationCommandInteraction, volume: int):
@@ -517,24 +520,24 @@ class Music(commands.Cog):
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
-            if vc.is_paused:
-                embed = disnake.Embed(
-                    description="The player is paused, please resume the player first",
-                    color=disnake.Color.red()
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
-            else:
-                skip_embed = disnake.Embed(
-                    description="Skipping the current track",
-                    color=disnake.Color.green()
-                )
-                await interaction.edit_original_message(
-                    embed=skip_embed
-                )
-                await vc.stop()
-                await vc.play(await vc.queue.get_wait())
+            # if vc.is_paused:
+            #     embed = disnake.Embed(
+            #         description="The player is paused, please resume the player first",
+            #         color=disnake.Color.red()
+            #     )
+            #     await interaction.edit_original_message(
+            #         embed=embed
+            #     )
+            # else:
+            skip_embed = disnake.Embed(
+                description="Skipping the current track",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=skip_embed
+            )
+            await vc.stop()
+            await vc.play(await vc.queue.get_wait())
 
     @commands.slash_command(name="nowplaying", description="Shows the current track")
     async def nowplaying(self, interaction: disnake.ApplicationCommandInteraction):
@@ -550,22 +553,22 @@ class Music(commands.Cog):
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
-            if vc.is_paused:
-                embed = disnake.Embed(
-                    description="The player is paused",
-                    color=disnake.Color.red()
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
-            else:
-                embed = disnake.Embed(
-                    description=f"Now playing: {vc.queue[0]}",
-                    color=disnake.Color.green()
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
+            # if vc.is_paused:
+            #     embed = disnake.Embed(
+            #         description="The player is paused",
+            #         color=disnake.Color.red()
+            #     )
+            #     await interaction.edit_original_message(
+            #         embed=embed
+            #     )
+            # else:
+            embed = disnake.Embed(
+                description=f"Now playing: ``{vc.queue[0]}``",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
     @commands.slash_command(name="loop", description="Loops the current track")
     async def looping(self, interaction: disnake.ApplicationCommandInteraction):
@@ -580,16 +583,15 @@ class Music(commands.Cog):
                 embed=bad_embed
             )
         else:
-            vc: wavelink.Player = interaction.guild.voice_client
-            if vc.is_paused:
-                embed = disnake.Embed(
-                    description="The player is paused",
-                    color=disnake.Color.red()
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
-            elif self.loop is False:
+            # if vc.is_paused:
+            #     embed = disnake.Embed(
+            #         description="The player is paused",
+            #         color=disnake.Color.red()
+            #     )
+            #     await interaction.edit_original_message(
+            #         embed=embed
+            #     )
+            if self.loop is False:
                 self.loop = True
                 embed = disnake.Embed(
                     description="Looping the current track",
@@ -602,7 +604,7 @@ class Music(commands.Cog):
                 self.loop = False
                 embed = disnake.Embed(
                     description="Disabled looping",
-                    color=disnake.Color.green()
+                    color=disnake.Color.red()
                 )
                 await interaction.edit_original_message(
                     embed=embed
