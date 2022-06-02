@@ -5,7 +5,7 @@ from disnake.ext import commands
 class Changelog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.version = 1.7
+        self.version = 1.9
 
     @commands.slash_command(
         name="changelog",
