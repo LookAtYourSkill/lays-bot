@@ -67,8 +67,8 @@ class Music(commands.Cog):
             channel = await self.client.fetch_channel(self.channel)
             await channel.send(embed=empty)
 
-            await asyncio.sleep(120)
-            await vc.disconnect()
+            # await asyncio.sleep(120)
+            # await vc.disconnect()
 
         else:
             nextSong = vc.queue.get()
@@ -563,7 +563,7 @@ class Music(commands.Cog):
             #     )
             # else:
             embed = disnake.Embed(
-                description=f"Now playing: ``{vc.queue[0]}``",
+                description=f"Now playing: ``{vc.queue[-1]}``",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -609,6 +609,52 @@ class Music(commands.Cog):
                 await interaction.edit_original_message(
                     embed=embed
                 )
+
+    @commands.slash_command(name="disconnect", description="Disconnects the bot from the voice channel")
+    async def disconnect(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer()
+
+        if interaction.guild.voice_client is None:
+            bad_embed = disnake.Embed(
+                description="You are not connected to a voice channel!",
+                color=disnake.Color.red()
+            )
+            return await interaction.edit_original_message(
+                embed=bad_embed
+            )
+        else:
+            vc: wavelink.Player = interaction.guild.voice_client
+            embed = disnake.Embed(
+                description="Disconnecting from the voice channel",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+            await vc.disconnect()
+
+    @commands.slash_command(name="join", description="Joins the voice channel")
+    async def join(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer()
+
+        if interaction.guild.voice_client is None:
+            bad_embed = disnake.Embed(
+                description="You are not connected to a voice channel!",
+                color=disnake.Color.red()
+            )
+            return await interaction.edit_original_message(
+                embed=bad_embed
+            )
+        else:
+            vc: wavelink.Player = interaction.guild.voice_client
+            embed = disnake.Embed(
+                description="Joining the voice channel",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+            await vc.connect()
 
 
 def setup(client):
