@@ -26,13 +26,8 @@ class Changelog(commands.Cog):
 
         changelog_embed = disnake.Embed(
             title=f"⚙️ Changelog [Version: {self.version}]",
-            description="- **Added** a changelog\n"
-                        "- **Added** a emojis in embeds\n"
-                        "- **Added** new listener\n"
+            description="- **Added** a music cog\n"
                         "- **Added** new commands\n"
-                        "- **Changed** twitch notification\n"
-                        "- **Changed** old commands\n"
-                        "- **Fixxed** onTimeout\n"
         )
         await interaction.edit_original_message(
             embed=changelog_embed
