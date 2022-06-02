@@ -226,6 +226,7 @@ class Music(commands.Cog):
 
     @play_playlist_group.sub_command(name="spotify", description="Play a playlist from Spotify")
     async def play_spotify_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, url: str):
+        self.channel = interaction.channel.id
         if interaction.author.voice is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
@@ -251,6 +252,7 @@ class Music(commands.Cog):
 
     @play_playlist_group.sub_command(name="youtube", description="Play a playlist from Youtube")
     async def play_youtube_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
+        self.channel = interaction.channel.id
         if interaction.author.voice is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
@@ -277,6 +279,7 @@ class Music(commands.Cog):
 
     @play_stream_group.sub_command(name="youtube", description="Play a stream from a youtube channel")
     async def play_stream(self, interaction: disnake.ApplicationCommandInteraction, url: str):
+        self.channel = interaction.channel.id
         if not interaction.guild.voice_client:
             vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
         else:
