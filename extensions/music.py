@@ -3,7 +3,6 @@ import wavelink
 from wavelink.ext import spotify
 from disnake.ext import commands
 import datetime
-from datetime import datetime
 
 
 class Music(commands.Cog):
@@ -103,11 +102,13 @@ class Music(commands.Cog):
             if vc.queue.is_empty and not vc.is_playing:
                 self.channel = interaction.channel.id
                 vc: wavelink.Player = interaction.guild.voice_client
+                # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
                 track: wavelink.YouTubeTrack = await wavelink.YouTubeTrack.search(search, return_first=True)
                 await vc.play(track)
             else:
                 vc: wavelink.Player = interaction.guild.voice_client
                 track: wavelink.YouTubeTrack = await wavelink.YouTubeTrack.search(search, return_first=True)
+                # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
                 await vc.queue.put_wait(track)
 
                 queue_embed = disnake.Embed(
@@ -146,12 +147,14 @@ class Music(commands.Cog):
             if vc.queue.is_empty and not vc.is_playing:
                 self.channel = interaction.channel.id
                 vc: wavelink.Player = interaction.guild.voice_client
-                track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
-                await vc.play(track)
+                # track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
+                track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
+                await vc.play(track[0])
             else:
                 vc: wavelink.Player = interaction.guild.voice_client
-                track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
-                await vc.queue.put_wait(track)
+                track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
+                # track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
+                await vc.queue.put_wait(track[0])
 
                 queue_embed = disnake.Embed(
                     description=f"Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
@@ -218,7 +221,7 @@ class Music(commands.Cog):
     async def play_playlist_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @play_playlist_group.sub_command(name="_spotify", description="Play a playlist from Spotify")
+    @play_playlist_group.sub_command(name="spotify", description="Play a playlist from Spotify")
     async def play_spotify_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, url: str):
         if interaction.author.voice is None:
             bad_embed = disnake.Embed(
@@ -243,7 +246,7 @@ class Music(commands.Cog):
         # async for track in spotify.SpotifyTrack.iterator(query=query, type=spotify.SpotifySearchType.playlist):
         #     vc.queue.put(track)
 
-    @play_group.sub_command(name="_youtube", description="Play a playlist from Youtube")
+    @play_playlist_group.sub_command(name="youtube", description="Play a playlist from Youtube")
     async def play_youtube_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         if interaction.author.voice is None:
             bad_embed = disnake.Embed(
@@ -265,7 +268,11 @@ class Music(commands.Cog):
             )
             await vc.queue.put_wait(track)
 
-    @play_group.sub_command(name="stream", description="Play a stream from a youtube channel")
+    @play_group.sub_command_group(name="stream")
+    async def play_stream_group(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @play_stream_group.sub_command(name="youtube", description="Play a stream from a youtube channel")
     async def play_stream(self, interaction: disnake.ApplicationCommandInteraction, url: str):
         if not interaction.guild.voice_client:
             vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
@@ -507,6 +514,8 @@ class Music(commands.Cog):
 
     @commands.slash_command(name="nowplaying", description="Shows the current track")
     async def nowplaying(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer()
+
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
@@ -536,6 +545,8 @@ class Music(commands.Cog):
 
     @commands.slash_command(name="loop", description="Loops the current track")
     async def looping(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer()
+
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
