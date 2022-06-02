@@ -77,7 +77,7 @@ class Music(commands.Cog):
         pass
 
     @play_group.sub_command(name="youtube", description="Play a song from youtube")
-    async def play_youtube_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: wavelink.YouTubeTrack):
+    async def play_youtube_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer()
 
         first_embed = disnake.Embed(
@@ -120,7 +120,7 @@ class Music(commands.Cog):
                 )
 
     @play_group.sub_command(name="soundcloud", description="Play a song from soundcloud")
-    async def play_soundcloud_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: wavelink.SoundCloudTrack):
+    async def play_soundcloud_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer()
 
         first_embed = disnake.Embed(
@@ -218,8 +218,8 @@ class Music(commands.Cog):
     async def play_playlist_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @play_playlist_group.sub_command(name="spotify", description="Play a playlist from Spotify")
-    async def play_spotify_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
+    @play_playlist_group.sub_command(name="_spotify", description="Play a playlist from Spotify")
+    async def play_spotify_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, url: str):
         if interaction.author.voice is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
@@ -229,7 +229,7 @@ class Music(commands.Cog):
                 embed=bad_embed, ephemeral=True
             )
         vc: wavelink.Player = interaction.guild.voice_client or await interaction.author.voice.channel.connect(cls=wavelink.Player)
-        async for partial in spotify.SpotifyTrack.iterator(query="SPOTIFY_PLAYLIST_URL_OR_ID", partial_tracks=True):
+        async for partial in spotify.SpotifyTrack.iterator(query=url, partial_tracks=True):
             queue_embed = disnake.Embed(
                 description=f"Added ``{partial.author} - {partial.title}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
                 color=disnake.Color.green()
@@ -243,7 +243,7 @@ class Music(commands.Cog):
         # async for track in spotify.SpotifyTrack.iterator(query=query, type=spotify.SpotifySearchType.playlist):
         #     vc.queue.put(track)
 
-    @play_group.sub_command(name="youtube", description="Play a playlist from Youtube")
+    @play_group.sub_command(name="_youtube", description="Play a playlist from Youtube")
     async def play_youtube_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         if interaction.author.voice is None:
             bad_embed = disnake.Embed(
