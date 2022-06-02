@@ -11,7 +11,6 @@ class Music(commands.Cog):
         self.client = client
         self.loop = False
         self.channel = None
-        self.queue = []
         self.QUEUE_COMMAND = "/queue list"
 
         client.loop.create_task(self.connect_nodes())
