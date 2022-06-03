@@ -1,3 +1,4 @@
+from traceback import print_tb
 import disnake
 import wavelink
 from wavelink.ext import spotify
@@ -115,7 +116,8 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track)
 
                 queue_embed = disnake.Embed(
-                    description=f"Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+                    description=f":white_check_mark: | Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",  # Check queue with ``{self.QUEUE_COMMAND}``",
+                    # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
                     color=disnake.Color.green()
                 )
                 queue_embed.set_thumbnail(url=track.thumbnail)
@@ -155,12 +157,13 @@ class Music(commands.Cog):
                 await vc.play(track[0])
             else:
                 vc: wavelink.Player = interaction.guild.voice_client
-                track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
-                # track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
+                # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
+                track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
                 await vc.queue.put_wait(track[0])
 
                 queue_embed = disnake.Embed(
-                    description=f"Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+                    description=f":white_check_mark: | Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",  # Check queue with ``{self.QUEUE_COMMAND}``",
+                    # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
                     color=disnake.Color.green()
                 )
                 await interaction.edit_original_message(
@@ -212,7 +215,8 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track)
 
                 queue_embed = disnake.Embed(
-                    description=f"Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+                    description=f":white_check_mark: | Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",  # Check queue with ``{self.QUEUE_COMMAND}``",
+                    # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
                     color=disnake.Color.green()
                 )
                 queue_embed.set_thumbnail(url=track.thumbnail)
@@ -238,7 +242,8 @@ class Music(commands.Cog):
         vc: wavelink.Player = interaction.guild.voice_client or await interaction.author.voice.channel.connect(cls=wavelink.Player)
         async for partial in spotify.SpotifyTrack.iterator(query=url, partial_tracks=True):
             queue_embed = disnake.Embed(
-                description=f"Added ``{partial.author} - {partial.title}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+                description=f"Added ``{partial.author} - {partial.title}`` to queue!",  # Check queue with ``{self.QUEUE_COMMAND}``",
+                # description=f":white_check_mark: | Queued ``[{partial.author} - {partial.title}]({partial.uri})``",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -265,7 +270,8 @@ class Music(commands.Cog):
         playlist = await vc.node.get_playlist(wavelink.YouTubePlaylist, search)
         for track in playlist.tracks:
             queue_embed = disnake.Embed(
-                description=f"Added ``{track.author} - {track.title}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+                description=f":white_check_mark: | Added ``{track.author} - {track.title}``",  # to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+                # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -328,7 +334,7 @@ class Music(commands.Cog):
             vc.queue.clear()
 
             clear_embed = disnake.Embed(
-                description="Cleared the queue!",
+                description="Deleted all tracks from the queue!",
                 color=disnake.Color.green()
             )
             await interaction.response.send_message(
@@ -344,11 +350,13 @@ class Music(commands.Cog):
         await interaction.response.defer()
 
         vc: wavelink.Player = interaction.guild.voice_client
+
+        track = vc.queue[index - 1]
         vc.queue.__delitem__(index - 1)
 
         delete_embed = disnake.Embed(
-            title="Removed from queue",
-            description=f"Removed track ``{index}`` from the queue",
+            # title="Removed from queue",
+            description=f"Removed track ``{track.title} [{index}]`` from queue",  # {index}`` from the queue",
             color=disnake.Color.green()
         )
 
@@ -361,7 +369,8 @@ class Music(commands.Cog):
         await vc.queue.put_wait(track)
 
         queue_embed = disnake.Embed(
-            description=f"Added ``{track.author} - {track.title}`` to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+            description=f":white_check_mark: | Added ``{track.author} - {track.title}``",  # to queue! Check queue with ``{self.QUEUE_COMMAND}``",
+            # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
             color=disnake.Color.green()
         )
         await interaction.response.send_message(
@@ -381,38 +390,38 @@ class Music(commands.Cog):
             return await interaction.edit_original_message(
                 embed=bad_embed
             )
+
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             if vc.queue.is_empty:
                 embed = disnake.Embed(
-                    description="Queue is empty!",
+                    description="There are no songs in the queue!",
                     color=disnake.Color.red()
                 )
                 await interaction.edit_original_message(
                     embed=embed
                 )
+
             else:
                 vc: wavelink.Player = interaction.guild.voice_client
 
-                # allSongs = []
-                # songs = [i.title for i in vc.queue]
-                # for song, i in songs:
-                #    allSongs.append(f"{i + 1} - {song}")
+                allSongs = []
+                songs = [i.info for i in vc.queue]
 
-                tracks = vc.queue
+                for i in range(len(songs)):
+                    if i == -1:
+                        allSongs.append(f"⬐ Current Track\n``{i + 1} - {songs[i]['title'][:48]} - {str(datetime.timedelta(milliseconds=songs[i]['length']))}``\n⬑ Current Track")
+                    elif i == 0 or i > -1:
+                        allSongs.append(f"``{i + 1} - {songs[i]['title'][:48]}... - {str(datetime.timedelta(milliseconds=songs[i]['length']))}``")
+
                 embed = disnake.Embed(
-                    title=f"Queue - {len(tracks)} Tracks",
-                    # description="\n".join(allSongs),
+                    description="\n".join(allSongs),
                     color=0x00ff00
                 )
-                songs = [i.title for i in vc.queue]
-                for song in songs:
-                    embed.add_field(
-                        name="\u200b",
-                        value=f"``{song}``",
-                        inline=False
-                    )
-
+                embed.set_author(
+                    name=f"{interaction.guild.name}",
+                    icon_url=interaction.guild.icon.url
+                )
                 await interaction.edit_original_message(embed=embed)
 
     @commands.slash_command(name="modes")
@@ -540,7 +549,9 @@ class Music(commands.Cog):
                 embed=skip_embed
             )
             await vc.stop()
-            await vc.play(await vc.queue.get_wait())
+            nextSong = vc.queue.get()
+            await vc.play(nextSong)
+            # await vc.play(await vc.queue.get_wait())
 
     @commands.slash_command(name="nowplaying", description="Shows the current track")
     async def nowplaying(self, interaction: disnake.ApplicationCommandInteraction):
@@ -556,6 +567,7 @@ class Music(commands.Cog):
             )
         else:
             vc: wavelink.Player = interaction.guild.voice_client
+            current = vc.queue[-1]
             # if vc.is_paused:
             #     embed = disnake.Embed(
             #         description="The player is paused",
@@ -566,7 +578,7 @@ class Music(commands.Cog):
             #     )
             # else:
             embed = disnake.Embed(
-                description=f"Now playing: ``{vc.queue[-1]}``",
+                description=f"Now playing: ``{current.title} - {str(datetime.timedelta(seconds=current.length))}``",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -597,7 +609,7 @@ class Music(commands.Cog):
             if self.loop is False:
                 self.loop = True
                 embed = disnake.Embed(
-                    description="Looping the current track",
+                    description="Enabled track loop",
                     color=disnake.Color.green()
                 )
                 await interaction.edit_original_message(
@@ -606,7 +618,7 @@ class Music(commands.Cog):
             else:
                 self.loop = False
                 embed = disnake.Embed(
-                    description="Disabled looping",
+                    description="Disabled track loop",
                     color=disnake.Color.red()
                 )
                 await interaction.edit_original_message(
