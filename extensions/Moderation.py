@@ -119,7 +119,7 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         member: disnake.Member,
         time: str,
-        reason=str
+        reason: str
     ):
         loading_embed = disnake.Embed(
             description="Preparing to timeout the member...",
