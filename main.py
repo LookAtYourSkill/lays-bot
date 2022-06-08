@@ -3,6 +3,7 @@ import os
 import disnake
 from disnake.ext import commands
 import logging
+import time
 
 log = logging.getLogger(__name__)
 
@@ -17,7 +18,11 @@ bot = commands.Bot(
 
 @bot.event
 async def on_ready():
-    print("Logged in!")
+    print(f"Bot successfully set up!\nLogged in as {bot.user.name}")
+
+    global startTime
+    startTime = time.time()
+
     log.info("Bot online")
     await bot.change_presence(
         activity=disnake.Activity(
