@@ -1,10 +1,18 @@
 import disnake
 from disnake.ext import commands
+import humanize
+import time
+import wavelink
 
 
 class Info(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        global startTime
+        startTime = time.time()
 
     @commands.slash_command(
         name="info",
@@ -117,6 +125,28 @@ class Info(commands.Cog):
         )
         await inter.edit_original_message(
             embed=server_embed
+        )
+
+    @commands.slash_command(name="ping", description="Pings the bot")
+    async def ping(self, interaction: disnake.ApplicationCommandInteraction):
+        search_embed = disnake.Embed(
+            description="Pinging...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=search_embed,
+            ephemeral=True
+        )
+        ping_embed = disnake.Embed(
+            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nWavelink: ``Ping``\nUptime: ``{humanize.precisedelta(round(time.time()-startTime))}``",
+            color=disnake.Color.green()
+        )
+        ping_embed.set_author(
+            name=interaction.user.name,
+            icon_url=interaction.user.avatar.url
+        )
+        await interaction.edit_original_message(
+            embed=ping_embed
         )
 
 
