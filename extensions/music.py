@@ -1,5 +1,6 @@
 import datetime
 from multiprocessing.sharedctypes import Value
+import queue
 
 import disnake
 from pyparsing import col
@@ -15,6 +16,7 @@ class Music(commands.Cog):
         self.channel = None
         self.QUEUE_COMMAND = "/queue list"
         self.skipping = False
+        self.announce = False
 
         client.loop.create_task(self.connect_nodes())
 
@@ -59,9 +61,9 @@ class Music(commands.Cog):
             value=f"{track.uri}",
             inline=False
         )
-
-        channel = await self.client.fetch_channel(self.channel)
-        await channel.send(embed=now_playing)
+        if self.announce:
+            channel = await self.client.fetch_channel(self.channel)
+            await channel.send(embed=now_playing)
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, vc: wavelink.Player, track: wavelink.Track, reason):
@@ -74,7 +76,7 @@ class Music(commands.Cog):
             await vc.play(track)
 
         elif vc.queue.is_empty:
-            await vc.stop()
+            # await vc.stop()
             empty = disnake.Embed(
                 description="There are no more tracks in the queue.",
                 color=disnake.Color.red()
@@ -86,22 +88,49 @@ class Music(commands.Cog):
             # await vc.disconnect()
 
         elif reason == "FINISHED":
-            if track == vc.queue[0]:
+            # ! CASE FINISHED
+            print("[FINISHED] Song wurde fertig abgespielt")
+            if vc.queue.is_empty:
+                empty = disnake.Embed(
+                    description="There are no more tracks in the queue.",
+                    color=disnake.Color.red()
+                )
+                channel = await self.client.fetch_channel(self.channel)
+                await channel.send(embed=empty)
+
+            elif track.title == vc.queue[0].title:
+                print("[FINISHED] Gleicher Song nochmal in queue")
                 vc.queue.__delitem__(0)
+                print("[FINISHED] Song wurde aus queue entfernt")
                 nextSong = vc.queue[0]
+                print("[FINISHED] Song wird gegettet")
                 await vc.play(nextSong)
-            # print("skipping")
-            # nextSong = vc.queue.get()
-            # await vc.play(nextSong)
+                print("[FINISHED] Song wird abgespielt")
+                vc.queue.__delitem__(0)
+                print("[FINISHED] Aktueller Song wurde aus queue entfernt")
+            # when song names are not the same
+            else:
+                # get new song
+                nextSong = vc.queue.get()
+                # play new song
+                await vc.play(nextSong)
 
+        # ! DONT TURN THOSE TWO CHECKS ON
         # when song get skipped
-        elif reason == "STOPPED":
-            nextSong = vc.queue[0]
-            await vc.play(nextSong)
-            vc.queue.__delitem__(0)
+        # elif reason == "STOPPED":
+            # ! CASE STOPPED
+        #     print("[STOPPED] Song wurde gestoppt")
+        #     nextSong = vc.queue[0]
+        #     print(f"[STOPPED] Next song is {nextSong.title}")
+        #     await vc.play(nextSong)
+        #     print("[STOPPED] Song wurde abgespielt")
 
-        else:
-            print(reason)
+        # else:
+            # ! CASE REPLACED
+        #     vc.queue.__delitem__(0)
+        #     nextSong = vc.queue[0]
+        #     await vc.play(nextSong)
+            # print(reason)
 
     @commands.slash_command(name="play")
     async def play_group(self, interaction: disnake.ApplicationCommandInteraction):
@@ -131,7 +160,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
 
-            if vc.queue.is_empty and not vc.is_playing:
+            if vc.queue.is_empty and not vc.is_playing():
                 self.channel = interaction.channel.id
                 vc: wavelink.Player = interaction.guild.voice_client
                 # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
@@ -189,7 +218,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
 
-            if vc.queue.is_empty and not vc.is_playing:
+            if vc.queue.is_empty and not vc.is_playing():
                 self.channel = interaction.channel.id
                 vc: wavelink.Player = interaction.guild.voice_client
                 track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
@@ -230,7 +259,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
         track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
-        if vc.queue.is_empty and not vc.is_playing:
+        if vc.queue.is_empty and not vc.is_playing():
             await vc.play(track[0])
 
             embed = disnake.Embed(
@@ -265,7 +294,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
 
-            if vc.queue.is_empty and not vc.is_playing:
+            if vc.queue.is_empty and not vc.is_playing():
                 self.channel = interaction.channel.id
                 decoded = spotify.decode_url(url)
                 if decoded and decoded['type'] is spotify.SpotifySearchType.track:
@@ -372,7 +401,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
         track = await vc.node.get_tracks(query=url, cls=wavelink.LocalTrack)
-        if vc.queue.is_empty and not vc.is_playing:
+        if vc.queue.is_empty and not vc.is_playing():
             await vc.play(track[0])
 
             embed = disnake.Embed(
@@ -422,9 +451,6 @@ class Music(commands.Cog):
                 ephemeral=True
             )
 
-            # for i in vc.queue:
-            #    vc.queue.__delitem__(i)
-
     @queue_group.sub_command(name="remove", description="Remove a track from the queue")
     async def remove_queue(self, interaction: disnake.ApplicationCommandInteraction, index: int):
         await interaction.response.defer(ephemeral=True)
@@ -449,11 +475,11 @@ class Music(commands.Cog):
         vc: wavelink.Player = interaction.guild.voice_client
         track: wavelink.Track = await wavelink.YouTubeTrack.search(search, return_first=True)
 
-        if vc.is_playing:
+        if vc.is_playing():
             await vc.queue.put_wait(track)
 
             queue_embed = disnake.Embed(
-                description=f":white_check_mark: | Added [{track.author} - {track.title}]({track.uri})",
+                description=f":white_check_mark: | Added [{track.title}]({track.uri})",
                 # ! OPTIONAL
                 # description=f":white_check_mark: | Queued ``{track.author} - {track.title}``",
                 # to queue! Check queue with ``{self.QUEUE_COMMAND}``",
@@ -538,7 +564,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            # if vc.is_paused:
+            # if vc.is_paused():
             #     embed = disnake.Embed(
             #         description="The player is already paused",
             #         color=disnake.Color.red()
@@ -567,7 +593,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            # if not vc.is_paused:
+            # if not vc.is_paused():
             #     embed = disnake.Embed(
             #         description="The player is already playing",
             #        color=disnake.Color.red()
@@ -629,7 +655,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            # if vc.is_paused:
+            # if vc.is_paused():
             #     embed = disnake.Embed(
             #         description="The player is paused, please resume the player first",
             #         color=disnake.Color.red()
@@ -638,26 +664,47 @@ class Music(commands.Cog):
             #         embed=embed
             #     )
             # else:
-            skip_embed = disnake.Embed(
-                description="Skipping the current track",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=skip_embed
-            )
-            track: wavelink.Track = vc.queue[0]
-
-            if vc.queue[-1] == track:
-            # self.skipping = True
-                await vc.stop()
-                vc.queue.__delitem__(0)
-                nextSong = vc.queue[0]
-                await vc.play(nextSong)
+            if vc.queue.is_empty:
+                embed = disnake.Embed(
+                    description="The queue is empty",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
             else:
-                await vc.stop()
-                nextSong = vc.queue[0]
-                await vc.play(nextSong)
-            # await vc.play(await vc.queue.get_wait())
+                if vc.is_playing():
+                    skip_embed = disnake.Embed(
+                        description="Skipping the current track",
+                        color=disnake.Color.green()
+                    )
+                    await interaction.edit_original_message(
+                        embed=skip_embed
+                    )
+
+                    # check if curret song name is same as with the one in queue
+                    if vc.queue[-1].title == vc.queue[0].title:
+                        # ! await vc.stop()
+                        # deletes duplicate track
+                        vc.queue.__delitem__(0)
+                        # gets new track
+                        nextSong = vc.queue[0]
+                        # plays new track
+                        await vc.play(nextSong)
+                    else:
+                        # ! await vc.stop()
+                        # gets new track
+                        nextSong = vc.queue[0]
+                        # plays new track
+                        await vc.play(nextSong)
+                # if player dont play
+                else:
+                    # gets new track
+                    nextSong = vc.queue[0]
+                    # plays new track
+                    await vc.play(nextSong)
+                    # remove playing song from queue
+                    vc.queue.__delitem__(0)
 
     @commands.slash_command(name="nowplaying", description="Shows the current track")
     async def nowplaying(self, interaction: disnake.ApplicationCommandInteraction):
@@ -674,8 +721,8 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            current = vc.queue[0]
-            # if vc.is_paused:
+            current = vc.queue[-1]
+            # if vc.is_paused():
             #     embed = disnake.Embed(
             #         description="The player is paused",
             #         color=disnake.Color.red()
@@ -691,7 +738,7 @@ class Music(commands.Cog):
             )
             embed.add_field(
                 name="Now Playing",
-                value=f"``{current.title} - {str(datetime.timedelta(seconds=current.length))}``",
+                value=f"``{current.title} - {datetime.timedelta(seconds=current.length)}``",
                 inline=False
             )
             embed.add_field(
@@ -727,7 +774,7 @@ class Music(commands.Cog):
             )
         else:
             # ! OPTIONAL
-            # if vc.is_paused:
+            # if vc.is_paused():
             #     embed = disnake.Embed(
             #         description="The player is paused",
             #         color=disnake.Color.red()
@@ -760,7 +807,7 @@ class Music(commands.Cog):
 
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
-                description="You are not connected to a voice channel!",
+                description="There is no Voice Client!",
                 color=disnake.Color.red()
             )
             return await interaction.edit_original_message(
@@ -781,23 +828,23 @@ class Music(commands.Cog):
     async def join(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
-        # if interaction.guild.voice_client is None:
-        #     bad_embed = disnake.Embed(
-        #         description="You are not connected to a voice channel!",
-        #         color=disnake.Color.red()
-        #     )
-        #     return await interaction.edit_original_message(
-        #         embed=bad_embed
-        #     )
-        # else:
-        embed = disnake.Embed(
-            description="Joining the voice channel",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=embed
-        )
-        await interaction.author.voice.channel.connect()
+        if interaction.guild.voice_client is None:
+            bad_embed = disnake.Embed(
+                description="There is no Voice Client!",
+                color=disnake.Color.red()
+            )
+            return await interaction.edit_original_message(
+                embed=bad_embed
+            )
+        else:
+            embed = disnake.Embed(
+                description="Joining the voice channel",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+            await interaction.author.voice.channel.connect()
 
     @commands.slash_command(name="among_us")
     async def among_us(self, interaction: disnake.ApplicationCommandInteraction):
@@ -809,9 +856,11 @@ class Music(commands.Cog):
 
         muted = []
         for i in interaction.author.voice.channel.members:
-            if i.top_role < interaction.author.top_role:
+            if i.bot:
+                return
+            elif i.top_role < interaction.author.top_role:
                 await i.edit(mute=True)
-                muted.append(i)
+                muted.append(i.name)
 
         embed = disnake.Embed(
             description=f"{muted}\n",
@@ -827,9 +876,11 @@ class Music(commands.Cog):
 
         unmuted = []
         for i in interaction.author.voice.channel.members:
-            if i.top_role < interaction.author.top_role:
+            if i.bot:
+                return
+            elif i.top_role < interaction.author.top_role:
                 await i.edit(mute=False)
-                unmuted.append(i)
+                unmuted.append(i.name)
 
         embed = disnake.Embed(
             description=f"{unmuted}\n",
