@@ -1,9 +1,6 @@
 import datetime
-from multiprocessing.sharedctypes import Value
-import queue
 
 import disnake
-from pyparsing import col
 import wavelink
 from disnake.ext import commands
 from wavelink.ext import spotify
@@ -136,7 +133,7 @@ class Music(commands.Cog):
     async def play_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @play_group.sub_command(name="youtube_scuffed", description="Play a song from youtube")
+    @play_group.sub_command(name="youtube", description="Play a song from youtube")
     async def play_youtube_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -248,27 +245,6 @@ class Music(commands.Cog):
                 await interaction.edit_original_message(
                     embed=queue_embed
                 )
-
-    @play_group.sub_command(name="youtube", description="Play a song from a youtube url")
-    async def play_local_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
-        await interaction.response.defer(ephemeral=True)
-
-        self.channel = interaction.channel.id
-        if not interaction.guild.voice_client:
-            vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
-        else:
-            vc: wavelink.Player = interaction.guild.voice_client
-        track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
-        if vc.queue.is_empty and not vc.is_playing():
-            await vc.play(track[0])
-
-            embed = disnake.Embed(
-                description=f"Playing ``{track[0].author} - {track[0].title}``",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=embed
-            )
 
     @play_group.sub_command(name="spotify", description="Play a song from spotify")
     async def play_spotify_song(self, interaction: disnake.ApplicationCommandInteraction, *, url: str):
@@ -517,19 +493,35 @@ class Music(commands.Cog):
                     embed=embed
                 )
 
+            if vc.is_playing() and vc.queue.is_empty:
+                allSongs = []
+                current = vc.source
+
+                allSongs.append(f"⬐ Current Track\n``1`` - ``{current.title[:48]} ...`` - ``{datetime.timedelta(seconds=round(vc.position))}/{datetime.timedelta(seconds=current.length)} left``\n⬑ Current Track")
+
+                embed = disnake.Embed(
+                    description="\n".join(allSongs),
+                    color=0x00ff00
+                )
+                embed.set_author(
+                    name=f"{interaction.guild.name}",
+                    icon_url=interaction.guild.icon.url
+                )
+                await interaction.edit_original_message(embed=embed)
+
             else:
                 vc: wavelink.Player = interaction.guild.voice_client
 
                 allSongs = []
                 songs = [i.info for i in vc.queue]
-                # current = vc.queue[-1]
+                current = vc.source
 
                 for i in range(len(songs)):
                     # ! OPTIONAL
                     # if current:
-                    #     allSongs.append(f"⬐ Current Track\n``{i + 1} - {current.title[:48]} - {str(datetime.timedelta(seconds=current.length))}``\n⬑ Current Track")
-                    # elif i == 0 or i > -1:
-                    allSongs.append(f"``{i + 1}`` - ``{songs[i]['title'][:48]} ... - {str(datetime.timedelta(milliseconds=songs[i]['length']))}``")
+                    #     allSongs.append(f"⬐ Current Track\n``{i + 1} - {current.title} - {datetime.timedelta(milliseconds=round(vc.position)) - datetime.timedelta(milliseconds=current.length)} left``\n⬑ Current Track")
+                    # elif i == 1 or i > 1:
+                    allSongs.append(f"``{i + 1}`` - ``{songs[i]['title'][:48]} ...`` - ``{datetime.timedelta(milliseconds=songs[i]['length'])}``")
 
                 embed = disnake.Embed(
                     description="\n".join(allSongs),
@@ -545,7 +537,7 @@ class Music(commands.Cog):
     async def modes(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @modes.sub_command(name="bassboost", description="Bassboost")
+    @modes.sub_command(name="bassboost", description="Bassboost the song")
     async def bassboost(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -683,7 +675,7 @@ class Music(commands.Cog):
                     )
 
                     # check if curret song name is same as with the one in queue
-                    if vc.queue[-1].title == vc.queue[0].title:
+                    if vc.source.title == vc.queue[0].title:
                         # ! await vc.stop()
                         # deletes duplicate track
                         vc.queue.__delitem__(0)
@@ -721,7 +713,7 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            current = vc.queue[-1]
+            current = vc.source
             # if vc.is_paused():
             #     embed = disnake.Embed(
             #         description="The player is paused",
@@ -738,18 +730,24 @@ class Music(commands.Cog):
             )
             embed.add_field(
                 name="Now Playing",
-                value=f"``{current.title} - {datetime.timedelta(seconds=current.length)}``",
+                value=f"``{current.title}``",
+                # ! - {datetime.timedelta(seconds=round(vc.position))}/{datetime.timedelta(seconds=current.length)}``",
                 inline=False
             )
             embed.add_field(
                 name="Loop",
                 value=f"``{'Yes' if self.loop else 'No'}``",
-                inline=False
+                inline=True
             )
             embed.add_field(
                 name="Volume",
                 value=f"``{vc.volume}%``",
-                inline=False
+                inline=True
+            )
+            embed.add_field(
+                name="Time",
+                value=f"``{datetime.timedelta(seconds=round(vc.position))}/{datetime.timedelta(seconds=current.length)}``",
+                inline=True
             )
             embed.add_field(
                 name="Announcement Channel",
