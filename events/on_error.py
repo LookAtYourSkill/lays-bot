@@ -1,5 +1,6 @@
 import disnake
 from disnake.ext import commands
+import wavelink
 
 
 class onError(commands.Cog):
@@ -50,6 +51,82 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+        else:
+            print(error)
+
+    @commands.Cog.listener()
+    async def on_wavelink_track_exception(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        player: wavelink.Player,
+        track: wavelink.Track,
+        error: wavelink.WavelinkError
+    ):
+        if isinstance(
+            error,
+            wavelink.LoadTrackError
+        ):
+            embed = disnake.Embed(
+                description=f"The Track `{track.title}` could not be found ⛔",
+                color=disnake.Color.red()
+            )
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+        if isinstance(
+            error,
+            wavelink.QueueException
+        ):
+            embed = disnake.Embed(
+                description="Something is wrong with the queue, please try again later ⛔",
+                color=disnake.Color.red()
+            )
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+        if isinstance(
+            error,
+            wavelink.QueueFull
+        ):
+            embed = disnake.Embed(
+                description="The queue is full, please try again later ⛔",
+                color=disnake.Color.red()
+            )
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+        if isinstance(
+            error,
+            wavelink.BuildTrackError
+        ):
+            embed = disnake.Embed(
+                description=f"The Track `{track.title}` could not be converted ⛔",
+                color=disnake.Color.red()
+            )
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
+        if isinstance(
+            error,
+            wavelink.WavelinkError
+        ):
+            embed = disnake.Embed(
+                description="Something is wrong with the bot, please try again later ⛔",
+                color=disnake.Color.red()
+            )
             await interaction.response.send_message(
                 embed=embed,
                 ephemeral=True
