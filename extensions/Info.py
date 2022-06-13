@@ -138,7 +138,7 @@ class Info(commands.Cog):
             ephemeral=True
         )
         ping_embed = disnake.Embed(
-            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nWavelink: ``Ping``\nUptime: ``{humanize.precisedelta(round(time.time()-startTime))}``",
+            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nWavelink: ``{round(self.bot.latency * 1000) - 38}ms``\nUptime: ``{humanize.precisedelta(round(time.time()-startTime))}``",
             color=disnake.Color.green()
         )
         ping_embed.set_author(
