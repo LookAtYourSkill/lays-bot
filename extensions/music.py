@@ -14,6 +14,8 @@ class Music(commands.Cog):
         self.QUEUE_COMMAND = "/queue list"
         self.skipping = False
         self.announce = False
+        self.provider = "LookAtYourSkill"
+        self.avatar = "https://cdn.discordapp.com/avatars/493370963807830016/3240c970a937c1ee28b09d2da76792fe.png?size=1024"
 
         client.loop.create_task(self.connect_nodes())
 
@@ -58,6 +60,10 @@ class Music(commands.Cog):
             value=f"{track.uri}",
             inline=False
         )
+        now_playing.set_footer(
+            text=f"Bot provided by {self.provider}",
+            icon_url=self.avatar
+        )
         if self.announce:
             channel = await self.client.fetch_channel(self.channel)
             await channel.send(embed=now_playing)
@@ -75,7 +81,7 @@ class Music(commands.Cog):
         elif vc.queue.is_empty:
             # await vc.stop()
             empty = disnake.Embed(
-                description="There are no more tracks in the queue.",
+                description="There are no more tracks in the queue.\nIf you add a song use ``/queue resume`` to resume the queue!",
                 color=disnake.Color.red()
             )
             channel = await self.client.fetch_channel(self.channel)
@@ -154,6 +160,25 @@ class Music(commands.Cog):
         if not interaction.guild.voice_client:
             self.channel = interaction.channel.id
             vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
+
+            track: wavelink.YouTubeTrack = await wavelink.YouTubeTrack.search(search, return_first=True)
+            play_embed = disnake.Embed(
+                description=f":white_check_mark: | Playing [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}``",
+                color=disnake.Color.green()
+            )
+            play_embed.set_thumbnail(
+                url=track.thumbnail
+            )
+            await interaction.edit_original_message(
+                embed=play_embed
+            )
+            await vc.play(track)
+
+            # embed = disnake.Embed(
+            #     description="Connected to voice channel and generated voice client!\nUse the command again to play the song",
+            #     color=disnake.Color.green()
+            # )
+            # await interaction.edit_original_message(embed=embed)
         else:
             vc: wavelink.Player = interaction.guild.voice_client
 
@@ -163,7 +188,7 @@ class Music(commands.Cog):
                 # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
                 track: wavelink.YouTubeTrack = await wavelink.YouTubeTrack.search(search, return_first=True)
                 play_embed = disnake.Embed(
-                    description=f":white_check_mark: | Playing ({track.author} - {track.title})[{track.uri}] - ``{str(datetime.timedelta(seconds=track.length))}``",
+                    description=f":white_check_mark: | Playing [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}``",
                     color=disnake.Color.green()
                 )
                 play_embed.set_thumbnail(
@@ -180,7 +205,8 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track)
 
                 queue_embed = disnake.Embed(
-                    description=f":white_check_mark: | Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
+                    # ! in track.title is author within
+                    description=f":white_check_mark: | Added ``{track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
                     # Check queue with ``{self.QUEUE_COMMAND}``",
                     # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
                     color=disnake.Color.green()
@@ -221,7 +247,7 @@ class Music(commands.Cog):
                 track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
                 # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
                 play_embed = disnake.Embed(
-                    description=f":white_check_mark: | Playing ({track.author} - {track.title})[{track.uri}] - ``{str(datetime.timedelta(seconds=track.length))}``",
+                    description=f":white_check_mark: | Playing ({track.title})[{track.uri}] - ``{str(datetime.timedelta(seconds=track.length))}``",
                     color=disnake.Color.green()
                 )
                 await interaction.edit_original_message(
@@ -235,7 +261,7 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track[0])
 
                 queue_embed = disnake.Embed(
-                    description=f":white_check_mark: | Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
+                    description=f":white_check_mark: | Added ``{track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
                     # ! OPTIONAL
                     # Check queue with ``{self.QUEUE_COMMAND}``",
                     # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
@@ -291,7 +317,7 @@ class Music(commands.Cog):
                 await vc.queue.put_wait(track)
 
                 queue_embed = disnake.Embed(
-                    description=f":white_check_mark: | Added ``{track.author} - {track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
+                    description=f":white_check_mark: | Added ``{track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
                     # ! OPTIONAL
                     # description=f":white_check_mark: | Added ``[{track.author} - {track.title}]({track.uri})``",
                     # Check queue with ``{self.QUEUE_COMMAND}``",
@@ -353,7 +379,7 @@ class Music(commands.Cog):
         playlist = await vc.node.get_playlist(wavelink.YouTubePlaylist, search)
         for track in playlist.tracks:
             queue_embed = disnake.Embed(
-                description=f":white_check_mark: | Added ``{track.author} - {track.title}`` to queue! | All Tracks: /",
+                description=f":white_check_mark: | Added ``{track.title}`` to queue! | All Tracks: /",
                 # to queue! Check queue with ``{self.QUEUE_COMMAND}``",
                 # description=f":white_check_mark: | Queued ``[{track.author} - {track.title}]({track.uri})``",
                 color=disnake.Color.green()
@@ -484,7 +510,7 @@ class Music(commands.Cog):
 
         else:
             vc: wavelink.Player = interaction.guild.voice_client
-            if vc.queue.is_empty:
+            if vc.queue.is_empty and not vc.source:
                 embed = disnake.Embed(
                     description="There are no songs in the queue!",
                     color=disnake.Color.red()
@@ -493,11 +519,11 @@ class Music(commands.Cog):
                     embed=embed
                 )
 
-            if vc.is_playing() and vc.queue.is_empty:
+            elif vc.is_playing() and vc.queue.is_empty:
                 allSongs = []
                 current = vc.source
 
-                allSongs.append(f"⬐ Current Track\n``1`` - ``{current.title[:48]} ...`` - ``{datetime.timedelta(seconds=round(vc.position))}/{datetime.timedelta(seconds=current.length)} left``\n⬑ Current Track")
+                allSongs.append(f"⬐ Current Track\n``1`` - ``{current.title[:48]} ...`` - ``{datetime.timedelta(seconds=round(vc.position))}/{datetime.timedelta(seconds=current.length)}``\n⬑ Current Track")
 
                 embed = disnake.Embed(
                     description="\n".join(allSongs),
@@ -533,6 +559,24 @@ class Music(commands.Cog):
                 )
                 await interaction.edit_original_message(embed=embed)
 
+    @queue_group.sub_command(name="resume", description="Resumes the queue")
+    async def resume_queue(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
+        vc: wavelink.Player = interaction.guild.voice_client
+        # if not vc.queue.is_empty and not vc.is_playing():
+
+        getNextSong = vc.queue.get()
+        await vc.play(getNextSong)
+
+        embed = disnake.Embed(
+            description=f"Resumed the queue! Playing: {getNextSong.title}",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=embed
+        )
+
     @commands.slash_command(name="modes")
     async def modes(self, interaction: disnake.ApplicationCommandInteraction):
         pass
@@ -556,19 +600,19 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            # if vc.is_paused():
-            #     embed = disnake.Embed(
-            #         description="The player is already paused",
-            #         color=disnake.Color.red()
-            #     )
-            #     await interaction.edit_original_message(embed=embed)
-            # else:
-            embed = disnake.Embed(
-                description="Paused the player",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(embed=embed)
-            await vc.pause()
+            if vc.is_paused():
+                embed = disnake.Embed(
+                    description="The player is already paused",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(embed=embed)
+            else:
+                embed = disnake.Embed(
+                    description="Paused the player",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(embed=embed)
+                await vc.pause()
 
     @commands.slash_command(name="resume", description="Resume the current track")
     async def resume(self, interaction: disnake.ApplicationCommandInteraction):
@@ -585,20 +629,19 @@ class Music(commands.Cog):
         else:
             vc: wavelink.Player = interaction.guild.voice_client
             # ! OPTIONAL
-            # if not vc.is_paused():
-            #     embed = disnake.Embed(
-            #         description="The player is already playing",
-            #        color=disnake.Color.red()
-            #     )
-            #     await vc.resume()
-            #     await interaction.edit_original_message(embed=embed)
-            # else:
-            embed = disnake.Embed(
-                description="Resuming the player",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(embed=embed)
-            await vc.resume()
+            if not vc.is_paused():
+                embed = disnake.Embed(
+                    description="The player is already playing",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(embed=embed)
+            else:
+                embed = disnake.Embed(
+                    description="Resuming the player",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(embed=embed)
+                await vc.resume()
 
     @commands.slash_command(name="volume", description="Changes the volume of the player")
     async def volume(self, interaction: disnake.ApplicationCommandInteraction, volume: int):
@@ -750,15 +793,101 @@ class Music(commands.Cog):
                 inline=True
             )
             embed.add_field(
-                name="Announcement Channel",
-                value=f"{channel.mention}",
+                name="Link",
+                value=current.uri,
                 inline=False
             )
+            embed.add_field(
+                name="Announcement Channel",
+                value=f"{channel.mention}",
+                inline=True
+            )
+            embed.add_field(
+                name="Announce Status",
+                value=f"``{'Yes' if self.announce else 'No'}``",
+                inline=True
+            )
+            embed.set_author(
+                name=interaction.author.guild.name,
+                icon_url=interaction.author.guild.icon.url
+            )
+            embed.set_footer(
+                text=f"Bot provided by {self.provider}",
+                icon_url=self.avatar
+            )
+            embed.set_thumbnail(current.thumbnail)
             await interaction.edit_original_message(
                 embed=embed
             )
 
-    @commands.slash_command(name="loop", description="Loops the current track")
+    @commands.slash_command(name="seek", description="Seeks to a specific position of the song")
+    async def seek(self, interaction: disnake.ApplicationCommandInteraction, time: str):
+        await interaction.response.defer(ephemeral=True)
+
+        if interaction.author.voice.channel is None:
+            bad_embed = disnake.Embed(
+                description="You are not connected to a voice channel!",
+                color=disnake.Color.red()
+            )
+            return await interaction.edit_original_message(
+                embed=bad_embed
+            )
+
+        else:
+            vc: wavelink.Player = interaction.guild.voice_client
+            if vc.is_paused():
+                embed = disnake.Embed(
+                    description="The player is paused, please resume the player first",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+            else:
+                if vc.is_playing():
+                    try:
+                        seek_time = int(time)
+                        if seek_time > vc.source.length:
+                            embed = disnake.Embed(
+                                description=f"The seek time is longer than the song length ``({vc.source.length})``",
+                                color=disnake.Color.red()
+                            )
+                            await interaction.edit_original_message(
+                                embed=embed
+                            )
+                        else:
+                            embed = disnake.Embed(
+                                description=f"Seeking to ``{datetime.timedelta(seconds=seek_time)}``",  # ! /{datetime.timedelta(seconds=vc.source.length)}``",
+                                color=disnake.Color.green()
+                            )
+                            await interaction.edit_original_message(
+                                embed=embed
+                            )
+                            await vc.seek(position=seek_time * 1000)
+
+                    except ValueError:
+                        embed = disnake.Embed(
+                            description="The seek time is not a valid time",
+                            color=disnake.Color.red()
+                        )
+                        await interaction.edit_original_message(
+                            embed=embed
+                        )
+
+                else:
+                    embed = disnake.Embed(
+                        description="The player is not playing",
+                        color=disnake.Color.red()
+                    )
+                    await interaction.edit_original_message(
+                        embed=embed
+                    )
+
+    @commands.slash_command(name="settings", description="Settings for the music player")
+    async def settings(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @settings.sub_command(name="loop", description="Enables/Disables the loop of the current track")
     async def looping(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -799,13 +928,37 @@ class Music(commands.Cog):
                     embed=embed
                 )
 
+    @settings.sub_command(name="announce", description="Enables/Disables the announcement of the current track")
+    async def announcement(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
+        if self.announce:
+            self.announce = False
+            embed = disnake.Embed(
+                description="Disabled track announcement",
+                color=disnake.Color.red()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+        else:
+            self.announce = True
+            embed = disnake.Embed(
+                description="Enabled track announcement",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
     @commands.slash_command(name="disconnect", description="Disconnects the bot from the voice channel")
     async def disconnect(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
-        if interaction.guild.voice_client is None:
+        if interaction.author.voice.channel is None:
             bad_embed = disnake.Embed(
-                description="There is no Voice Client!",
+                description="You are not connected to a voice channel!",
                 color=disnake.Color.red()
             )
             return await interaction.edit_original_message(
@@ -826,9 +979,9 @@ class Music(commands.Cog):
     async def join(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
-        if interaction.guild.voice_client is None:
+        if interaction.author.voice.channel is None:
             bad_embed = disnake.Embed(
-                description="There is no Voice Client!",
+                description="You are not connected to a voice channel!",
                 color=disnake.Color.red()
             )
             return await interaction.edit_original_message(
@@ -836,57 +989,13 @@ class Music(commands.Cog):
             )
         else:
             embed = disnake.Embed(
-                description="Joining the voice channel",
+                description="Joining your voice channel",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
                 embed=embed
             )
-            await interaction.author.voice.channel.connect()
-
-    @commands.slash_command(name="among_us")
-    async def among_us(self, interaction: disnake.ApplicationCommandInteraction):
-        pass
-
-    @among_us.sub_command(name="ruhe", description="Ruhe")
-    async def among_us_ruhe(self, interaction: disnake.ApplicationCommandInteraction):
-        await interaction.response.defer(ephemeral=True)
-
-        muted = []
-        for i in interaction.author.voice.channel.members:
-            if i.bot:
-                return
-            elif i.top_role < interaction.author.top_role:
-                await i.edit(mute=True)
-                muted.append(i.name)
-
-        embed = disnake.Embed(
-            description=f"{muted}\n",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=embed
-        )
-
-    @among_us.sub_command(name="meeting", description="Ruhe abbrechen")
-    async def among_us_meeting(self, interaction: disnake.ApplicationCommandInteraction):
-        await interaction.response.defer(ephemeral=True)
-
-        unmuted = []
-        for i in interaction.author.voice.channel.members:
-            if i.bot:
-                return
-            elif i.top_role < interaction.author.top_role:
-                await i.edit(mute=False)
-                unmuted.append(i.name)
-
-        embed = disnake.Embed(
-            description=f"{unmuted}\n",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=embed
-        )
+            vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
 
 
 def setup(client):
