@@ -5,7 +5,7 @@ from disnake.ext import commands
 class Changelog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.version = 1.9
+        self.version = 1.90
 
     @commands.slash_command(
         name="changelog",
@@ -26,8 +26,9 @@ class Changelog(commands.Cog):
 
         changelog_embed = disnake.Embed(
             title=f"⚙️ Changelog [Version: {self.version}]",
-            description="- **Added** a music cog\n"
+            description="- **Fixed** skip command\n"
                         "- **Added** new commands\n"
+                        "- **Added** new changelog"
         )
         await interaction.edit_original_message(
             embed=changelog_embed
