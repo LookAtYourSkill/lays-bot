@@ -566,16 +566,20 @@ class Music(commands.Cog):
         vc: wavelink.Player = interaction.guild.voice_client
         # if not vc.queue.is_empty and not vc.is_playing():
 
-        getNextSong = vc.queue.get()
-        await vc.play(getNextSong)
+        if vc.is_playing():
+            return
 
-        embed = disnake.Embed(
-            description=f"Resumed the queue! Playing: {getNextSong.title}",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=embed
-        )
+        else:
+            getNextSong = vc.queue.get()
+            await vc.play(getNextSong)
+
+            embed = disnake.Embed(
+                description=f"Resumed the queue! Playing: ``{getNextSong.title}``",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
     @commands.slash_command(name="modes")
     async def modes(self, interaction: disnake.ApplicationCommandInteraction):
