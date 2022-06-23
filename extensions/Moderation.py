@@ -109,7 +109,6 @@ class Moderation(commands.Cog):
                     content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                 )
 
-
     @commands.slash_command(
         name="timeout",
         description="Timeouts a user"
