@@ -17,6 +17,28 @@ def get_time() -> str:
     return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
 
+def check_date():
+    with open("json/licenses.json", "r") as licenses:
+        licenses = json.load(licenses)
+
+    for license in licenses:
+        if licenses[license]["duration"] == "Lifetime":
+            continue
+        else:
+            date1 = datetime.datetime.strptime(licenses[license]["end_time"], "%d.%m.%Y %H:%M:%S")
+            date2 = get_date()
+            if date1 > date2:
+                print(date1, date2)
+                return True
+            else:
+                print(date1, date2)
+                return False
+
+
+def get_date() -> str:
+    return datetime.datetime.now().strftime("%d.%m.%Y")
+
+
 def set_time_calcs(license):
     with open("json/licenses.json", "r") as licenses:
         licenses = json.load(licenses)

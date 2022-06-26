@@ -5,7 +5,7 @@ import disnake
 import colorama
 from disnake.ext import commands
 from disnake.ext.tasks import loop
-from utils.license import generate, get_time, set_time_calcs
+from utils.license import generate, get_time, set_time_calcs, get_date
 
 
 class Times(str, Enum):
@@ -269,7 +269,8 @@ class LicenseSystem(commands.Cog):
 
         for license in licenses.keys():
             print(f"{colorama.Fore.BLUE} [CHECK] Checking license {license}...{colorama.Fore.RESET}")
-            if licenses[license]["end_time"] < get_time():
+            if licenses[license]["end_time"][:9] < get_date():
+                # update check [not working]
                 licenses[license]["activated"] = False
                 licenses[license]["deactivated"] = True
                 licenses[license]["expired"] = True
@@ -291,7 +292,7 @@ class LicenseSystem(commands.Cog):
                 )
                 await user.send(embed=embed)
 
-                del licenses[license]
+                # del licenses[license]
                 with open("json/licenses.json", "w") as dumpfile:
                     json.dump(licenses, dumpfile, indent=4)
 
