@@ -5,7 +5,7 @@ from disnake.ext import commands
 class Changelog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.version = 1.90
+        self.version = "EARLY ACCESS"
 
     @commands.slash_command(
         name="changelog",

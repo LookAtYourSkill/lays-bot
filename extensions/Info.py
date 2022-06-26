@@ -2,7 +2,6 @@ import disnake
 from disnake.ext import commands
 import humanize
 import time
-import wavelink
 
 
 class Info(commands.Cog):
