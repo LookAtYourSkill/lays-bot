@@ -54,4 +54,3 @@ with open("etc/config.json", "r") as config:
 
 if __name__ == "__main__":
     bot.run(config["token"]["token"])
-    bot.wait_until_ready
