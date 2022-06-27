@@ -1,12 +1,19 @@
+import datetime
 import json
 from enum import Enum
-import datetime
 
-import disnake
 import colorama
+import disnake
 from disnake.ext import commands
 from disnake.ext.tasks import loop
-from utils.license import generate, get_time, set_time_calcs
+from utils.license import (
+    generate,
+    get_time,
+    remove_expired_licenses,
+    set_time_calcs
+)
+
+# for options
 
 
 class Times(str, Enum):
@@ -23,6 +30,7 @@ class LicenseSystem(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.license_check.start()
+        self.license_check_expired.start()
 
     @commands.slash_command(
         name="license",
@@ -50,7 +58,9 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as licenses:
             licenses = json.load(licenses)
 
+        # check if license is in database
         if license in licenses:
+            # put information in an embed
             embed = disnake.Embed(
                 title=f"License Key: ||`{license}`|| 🔑",
                 description=f"👤 Owner: `{licenses[license]['owner']}`\n"
@@ -112,9 +122,13 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as licenses:
             licenses = json.load(licenses)
 
+        # check if license is in database
         if license in licenses:
+            # check if the license is already activated/already used till limit
             if licenses[license]["useability"] > 0:
+                # check if the license deactivated
                 if licenses[license]["deactivated"]:
+                    # update json file
                     licenses[license]["owner"] = interaction.author.id
                     licenses[license]["guild"] = interaction.guild.name
                     licenses[license]["activated"] = True
@@ -126,6 +140,7 @@ class LicenseSystem(commands.Cog):
                     with open("json/licenses.json", "w") as dumpfile:
                         json.dump(licenses, dumpfile, indent=4, default=str)
 
+                    # create confirmation embed
                     embed = disnake.Embed(
                         title="License Activated ✅",
                         description=f"🔑 License Key: ||`{license}`||\n"
@@ -140,6 +155,7 @@ class LicenseSystem(commands.Cog):
                         embed=embed
                     )
                 else:
+                    # print error in embed
                     embed = disnake.Embed(
                         description=f"License ||`{license}`|| is not deactived/already activated ⛔",
                         color=disnake.Color.red()
@@ -148,6 +164,7 @@ class LicenseSystem(commands.Cog):
                         embed=embed
                     )
             else:
+                # print error in embed
                 embed = disnake.Embed(
                     description=f"License ||`{license}`|| is not useable anymore ⛔",
                     color=disnake.Color.red()
@@ -156,6 +173,7 @@ class LicenseSystem(commands.Cog):
                     embed=embed
                 )
         else:
+            # print error in embed
             embed = disnake.Embed(
                 description=f"License ||`{license}`|| is not valid. Please check the license ⛔",
                 color=disnake.Color.red()
@@ -180,9 +198,13 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as licenses:
             licenses = json.load(licenses)
 
+        # check if the author is the owner of the license
         if interaction.author.id == licenses[license]["owner"]:
+            # check if the license is in the database
             if license in licenses:
+                # check if the license is activated
                 if licenses[license]["activated"]:
+                    # update json file
                     licenses[license]["activated"] = False
                     licenses[license]["deactivated"] = True
                     licenses[license]["deactivated_time"] = get_time()
@@ -190,6 +212,7 @@ class LicenseSystem(commands.Cog):
                     with open("json/licenses.json", "w") as dumpfile:
                         json.dump(licenses, dumpfile, indent=4)
 
+                    # create confirmation embed
                     embed = disnake.Embed(
                         title="License Deactivated ✅",
                         description=f"License Key: ||`{license}`||",
@@ -199,6 +222,7 @@ class LicenseSystem(commands.Cog):
                         embed=embed
                     )
                 else:
+                    # print error in embed
                     embed = disnake.Embed(
                         description=f"License ||`{license}`|| is not active/already deacivated ⛔",
                         color=disnake.Color.red()
@@ -207,6 +231,7 @@ class LicenseSystem(commands.Cog):
                         embed=embed
                     )
             else:
+                # print error in embed
                 embed = disnake.Embed(
                     description=f"License ||`{license}`|| is not valid. Plaese check the license ⛔",
                     color=disnake.Color.red()
@@ -215,6 +240,7 @@ class LicenseSystem(commands.Cog):
                     embed=embed
                 )
         else:
+            # print error in embed
             embed = disnake.Embed(
                 description="You are not the owner of this license. You cannot deactivate it ⛔",
                 color=disnake.Color.red()
@@ -233,6 +259,7 @@ class LicenseSystem(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         license
     ):
+        # let the interaction be longer than three seconds
         await interaction.response.defer(
             ephemeral=True
         )
@@ -240,11 +267,14 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as f:
             licenses = json.load(f)
 
+        # check if license is in database
         if license in licenses:
+            # delete license from json file
             del licenses[license]
             with open("json/licenses.json", "w") as dumpfile:
                 json.dump(licenses, dumpfile, indent=4)
 
+            # create confirmation embed
             embed = disnake.Embed(
                 description=f"License ||`{license}`|| deleted ✅"
             )
@@ -252,6 +282,7 @@ class LicenseSystem(commands.Cog):
                 embed=embed
             )
         else:
+            # print error in embed
             embed = disnake.Embed(
                 description=f"License ||`{license}`|| not found. Please check the key ⛔"
             )
@@ -261,15 +292,15 @@ class LicenseSystem(commands.Cog):
 
     @loop(hours=6)
     async def license_check(self):
+        # wait until bot is ready
         await self.bot.wait_until_ready()
 
-        print(f"{colorama.Fore.YELLOW} [TASK] Checking licenses...{colorama.Fore.RESET}")
+        print(f"{colorama.Fore.YELLOW} [LICENSE] [TASK] Checking licenses...{colorama.Fore.RESET}")
 
         with open("json/licenses.json", "r") as f:
             licenses = json.load(f)
 
         for license in licenses:
-
             # fetching the license's date
             date_1_string = str(licenses[license]["end_time"])
             # convert it to an datetime object
@@ -280,10 +311,9 @@ class LicenseSystem(commands.Cog):
             # convert it to an datetime object
             date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
 
-            print(f"{colorama.Fore.BLUE} [CHECK] Checking license {license}...{colorama.Fore.RESET}")
-            # check if the license is expired
+            print(f"{colorama.Fore.BLUE} [LICENSE] [CHECK] Checking license {license}...{colorama.Fore.RESET}")
+            # check if the license is expired || if the local time is older than the license's end time
             if date1 < date2:
-                # update check [not working]
                 # change json
                 licenses[license]["activated"] = False
                 licenses[license]["deactivated"] = True
@@ -293,7 +323,7 @@ class LicenseSystem(commands.Cog):
                 with open("json/licenses.json", "w") as dumpfile:
                     json.dump(licenses, dumpfile, indent=4)
 
-                print(f"{colorama.Fore.GREEN} [SUCCESS] License {license} expired.{colorama.Fore.RESET}")
+                print(f"{colorama.Fore.RED} [LICENSE] [EXPIRED] License {license} expired.{colorama.Fore.RESET}")
 
                 user = self.bot.get_user(licenses[license]["owner"])
                 embed = disnake.Embed(
@@ -305,14 +335,22 @@ class LicenseSystem(commands.Cog):
                     color=disnake.Color.red()
                 )
                 embed.set_footer(text="Your license expired and was removed from the database!", icon_url=user.avatar.url)
-                await user.send(embed=embed)
 
-                # del licenses[license]
-                with open("json/licenses.json", "w") as dumpfile:
-                    json.dump(licenses, dumpfile, indent=4)
+                # try to send embed to user
+                try:
+                    await user.send(embed=embed)
+                except disnake.HTTPException:
+                    print(f"{colorama.Fore.RED} [LICENSE] [ERROR] Could not send message to {user.name}#{user.discriminator}!{colorama.Fore.RESET}")
 
             else:
-                print(f"{colorama.Fore.GREEN} [SUCCESS] License {license} not expired.{colorama.Fore.RESET}")
+                print(f"{colorama.Fore.LIGHTGREEN_EX} [LICENSE] [SUCCESS] License {license} not expired.{colorama.Fore.RESET}")
+
+    @loop(hours=12)
+    async def license_check_expired(self):
+        await self.bot.wait_until_ready()
+        print(f"{colorama.Fore.YELLOW} [LICENSE] [TASK] Removing expired licenses...{colorama.Fore.RESET}")
+        # use method created in the other file
+        remove_expired_licenses()
 
     @license.sub_command(
         name="create",
@@ -325,7 +363,9 @@ class LicenseSystem(commands.Cog):
         duration: Times,
         useability: int
     ):
+        # create a new license
         license_key = generate()
+        # let the interaction be longer than three seconds
         await interaction.response.defer(
             ephemeral=True
         )
@@ -333,6 +373,7 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as f:
             licenses = json.load(f)
 
+        # create license in json file
         licenses[license_key] = {}
         licenses[license_key]["duration"] = duration
         licenses[license_key]["useability"] = useability
@@ -347,11 +388,14 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "w") as dumpfile:
             json.dump(licenses, dumpfile, indent=4)
 
+        # create confirmation embed
         license_embed = disnake.Embed(
             title="License Created ✅",
             color=disnake.Color.green()
         )
+        # check if useability is bigger than 1
         if useability > 1:
+            # create customized embed
             license_embed.add_field(
                 name="License ✅",
                 value=f"🔑License Key: ||`{license_key}`||\n👥Useability: `{useability}`\n⌛Duration: `{duration}`",
@@ -361,7 +405,9 @@ class LicenseSystem(commands.Cog):
                 embed=license_embed
             )
 
+        # check if useability is 1 or less
         elif useability < 1 or useability == 1:
+            # create customized embed
             license_embed.add_field(
                 name="License ✅",
                 value=f"🔑License Key: ||`{license_key}`||\n👤Useability: `{useability}`\n⌛Duration: `{duration}`",
