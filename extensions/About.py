@@ -8,7 +8,6 @@ class About(commands.Cog):
         bot
     ):
         self.bot = bot
-        self.author = "LookAtYourSkill#6388"
         self.version = "EARLY ACCESS"
         self.prefix = "/"
 
@@ -42,8 +41,10 @@ class About(commands.Cog):
                   f"`»` Momentanes Prefix: `{self.prefix}`",
             inline=False
         )
+        owner = await self.bot.get_user(493370963807830016)
         about_embed.set_author(
-            name=self.author
+            name=owner,
+            icon_url=owner.avatar.url
         )
         await interaction.edit_original_message(
             embed=about_embed
