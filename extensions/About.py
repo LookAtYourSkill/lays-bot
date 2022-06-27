@@ -26,13 +26,14 @@ class About(commands.Cog):
             embed=loading_embed,
             ephemeral=True
         )
+        owner = self.bot.get_user(493370963807830016)
 
         about_embed = disnake.Embed(
             color=interaction.author.color
         )
         about_embed.add_field(
             name="> ❓ Autor",
-            value=f"`»` Der Bot wurde von `{self.author}` geschrieben",
+            value=f"`»` Der Bot wurde von `{owner}` geschrieben",
             inline=False
         )
         about_embed.add_field(
@@ -41,7 +42,6 @@ class About(commands.Cog):
                   f"`»` Momentanes Prefix: `{self.prefix}`",
             inline=False
         )
-        owner = await self.bot.get_user(493370963807830016)
         about_embed.set_author(
             name=owner,
             icon_url=owner.avatar.url
