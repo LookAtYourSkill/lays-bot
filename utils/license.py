@@ -1,3 +1,4 @@
+import copy
 import datetime
 import json
 import random
@@ -14,8 +15,35 @@ def generate():
 
 
 def get_time() -> str:
-    time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+    # time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
     return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")  # datetime.datetime.timestamp(time)
+
+
+def remove_expired_licenses():
+    with open("json/licenses.json", "r") as licenses:
+        licenses = json.load(licenses)
+
+    # create a copy from the json
+    license_copy = copy.copy(licenses)
+
+    # loop through the licenses
+    for license in license_copy:
+        # check if duration is lifetime
+        if license_copy[license]["duration"] == "Lifetime" and license_copy[license]["duration"] is None:
+            print(f"{license} is Lifetime | Skipped")
+            continue
+        else:
+            # check if the license is expired
+            if license_copy[license]["expired"] is True:
+                # remove the license
+                del licenses[license]
+                # save the new json
+                with open("json/licenses.json", "w") as dumpfile:
+                    json.dump(licenses, dumpfile, indent=4)
+
+                continue
+
+# ! NOT USED
 
 
 def check_date():
