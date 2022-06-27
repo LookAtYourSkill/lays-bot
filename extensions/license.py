@@ -1,11 +1,12 @@
 import json
 from enum import Enum
+import datetime
 
 import disnake
 import colorama
 from disnake.ext import commands
 from disnake.ext.tasks import loop
-from utils.license import generate, get_time, set_time_calcs, get_date
+from utils.license import generate, get_time, set_time_calcs
 
 
 class Times(str, Enum):
@@ -267,10 +268,23 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as f:
             licenses = json.load(f)
 
-        for license in licenses.keys():
+        for license in licenses:
+
+            # fetching the license's date
+            date_1_string = str(licenses[license]["end_time"])
+            # convert it to an datetime object
+            date1 = datetime.datetime.strptime(date_1_string, "%d.%m.%Y %H:%M:%S")
+
+            # fetching the current time and date
+            date_2_string = str(get_time())
+            # convert it to an datetime object
+            date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
+
             print(f"{colorama.Fore.BLUE} [CHECK] Checking license {license}...{colorama.Fore.RESET}")
-            if licenses[license]["end_time"][:9] < get_date():
+            # check if the license is expired
+            if date1 < date2:
                 # update check [not working]
+                # change json
                 licenses[license]["activated"] = False
                 licenses[license]["deactivated"] = True
                 licenses[license]["expired"] = True
@@ -285,11 +299,12 @@ class LicenseSystem(commands.Cog):
                 embed = disnake.Embed(
                     title="Your License Expired ⛔",
                     description=f"🔑 License Key: ||`{license}`||\n"
-                                f"⌛ Expiration Time: `{set_time_calcs(license)}`\n\n"
+                                f"⌛ Expired At: `{licenses[license]['end_time']}`\n\n"
                                 f"👥 Guild: `{licenses[license]['guild']}`\n"
                                 f"👤 Owner: `{licenses[license]['owner']}`",
                     color=disnake.Color.red()
                 )
+                embed.set_footer(text="Your license expired and was removed from the database!", icon_url=user.avatar.url)
                 await user.send(embed=embed)
 
                 # del licenses[license]
@@ -298,8 +313,6 @@ class LicenseSystem(commands.Cog):
 
             else:
                 print(f"{colorama.Fore.GREEN} [SUCCESS] License {license} not expired.{colorama.Fore.RESET}")
-
-        print(f"{colorama.Fore.GREEN} [SUCCESS] !!!!!!! Checking licenses DONE !!!!!!!{colorama.Fore.RESET}")
 
     @license.sub_command(
         name="create",

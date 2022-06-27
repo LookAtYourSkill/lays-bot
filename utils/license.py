@@ -14,7 +14,8 @@ def generate():
 
 
 def get_time() -> str:
-    return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+    time = datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+    return datetime.datetime.now().strftime("%d.%m.%Y %H:%M:%S")  # datetime.datetime.timestamp(time)
 
 
 def check_date():
@@ -22,17 +23,22 @@ def check_date():
         licenses = json.load(licenses)
 
     for license in licenses:
-        if licenses[license]["duration"] == "Lifetime":
+        if licenses[license]["duration"] == "Lifetime" and licenses[license]["duration"] is None:
+            print(f"{license} is Lifetime | Skipped")
             continue
         else:
-            date1 = datetime.datetime.strptime(licenses[license]["end_time"], "%d.%m.%Y %H:%M:%S")
-            date2 = get_date()
+            date_1_string = str(licenses[license]["end_time"])
+            date1 = datetime.datetime.strptime(date_1_string, "%d.%m.%Y %H:%M:%S")
+
+            date_2_string = str(get_time())
+            date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
+
             if date1 > date2:
-                print(date1, date2)
-                return True
-            else:
-                print(date1, date2)
-                return False
+                # let it return True
+                print(f"{license} is valid until {licenses[license]['end_time']}")
+            elif date1 < date2:
+                # let it return False
+                print(f"License {license} is expired")
 
 
 def get_date() -> str:
