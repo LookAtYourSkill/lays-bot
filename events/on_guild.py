@@ -35,6 +35,7 @@ class on_guild(commands.Cog):
             "mod_channel": (),
             "welcome_channel": (),
             "join_role": (),
+            "license": [],
             "watchlist": []
         }
 
