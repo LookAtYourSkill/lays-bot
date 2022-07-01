@@ -44,8 +44,6 @@ def remove_expired_licenses():
                 continue
 
 # ! NOT USED
-
-
 def check_date():
     with open("json/licenses.json", "r") as licenses:
         licenses = json.load(licenses)
