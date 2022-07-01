@@ -687,26 +687,68 @@ class ticketCreator(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        if interaction.author.guild_permissions.manage_channels:
+        with open("json/general.json", "r") as general_info:
+            general = json.load(general_info)
+        with open("json/guild.json", "r") as guild_info:
+            guilds = json.load(guild_info)
+        with open("json/licenses.json", "r") as license_info:
+            licenses = json.load(license_info)
 
-            # Create embed
-            view = ticket_message()
-            ticket_embed = disnake.Embed(
-                title="Ticketsystem",
-                description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
-                color=disnake.Color.green()
-            )
+        if not general["license_check"]:
+            if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
+                no_licesnse_embed = disnake.Embed(
+                    title="No license ⛔",
+                    description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                    color=disnake.Color.red()
+                )
+                await interaction.response.send_message(
+                    embed=no_licesnse_embed,
+                    ephemeral=True
+                )
 
-            # send embed with buttons
-            await interaction.send(
-                embed=ticket_embed,
-                view=view
-            )
+            else:
+                if interaction.author.guild_permissions.manage_channels:
+
+                    # Create embed
+                    view = ticket_message()
+                    ticket_embed = disnake.Embed(
+                        title="Ticketsystem",
+                        description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
+                        color=disnake.Color.green()
+                    )
+
+                    # send embed with buttons
+                    await interaction.send(
+                        embed=ticket_embed,
+                        view=view
+                    )
+                else:
+                    await interaction.response.send_message(
+                        content="You don't have the permissions to use this command!",
+                        ephemeral=True
+                    )
+
         else:
-            await interaction.response.send_message(
-                content="You don't have the permissions to use this command!",
-                ephemeral=True
-            )
+            if interaction.author.guild_permissions.manage_channels:
+
+                # Create embed
+                view = ticket_message()
+                ticket_embed = disnake.Embed(
+                    title="Ticketsystem",
+                    description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
+                    color=disnake.Color.green()
+                )
+
+                # send embed with buttons
+                await interaction.send(
+                    embed=ticket_embed,
+                    view=view
+                )
+            else:
+                await interaction.response.send_message(
+                    content="You don't have the permissions to use this command!",
+                    ephemeral=True
+                )
 
     @commands.Cog.listener()
     async def on_ready(self):
