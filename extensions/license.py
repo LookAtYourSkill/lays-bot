@@ -122,10 +122,13 @@ class LicenseSystem(commands.Cog):
         with open("json/licenses.json", "r") as licenses:
             licenses = json.load(licenses)
 
+        with open("json/guild.json", "r") as guild:
+            guild_info = json.load(guild)
+
         # check if license is in database
         if license in licenses:
             # check if the license is already activated/already used till limit
-            if licenses[license]["useability"] > 0:
+            if licenses[license]["useability"] > 0 or licenses[license]["useability"] == 1:
                 # check if the license deactivated
                 if licenses[license]["deactivated"]:
                     # update json file
@@ -139,6 +142,11 @@ class LicenseSystem(commands.Cog):
 
                     with open("json/licenses.json", "w") as dumpfile:
                         json.dump(licenses, dumpfile, indent=4, default=str)
+
+                    guild_info[str(interaction.guild.id)]["license"] = license
+
+                    with open("json/guild.json", "w") as dumpfile:
+                        json.dump(guild_info, dumpfile, indent=4, default=str)
 
                     # create confirmation embed
                     embed = disnake.Embed(
@@ -302,48 +310,51 @@ class LicenseSystem(commands.Cog):
 
         for license in licenses:
             # fetching the license's date
-            date_1_string = str(licenses[license]["end_time"])
-            # convert it to an datetime object
-            date1 = datetime.datetime.strptime(date_1_string, "%d.%m.%Y %H:%M:%S")
+            if licenses[license]["end_time"] != "Lifetime":
+                date_1_string = str(licenses[license]["end_time"])
+                # convert it to an datetime object
+                date1 = datetime.datetime.strptime(date_1_string, "%d.%m.%Y %H:%M:%S")
 
-            # fetching the current time and date
-            date_2_string = str(get_time())
-            # convert it to an datetime object
-            date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
+                # fetching the current time and date
+                date_2_string = str(get_time())
+                # convert it to an datetime object
+                date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
 
-            print(f"{colorama.Fore.BLUE} [LICENSE] [CHECK] Checking license {license}...{colorama.Fore.RESET}")
-            # check if the license is expired || if the local time is older than the license's end time
-            if date1 < date2:
-                # change json
-                licenses[license]["activated"] = False
-                licenses[license]["deactivated"] = True
-                licenses[license]["expired"] = True
-                licenses[license]["deactivated_time"] = get_time()
+                print(f"{colorama.Fore.BLUE} [LICENSE] [CHECK] Checking license {license}...{colorama.Fore.RESET}")
+                # check if the license is expired || if the local time is older than the license's end time
+                if date1 < date2:
+                    # change json
+                    licenses[license]["activated"] = False
+                    licenses[license]["deactivated"] = True
+                    licenses[license]["expired"] = True
+                    licenses[license]["deactivated_time"] = get_time()
 
-                with open("json/licenses.json", "w") as dumpfile:
-                    json.dump(licenses, dumpfile, indent=4)
+                    with open("json/licenses.json", "w") as dumpfile:
+                        json.dump(licenses, dumpfile, indent=4)
 
-                print(f"{colorama.Fore.RED} [LICENSE] [EXPIRED] License {license} expired.{colorama.Fore.RESET}")
+                    print(f"{colorama.Fore.RED} [LICENSE] [EXPIRED] License {license} expired.{colorama.Fore.RESET}")
 
-                user = self.bot.get_user(licenses[license]["owner"])
-                embed = disnake.Embed(
-                    title="Your License Expired ⛔",
-                    description=f"🔑 License Key: ||`{license}`||\n"
-                                f"⌛ Expired At: `{licenses[license]['end_time']}`\n\n"
-                                f"👥 Guild: `{licenses[license]['guild']}`\n"
-                                f"👤 Owner: `{licenses[license]['owner']}`",
-                    color=disnake.Color.red()
-                )
-                embed.set_footer(text="Your license expired and was removed from the database!", icon_url=user.avatar.url)
+                    user = self.bot.get_user(licenses[license]["owner"])
+                    embed = disnake.Embed(
+                        title="Your License Expired ⛔",
+                        description=f"🔑 License Key: ||`{license}`||\n"
+                                    f"⌛ Expired At: `{licenses[license]['end_time']}`\n\n"
+                                    f"👥 Guild: `{licenses[license]['guild']}`\n"
+                                    f"👤 Owner: `{licenses[license]['owner']}`",
+                        color=disnake.Color.red()
+                    )
+                    embed.set_footer(text="Your license expired and was removed from the database!", icon_url=user.avatar.url)
 
-                # try to send embed to user
-                try:
-                    await user.send(embed=embed)
-                except disnake.HTTPException:
-                    print(f"{colorama.Fore.RED} [LICENSE] [ERROR] Could not send message to {user.name}#{user.discriminator}!{colorama.Fore.RESET}")
+                    # try to send embed to user
+                    try:
+                        await user.send(embed=embed)
+                    except disnake.HTTPException:
+                        print(f"{colorama.Fore.RED} [LICENSE] [ERROR] Could not send message to {user.name}#{user.discriminator}!{colorama.Fore.RESET}")
 
+                else:
+                    print(f"{colorama.Fore.LIGHTGREEN_EX} [LICENSE] [SUCCESS] License {license} not expired.{colorama.Fore.RESET}")
             else:
-                print(f"{colorama.Fore.LIGHTGREEN_EX} [LICENSE] [SUCCESS] License {license} not expired.{colorama.Fore.RESET}")
+                print(f"{colorama.Fore.LIGHTGREEN_EX} [LICENSE] [SUCCESS] License {license} skipping.{colorama.Fore.RESET}")
 
     @loop(hours=12)
     async def license_check_expired(self):
