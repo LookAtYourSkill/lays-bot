@@ -1,8 +1,9 @@
 import json
+import logging
 import os
+
 import disnake
 from disnake.ext import commands
-import logging
 
 log = logging.getLogger(__name__)
 
