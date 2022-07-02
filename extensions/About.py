@@ -60,7 +60,7 @@ class About(commands.Cog):
                 about_embed.add_field(
                     name="> ❓ Informationen",
                     value=f"`»` Momentane Version: `{self.version}`\n"
-                            f"`»` Momentanes Prefix: `{self.prefix}`",
+                          f"`»` Momentanes Prefix: `{self.prefix}`",
                     inline=False
                 )
                 about_embed.set_author(
@@ -93,7 +93,7 @@ class About(commands.Cog):
             about_embed.add_field(
                 name="> ❓ Informationen",
                 value=f"`»` Momentane Version: `{self.version}`\n"
-                        f"`»` Momentanes Prefix: `{self.prefix}`",
+                      f"`»` Momentanes Prefix: `{self.prefix}`",
                 inline=False
             )
             about_embed.set_author(
