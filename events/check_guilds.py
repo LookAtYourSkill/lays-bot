@@ -15,10 +15,13 @@ class GuildCheck(commands.Cog):
         with open("json/tickets.json", "r") as ticket_info:
             ticket_data = json.load(ticket_info)
 
+        # going through all guilds, the bot is in
         for guild in self.bot.guilds:
+            # check if the guild is in the json file
             if str(guild.id) in guild_data:
                 pass
             else:
+                # if not add it to the json file
                 print(f"{guild.name} has been added to the guild list")
                 guild_data[guild.id] = {
                     "server_name": f"{str(guild.name)}",
@@ -38,10 +41,13 @@ class GuildCheck(commands.Cog):
                 with open("json/guild.json", "w") as dumpfile:
                     json.dump(guild_data, dumpfile, indent=4)
 
+        # same here, going through all guilds the bot is in
         for _guild in self.bot.guilds:
+            # check if the guild is in the json file
             if str(guild.id) in ticket_data:
                 pass
             else:
+                # if not add it to the json file
                 print(f"{_guild.name} has been added to the ticket list")
                 ticket_data[_guild.id] = {
                     "ticket_counter": 0

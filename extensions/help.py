@@ -62,13 +62,17 @@ class Help(commands.Cog):
             color=interaction.author.color
         )
 
+        # check if the cog is set
         if not cog:  # and not command:
+            # filter cogs that have minimal one command in it
             cog_filter = [
                 cog for cog in self.bot.cogs.values() if len(cog.get_application_commands()) > 0
             ]
 
+            # going through all cogs
             for cog in cog_filter:
                 # emoji = getattr(cog, "COG_EMOJI", None)
+                # add a field for the cog
                 embed.add_field(
                     name=f"__{cog.qualified_name}__",
                     value=f"`{cog.description if cog.description else 'No description'}`",
@@ -79,10 +83,13 @@ class Help(commands.Cog):
                     embed=embed
                 )
 
+        # check if cog is set
         elif cog:  # and not command:
 
+            # get the cog
             __cog = self.bot.get_cog(cog)
 
+            # check if cog exists
             if not __cog:
                 error_embed = disnake.Embed(
                     description=f"Did not found the cog you requested (`{cog}`)",
@@ -93,15 +100,22 @@ class Help(commands.Cog):
                 )
 
             else:
+                # if cog exists
                 cog_embed = disnake.Embed(
+                    # get the name of the cog
                     title=f"__{__cog.qualified_name}__",
+                    # get the description of the cog if it have one
                     description=f"`{__cog.description if __cog.description else 'No description'}`",
                     color=interaction.author.color
                 )
+                # get all commands of the cog
                 cmd_list = []
+                # loop through all slash commands
                 for cmd in __cog.get_application_commands():
+                    # add the command's name to the list
                     cmd_list.append(f" - `{cmd.qualified_name}`\n")
 
+                # add the list of commands to the embed
                 cog_embed.add_field(
                     name="__Commands__",
                     value="".join(cmd_list),
