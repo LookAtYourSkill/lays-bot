@@ -180,6 +180,31 @@ class Help2(commands.Cog):
                     ephemeral=True
                 )
 
+        elif command:
+            __command = self.bot.get_slash_command(command)
+
+            if not __command:
+                error_embed = disnake.Embed(
+                    description="Did not found the command you requested",
+                    color=disnake.Color.red()
+                )
+                await interaction.response.send_message(
+                    embed=error_embed,
+                    ephemeral=True
+                )
+
+            else:
+                embed = disnake.Embed(
+                    title=f"__{__command.qualified_name}__",
+                    description=f"`{__command.description if __command.description else 'No description'}`",
+                    color=interaction.author.color
+                )
+
+                await interaction.response.send_message(
+                    embed=embed,
+                    ephemeral=True
+                )
+
 
 def setup(bot):
     bot.add_cog(Help(bot))
