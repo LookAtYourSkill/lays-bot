@@ -126,10 +126,11 @@ class Timer(commands.Cog):
     @loop(minutes=1)
     async def check_timers(self):
         await self.bot.wait_until_ready()
-        print(f"{colorama.Fore.LIGHTYELLOW_EX} [TIMER] [TASK] Checking timers...{colorama.Fore.RESET}")
+        print(f"{colorama.Fore.LIGHTWHITE_EX} [TIMER] [TASK] Checking timers...{colorama.Fore.RESET}")
         with open("json/timer.json", "r") as timer_info:
             timers = json.load(timer_info)
 
+        print(f"{colorama.Fore.BLUE} [TIMER] [PENDING] Removing expired timers...{colorama.Fore.RESET}")
         for timer in timers:
             date_1_string = str(timers[timer]["end_time"])
             date1 = datetime.datetime.strptime(date_1_string, "%d.%m.%Y %H:%M:%S")
@@ -138,7 +139,7 @@ class Timer(commands.Cog):
             date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
 
             if date1 < date2:
-                print(f"{colorama.Fore.LIGHTRED_EX} [TIMER] [SUCCESS] Timer over, removing...{colorama.Fore.RESET}")
+                print(f"{colorama.Fore.GREEN} [TIMER] [SUCCESS] Timer over, removing...{colorama.Fore.RESET}")
 
                 embed = disnake.Embed(
                     title="Timer",
@@ -160,6 +161,8 @@ class Timer(commands.Cog):
                 remove_expired_timers()
             else:
                 print(f"{colorama.Fore.GREEN} [TIMER] [SUCCESS] Timer is still running...{colorama.Fore.RESET}")
+
+        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TIMER] [DONE] Finished {colorama.Fore.RESET}")
 
 
 def setup(bot):
