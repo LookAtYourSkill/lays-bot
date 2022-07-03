@@ -15,6 +15,9 @@ bot = commands.Bot(
     # sync_commands_debug=True
 )
 
+with open("etc/config.json", "r") as config_file:
+    config = json.load(config_file)
+
 
 @bot.event
 async def on_ready():
@@ -49,9 +52,6 @@ for filename in os.listdir("./events"):
 
 log.info("Finished")
 
-
-with open("etc/config.json", "r") as config:
-    config = json.load(config)
 
 if __name__ == "__main__":
     bot.run(config["token"]["token"])
