@@ -50,6 +50,7 @@ for filename in os.listdir("./events"):
         except Exception as e:
             print(f"Failed to load event {filename}, {e}")
 
+print("----------------------------------------------------")
 log.info("Finished")
 
 
