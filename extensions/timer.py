@@ -1,9 +1,13 @@
-import asyncio
+import datetime
 import json
 
+import colorama
 import disnake
+import humanfriendly
 import humanize
 from disnake.ext import commands
+from disnake.ext.tasks import loop
+from utils._time import get_time, remove_expired_timers, set_end_time
 
 
 class Timer(commands.Cog):
@@ -12,15 +16,18 @@ class Timer(commands.Cog):
     '''
     def __init__(self, bot):
         self.bot = bot
+        self.check_timers.start()
 
     @commands.slash_command(name="timer", description="Creates a timer for yourself or a user")
-    async def timer(interaction: disnake.ApplicationCommandInteraction, time: int, member: disnake.Member = None, *, message: str):
+    async def timer(interaction: disnake.ApplicationCommandInteraction, time, member: disnake.Member = None, *, message: str):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
         with open("json/guild.json", "r") as guild_info:
             guilds = json.load(guild_info)
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
+        with open("json/timer.json", "r") as timer_info:
+            timers = json.load(timer_info)
 
         if not general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
@@ -37,6 +44,20 @@ class Timer(commands.Cog):
             else:
                 if member is None:
                     member = interaction.author
+
+                real_time = humanfriendly.parse_timespan(time)
+
+                timers[str(interaction.author.id)] = {
+                    "end_time": set_end_time(real_time),
+                    "message": message,
+                    "member": member.id,
+                    "author": interaction.author.id,
+                    # "messsage_id": interaction.message.id,
+                    "channel": interaction.channel.id
+                }
+
+                with open("json/timer.json", "w") as dump_file:
+                    json.dump(timers, dump_file, indent=4, default=str)
 
                 embed = disnake.Embed(
                     title="Timer",
@@ -61,21 +82,23 @@ class Timer(commands.Cog):
                     embed=embed
                 )
 
-                await asyncio.sleep(time)
-
-                finish_embed = disnake.Embed(
-                    description=f"{member.mention}'s timer has finished!",
-                    color=disnake.Color.green()
-                )
-
-                await interaction.edit_original_message(
-                    embed=finish_embed,
-                    content=f"{member.mention} | {interaction.author.mention}"
-                )
-
         else:
             if member is None:
                 member = interaction.author
+
+            real_time = humanfriendly.parse_timespan(time)
+
+            timers[str(interaction.author.id)] = {
+                "end_time": set_end_time(real_time),
+                "message": message,
+                "member": member.id,
+                "author": interaction.author.id,
+                # "messsage_id": interaction.message.id,
+                "channel": interaction.channel.id
+            }
+
+            with open("json/timer.json", "w") as dump_file:
+                json.dump(timers, dump_file, indent=4, default=str)
 
             embed = disnake.Embed(
                 title="Timer",
@@ -100,17 +123,43 @@ class Timer(commands.Cog):
                 embed=embed
             )
 
-            await asyncio.sleep(time)
+    @loop(minutes=1)
+    async def check_timers(self):
+        await self.bot.wait_until_ready()
+        print(f"{colorama.Fore.LIGHTYELLOW_EX} [TIMER] [TASK] Checking timers...{colorama.Fore.RESET}")
+        with open("json/timer.json", "r") as timer_info:
+            timers = json.load(timer_info)
 
-            finish_embed = disnake.Embed(
-                description=f"{member.mention}'s timer has finished!",
-                color=disnake.Color.green()
-            )
+        for timer in timers:
+            date_1_string = str(timers[timer]["end_time"])
+            date1 = datetime.datetime.strptime(date_1_string, "%d.%m.%Y %H:%M:%S")
 
-            await interaction.edit_original_message(
-                embed=finish_embed,
-                content=f"{member.mention} | {interaction.author.mention}"
-            )
+            date_2_string = str(get_time())
+            date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
+
+            if date1 < date2:
+                print(f"{colorama.Fore.LIGHTRED_EX} [TIMER] [SUCCESS] Timer over, removing...{colorama.Fore.RESET}")
+
+                embed = disnake.Embed(
+                    title="Timer",
+                    description=f"<@{timers[timer]['author']}> your timer just finished!",
+                    color=disnake.Color.green()
+                )
+
+                channel = self.bot.get_channel(timers[timer]["channel"])
+
+                await channel.send(
+                    f"<@{timers[timer]['author']}>",
+                    embed=embed
+                )
+
+                timers[timer]["end_time"] = True
+                with open("json/timer.json", "w") as dump_file:
+                    json.dump(timers, dump_file, indent=4, default=str)
+
+                remove_expired_timers()
+            else:
+                print(f"{colorama.Fore.GREEN} [TIMER] [SUCCESS] Timer is still running...{colorama.Fore.RESET}")
 
 
 def setup(bot):
