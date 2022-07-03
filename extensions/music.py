@@ -1,6 +1,8 @@
 import asyncio
 import datetime
 
+import json
+
 import disnake
 import wavelink
 from disnake.ext import commands
@@ -27,14 +29,17 @@ class Music(commands.Cog):
         """Connect to our Lavalink nodes."""
         await self.client.wait_until_ready()
 
+        with open("etc/config.json", "r") as config_file:
+            config = json.load(config_file)
+
         await wavelink.NodePool.create_node(
             bot=self.client,
-            host='127.0.0.5',
-            port=2335,
-            password='youshallnotpass',
+            host=config["lavalink"]["host"],
+            port=config["lavalink"]["port"],
+            password=config["lavalink"]["password"],
             spotify_client=spotify.SpotifyClient(
-                client_id="1dbe1627767f40d3b242ea6a77aecf8f",
-                client_secret="ebac778486ed49958f182df9273947fd"
+                client_id=config["lavalink"]["spotify_client_id"],
+                client_secret=config["lavalink"]["spotify_client_secret"]
             )
         )
 
