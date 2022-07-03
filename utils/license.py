@@ -40,7 +40,6 @@ def remove_expired_licenses():
                 # save the new json
                 with open("json/licenses.json", "w") as dumpfile:
                     json.dump(licenses, dumpfile, indent=4)
-
                 continue
 
 # ! NOT USED
