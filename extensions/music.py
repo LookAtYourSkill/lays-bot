@@ -29,7 +29,7 @@ class Music(commands.Cog):
 
         await wavelink.NodePool.create_node(
             bot=self.client,
-            host='127.0.0.1',
+            host='127.0.0.5',
             port=2335,
             password='youshallnotpass',
             spotify_client=spotify.SpotifyClient(
