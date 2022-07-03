@@ -1,7 +1,25 @@
 from typing import Optional
+from enum import Enum
 
 import disnake
 from disnake.ext import commands
+
+
+class Cogs(str, Enum):
+    About = "About"
+    Changelog = "Changelog"
+    Help = "Help"
+    Info = "Info"
+    LicenseSystem = "LicenseSystem"
+    Moderation = "Moderation"
+    Music = "Music"
+    Owner = "Owner"
+    Roles = "Roles"
+    Setup = "Setup"
+    Change = "Change"
+    TicketSystem = "TicketSystem"
+    Timer = "Timer"
+    Twitch = "Twitch"
 
 
 class Help(commands.Cog):
@@ -20,7 +38,13 @@ class Help(commands.Cog):
     async def help(
         self,
         interaction: disnake.ApplicationCommandInteraction,
-        cog: (Optional[str]) = None
+        cog: (Optional[str]) = commands.Param(
+            None,
+            name="cog",
+            description="Chose the cog you want help from!",
+            choices=Cogs
+        )
+        # cog: (Optional[str]) = None
         # command: (Optional[str]) = None
     ):
         lol_embed = disnake.Embed(
@@ -129,7 +153,7 @@ class Help2(commands.Cog):
 
             if not __cog:
                 error_embed = disnake.Embed(
-                    description=f"Did not found the cog, you requested (`{cog}`)",
+                    description="Did not found the cog you requested",
                     color=disnake.Color.red()
                 )
                 await interaction.response.send_message(
