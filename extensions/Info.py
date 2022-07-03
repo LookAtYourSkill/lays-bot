@@ -7,6 +7,9 @@ from disnake.ext import commands
 
 
 class Info(commands.Cog):
+    '''
+    Shows the information for users or a server
+    '''
     def __init__(self, bot):
         self.bot = bot
 

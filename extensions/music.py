@@ -8,6 +8,9 @@ from wavelink.ext import spotify
 
 
 class Music(commands.Cog):
+    '''
+    Music commands for more fun in a voice channel
+    '''
     def __init__(self, client: disnake.Client):
         self.client = client
         self.loop = False

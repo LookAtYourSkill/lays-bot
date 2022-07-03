@@ -5,6 +5,9 @@ from disnake.ext import commands
 
 
 class About(commands.Cog):
+    '''
+    Gives information about the bot.
+    '''
     def __init__(
         self,
         bot

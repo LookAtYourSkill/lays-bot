@@ -27,6 +27,9 @@ class Times(str, Enum):
 
 
 class LicenseSystem(commands.Cog):
+    '''
+    The License System, which the bot is based on
+    '''
     def __init__(self, bot):
         self.bot = bot
         self.license_check.start()

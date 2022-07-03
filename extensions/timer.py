@@ -7,6 +7,9 @@ from disnake.ext import commands
 
 
 class Timer(commands.Cog):
+    '''
+    Timer for users per chat
+    '''
     def __init__(self, bot):
         self.bot = bot
 

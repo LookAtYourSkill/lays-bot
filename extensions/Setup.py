@@ -4,6 +4,9 @@ import json
 
 
 class Setup(commands.Cog):
+    '''
+    Command to set up your server probably for the bot
+    '''
     def __init__(self, bot):
         self.bot = bot
         self.PATH = "json/guild.json"
@@ -420,6 +423,9 @@ class Setup(commands.Cog):
 
 
 class Change(commands.Cog):
+    '''
+    Changes the settings of the bot
+    '''
     def __init__(self, bot):
         self.bot = bot
         self.PATH = "json/guild.json"

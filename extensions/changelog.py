@@ -3,6 +3,9 @@ from disnake.ext import commands
 
 
 class Changelog(commands.Cog):
+    '''
+    Shows the changelog for the bot
+    '''
     def __init__(self, bot):
         self.bot = bot
         self.version = "EARLY ACCESS"

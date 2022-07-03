@@ -1,4 +1,3 @@
-from unittest import async_case
 import disnake
 from disnake.ext import commands
 from textwrap import dedent
@@ -11,6 +10,9 @@ from disnake.ext.tasks import loop
 
 
 class Twitch(commands.Cog):
+    '''
+    Twitch notifications from the servers watchlist
+    '''
     def __init__(self, bot):
         self.bot = bot
         self.check_streams.start()

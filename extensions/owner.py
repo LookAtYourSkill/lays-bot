@@ -5,15 +5,18 @@ from disnake.ext import commands
 
 
 class Owner(commands.Cog):
+    '''
+    Commands for the owner of the bot
+    '''
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="settings")
-    async def settings(self, interaction: disnake.ApplicationCommandInteraction):
+    @commands.slash_command(name="set")
+    async def set(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
     @commands.is_owner()
-    @settings.sub_command(name="license")
+    @set.sub_command(name="license")
     async def license(self, interaction: disnake.ApplicationCommandInteraction):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)

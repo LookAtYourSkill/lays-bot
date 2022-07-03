@@ -669,7 +669,10 @@ class ticket_message(disnake.ui.View):
             )
 
 
-class ticketCreator(commands.Cog):
+class TicketSystem(commands.Cog):
+    '''
+    The Ticket System with which the bot can create tickets and support them
+    '''
     def __init__(self, bot):
         self.bot = bot
         self.persistent_views_added = False
@@ -763,4 +766,4 @@ class ticketCreator(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(ticketCreator(bot))
+    bot.add_cog(TicketSystem(bot))

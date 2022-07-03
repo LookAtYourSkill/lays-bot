@@ -5,6 +5,9 @@ from disnake.ext import commands
 
 
 class Roles(commands.Cog):
+    '''
+    Role management for users per chat
+    '''
     def __init__(self, bot):
         self.bot = bot
 

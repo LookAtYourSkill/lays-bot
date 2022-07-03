@@ -9,6 +9,9 @@ from disnake.ext import commands
 
 
 class Moderation(commands.Cog):
+    '''
+    Moderation command to manage users
+    '''
     def __init__(self, bot):
         self.bot = bot
 
