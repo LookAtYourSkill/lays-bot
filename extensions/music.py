@@ -96,8 +96,8 @@ class Music(commands.Cog):
             channel = await self.client.fetch_channel(self.channel)
             await channel.send(embed=empty)
 
-            await asyncio.sleep(120)
-            await vc.disconnect()
+            # await asyncio.sleep(120)
+            # await vc.disconnect()
 
         elif reason == "FINISHED":
             # ! CASE FINISHED
