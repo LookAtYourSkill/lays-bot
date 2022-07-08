@@ -415,7 +415,7 @@ class Moderation(commands.Cog):
     ):
         pass
 
-    @clear.sub_command()
+    @clear.sub_command(description="Clears embed in a channel")
     async def embeds(
         self,
         interaction: disnake.ApplicationCommandInteraction,
@@ -509,7 +509,7 @@ class Moderation(commands.Cog):
                     embed=purge_embed
                 )
 
-    @clear.sub_command()
+    @clear.sub_command(description="Clears pinned messages in a channel")
     async def pinned(
         self,
         interaction: disnake.ApplicationCommandInteraction,
@@ -606,7 +606,7 @@ class Moderation(commands.Cog):
                     ephemeral=True
                 )
 
-    @clear.sub_command()
+    @clear.sub_command(description="Clears all messages in a channel")
     async def messages(
         self,
         interaction: disnake.ApplicationCommandInteraction,
@@ -701,7 +701,7 @@ class Moderation(commands.Cog):
                     embed=purge_embed
                 )
 
-    @clear.sub_command()
+    @clear.sub_command(description="Clears images in a channel")
     async def images(
         self,
         interaction: disnake.ApplicationCommandInteraction,
