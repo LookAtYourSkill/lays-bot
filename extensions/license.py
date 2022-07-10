@@ -17,13 +17,13 @@ from utils.license import (
 
 
 class Times(str, Enum):
-    day = "1 Day"
-    seven_days = "7 Days"
-    one_month = "1 Month"
-    three_months = "3 Months"
-    six_months = "6 Months"
-    year = "1 Year"
-    lifetime = "Lifetime"
+    Day = "1 Day"
+    Days = "7 Days"
+    Month = "1 Month"
+    Months = "3 Months"
+    Months_ = "6 Months"
+    Year = "1 Year"
+    Lifetime = "Lifetime"
 
 
 class LicenseSystem(commands.Cog):
