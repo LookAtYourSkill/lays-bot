@@ -30,12 +30,15 @@ class About(commands.Cog):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -64,6 +67,11 @@ class About(commands.Cog):
                     name="> ❓ Informationen",
                     value=f"`»` Momentane Version: `{self.version}`\n"
                           f"`»` Momentanes Prefix: `{self.prefix}`",
+                    inline=False
+                )
+                about_embed.add_field(
+                    name="> ❓ Lizenz",
+                    value=f"`»` Lizenz System Status: `{'Active' if general['license_check'] else 'Inactive'}`",
                     inline=False
                 )
                 about_embed.set_author(
@@ -97,6 +105,11 @@ class About(commands.Cog):
                 name="> ❓ Informationen",
                 value=f"`»` Momentane Version: `{self.version}`\n"
                       f"`»` Momentanes Prefix: `{self.prefix}`",
+                inline=False
+            )
+            about_embed.add_field(
+                name="> ❓ Lizenz",
+                value=f"`»` Lizenz System Status: `{'Active' if general['license_check'] else 'Inactive'}`",
                 inline=False
             )
             about_embed.set_author(

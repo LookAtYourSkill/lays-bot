@@ -16,34 +16,36 @@ class Owner(commands.Cog):
         pass
 
     @commands.is_owner()
-    @set.sub_command(name="license")
-    async def license(self, interaction: disnake.ApplicationCommandInteraction):
+    @set.sub_command(name="license", description="Activates/Deactivates the license system")
+    async def update_license(self, interaction: disnake.ApplicationCommandInteraction):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
 
-        if not general["license"]:
+        if general["license_check"] is False:
             on_embed = disnake.Embed(
                 description="License check is now enabled",
                 color=disnake.Color.green()
             )
             await interaction.response.send_message(
-                embed=on_embed
+                embed=on_embed,
+                ephemeral=True
             )
 
-            general["license"] = True
+            general["license_check"] = True
             with open("json/general.json", "w") as dump_file:
                 json.dump(general, dump_file, indent=4)
 
-        elif general["license"]:
+        elif general["license_check"]:
             off_embed = disnake.Embed(
                 description="License check is now disabled",
                 color=disnake.Color.red()
             )
             await interaction.response.send_message(
-                embed=off_embed
+                embed=off_embed,
+                ephemeral=True
             )
 
-            general["license"] = False
+            general["license_check"] = False
             with open("json/general.json", "w") as dump_file:
                 json.dump(general, dump_file, indent=4)
 
@@ -53,7 +55,8 @@ class Owner(commands.Cog):
                 color=disnake.Color.red()
             )
             await interaction.response.send_message(
-                embed=error_embed
+                embed=error_embed,
+                ephemeral=True
             )
 
 

@@ -36,12 +36,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -123,12 +126,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -246,12 +252,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -344,12 +353,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -428,12 +440,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -522,12 +537,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -619,12 +637,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
@@ -714,12 +735,15 @@ class Moderation(commands.Cog):
         with open("json/licenses.json", "r") as license_info:
             licenses = json.load(license_info)
 
-        if not general["license_check"]:
+        if general["license_check"]:
             if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
                 no_licesnse_embed = disnake.Embed(
                     title="No license ⛔",
                     description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
                     color=disnake.Color.red()
+                )
+                no_licesnse_embed.set_footer(
+                    text="If you dont have a license, please contact the bot owner"
                 )
                 await interaction.response.send_message(
                     embed=no_licesnse_embed,
