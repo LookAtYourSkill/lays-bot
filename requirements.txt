@@ -1,0 +1,6 @@
+disnake
+requests
+humanize
+humanfriendly
+colorama
+asyncio
