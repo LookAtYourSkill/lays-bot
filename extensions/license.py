@@ -373,7 +373,7 @@ class LicenseSystem(commands.Cog):
         name="create",
         description="Creates a license"
     )
-    @commands.has_permissions(administrator=True)
+    @commands.is_owner()
     async def license_create(
         self,
         interaction: disnake.ApplicationCommandInteraction,
