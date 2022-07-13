@@ -297,6 +297,17 @@ class Music(commands.Cog):
         if not interaction.guild.voice_client:
             self.channel = interaction.channel.id
             vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
+
+            track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
+            # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
+            play_embed = disnake.Embed(
+                description=f":white_check_mark: | Playing [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}``",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=play_embed
+            )
+            await vc.play(track)
         else:
             vc: wavelink.Player = interaction.guild.voice_client
 
@@ -306,18 +317,18 @@ class Music(commands.Cog):
                 track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
                 # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
                 play_embed = disnake.Embed(
-                    description=f":white_check_mark: | Playing ({track.title})[{track.uri}] - ``{str(datetime.timedelta(seconds=track.length))}``",
+                    description=f":white_check_mark: | Playing [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}``",
                     color=disnake.Color.green()
                 )
                 await interaction.edit_original_message(
                     embed=play_embed
                 )
-                await vc.play(track[0])
+                await vc.play(track)
             else:
                 vc: wavelink.Player = interaction.guild.voice_client
                 # track = await vc.node.get_tracks(query=search, cls=wavelink.LocalTrack)
                 track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=search, return_first=True)
-                await vc.queue.put_wait(track[0])
+                await vc.queue.put_wait(track)
 
                 queue_embed = disnake.Embed(
                     description=f":white_check_mark: | Added ``{track.title}`` - ``{str(datetime.timedelta(seconds=track.length))}`` to queue!",
