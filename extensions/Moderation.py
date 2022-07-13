@@ -72,7 +72,7 @@ class Moderation(commands.Cog):
                     await interaction.guild.ban(
                         user=user,
                         reason=None if not reason else reason,
-                        delete_message_days=1 if not delete_message_days else delete_message_days
+                        delete_message_days=0 if not delete_message_days or delete_message_days > 7 else delete_message_days
                     )
                     ban_embed = disnake.Embed(
                         description=f"Der User `{user}` [`{user.id}`] wurde wegen `{reason}` erfolgreich von `{interaction.author}` **gebannt**! Die Nachrichten von `{delete_message_days} Tag/en` wurden **gelöscht** ✅",
