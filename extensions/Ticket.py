@@ -677,16 +677,22 @@ class TicketSystem(commands.Cog):
         self.bot = bot
         self.persistent_views_added = False
 
+    @commands.commands(
+        name="ticket",
+    )
+    async def ticket(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
     # Load all jsons
     with open("json/guild.json", "r") as f:
         guild = json.load(f)
 
     # Create command
-    @commands.slash_command(
-        name="sendticket",
+    @ticket.slash_command(
+        name="send",
         description="Send a ticket to the support team"
     )
-    async def sendTicket(
+    async def send(
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):

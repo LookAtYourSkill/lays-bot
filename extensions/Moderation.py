@@ -16,6 +16,13 @@ class Moderation(commands.Cog):
         self.bot = bot
 
     @commands.slash_command(
+        name="moderation",
+        description="Moderation command to manage users"
+    )
+    async def moderation(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @moderation.sub_command(
         name="ban",
         description="Bans a user"
     )
@@ -107,7 +114,7 @@ class Moderation(commands.Cog):
                     content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                 )
 
-    @commands.slash_command(
+    @moderation.sub_command(
         name="unban",
         description="Unban a banned user"
     )
@@ -234,7 +241,7 @@ class Moderation(commands.Cog):
                         content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                     )
 
-    @commands.slash_command(
+    @moderation.sub_command(
         name="timeout",
         description="Timeouts a user"
     )
@@ -337,7 +344,7 @@ class Moderation(commands.Cog):
                     content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                 )
 
-    @commands.slash_command(
+    @moderation.sub_command(
         name="untimeout",
         description="Timeouts a user"
     )
@@ -428,6 +435,7 @@ class Moderation(commands.Cog):
         pass
 
     @clear.sub_command(description="Clears embed in a channel")
+    @commands.has_permissions(manage_channels=True)
     async def embeds(
         self,
         interaction: disnake.ApplicationCommandInteraction,
@@ -525,6 +533,7 @@ class Moderation(commands.Cog):
                 )
 
     @clear.sub_command(description="Clears pinned messages in a channel")
+    @commands.has_permissions(manage_channels=True)
     async def pinned(
         self,
         interaction: disnake.ApplicationCommandInteraction,
@@ -625,6 +634,7 @@ class Moderation(commands.Cog):
                 )
 
     @clear.sub_command(description="Clears all messages in a channel")
+    @commands.has_permissions(manage_channels=True)
     async def messages(
         self,
         interaction: disnake.ApplicationCommandInteraction,
@@ -723,6 +733,7 @@ class Moderation(commands.Cog):
                 )
 
     @clear.sub_command(description="Clears images in a channel")
+    @commands.has_permissions(manage_channels=True)
     async def images(
         self,
         interaction: disnake.ApplicationCommandInteraction,

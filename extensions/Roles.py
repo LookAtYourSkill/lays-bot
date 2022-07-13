@@ -11,8 +11,16 @@ class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(description="Add/Remove a role to/from somebody")
-    async def role(
+    @commands.slash_command(
+        name="role",
+        description="Manage roles for users per chat"
+    )
+    async def role(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @role.slash_command(description="Add/Remove a role to/from somebody")
+    @commands.has_permissions(manage_roles=True)
+    async def manage_role(
         self,
         interaction: disnake.ApplicationCommandInteraction,
         member: disnake.Member,

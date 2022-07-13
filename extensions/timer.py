@@ -18,8 +18,15 @@ class Timer(commands.Cog):
         self.bot = bot
         self.check_timers.start()
 
-    @commands.slash_command(name="timer", description="Creates a timer for yourself or a user")
-    async def timer(interaction: disnake.ApplicationCommandInteraction, time, member: disnake.Member = None, *, message: str):
+    @commands.slash_command(
+        name="timer",
+        description="Set a timer for a user"
+    )
+    async def timer(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @timer.slash_command(name="set", description="Creates a timer for yourself or a user")
+    async def set(interaction: disnake.ApplicationCommandInteraction, time, member: disnake.Member = None, *, message: str):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
         with open("json/guild.json", "r") as guild_info:
