@@ -20,6 +20,13 @@ class Info(commands.Cog):
 
     @commands.slash_command(
         name="info",
+        description="Command Group for info"
+    )
+    async def info(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @info.sub_command(
+        name="user",
         description="Give information about a user"
     )
     @commands.guild_only()
@@ -156,7 +163,7 @@ class Info(commands.Cog):
                 embed=info_embed
             )
 
-    @commands.slash_command(
+    @info.sub_command(
         name="server",
         description="Give information about the server"
     )
@@ -272,7 +279,7 @@ class Info(commands.Cog):
                 embed=server_embed
             )
 
-    @commands.slash_command(name="ping", description="Pings the bot")
+    @info.sub_command(name="ping", description="Pings the bot")
     async def ping(self, interaction: disnake.ApplicationCommandInteraction):
         search_embed = disnake.Embed(
             description="Pinging...",

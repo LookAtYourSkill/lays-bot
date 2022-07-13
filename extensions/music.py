@@ -143,11 +143,59 @@ class Music(commands.Cog):
         #     await vc.play(nextSong)
             # print(reason)
 
-    @commands.slash_command(name="play")
+    @commands.slash_command(
+        name="music",
+        description="Music commands",
+    )
+    async def music(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @music.sub_command_group(
+        name="settings",
+        description="Settings for the music module"
+    )
+    async def settings(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @music.sub_command_group(
+        name="modes",
+        invoke_without_command=True
+    )
+    async def modes(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @music.sub_command_group(
+        name="play",
+        invoke_without_command=True
+    )
     async def play_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @play_group.sub_command(name="youtube", description="Play a song from youtube")
+    @music.sub_command_group(
+        name="playlist",
+        invoke_without_command=True
+    )
+    async def play_playlist_group(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @music.sub_command_group(
+        name="stream",
+        invoke_without_command=True
+    )
+    async def play_stream_group(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @music.sub_command_group(
+        name="queue",
+        invoke_without_command=True
+    )
+    async def queue_group(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @play_group.sub_command(
+        name="youtube",
+        description="Play a song from youtube"
+    )
     async def play_youtube_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -226,7 +274,10 @@ class Music(commands.Cog):
                     embed=queue_embed
                 )
 
-    @play_group.sub_command(name="soundcloud", description="Play a song from soundcloud")
+    @play_group.sub_command(
+        name="soundcloud",
+        description="Play a song from soundcloud"
+    )
     async def play_soundcloud_song(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -280,7 +331,10 @@ class Music(commands.Cog):
                     embed=queue_embed
                 )
 
-    @play_group.sub_command(name="spotify", description="Play a song from spotify")
+    @play_group.sub_command(
+        name="spotify",
+        description="Play a song from spotify"
+    )
     async def play_spotify_song(self, interaction: disnake.ApplicationCommandInteraction, *, url: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -337,11 +391,10 @@ class Music(commands.Cog):
                     embed=queue_embed
                 )
 
-    @play_group.sub_command_group(name="playlist")
-    async def play_playlist_group(self, interaction: disnake.ApplicationCommandInteraction):
-        pass
-
-    @play_playlist_group.sub_command(name="spotify", description="Play a playlist from Spotify")
+    @play_playlist_group.sub_command(
+        name="spotify",
+        description="Play a playlist from Spotify"
+    )
     async def play_spotify_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, url: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -370,7 +423,10 @@ class Music(commands.Cog):
         # async for track in spotify.SpotifyTrack.iterator(query=query, type=spotify.SpotifySearchType.playlist):
         #     vc.queue.put(track)
 
-    @play_playlist_group.sub_command(name="youtube", description="Play a playlist from Youtube")
+    @play_playlist_group.sub_command(
+        name="youtube",
+        description="Play a playlist from Youtube"
+    )
     async def play_youtube_playlist(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -397,11 +453,10 @@ class Music(commands.Cog):
             )
             await vc.queue.put_wait(track)
 
-    @play_group.sub_command_group(name="stream")
-    async def play_stream_group(self, interaction: disnake.ApplicationCommandInteraction):
-        pass
-
-    @play_stream_group.sub_command(name="youtube", description="Play a stream from a youtube channel")
+    @play_stream_group.sub_command(
+        name="youtube",
+        description="Play a stream from a youtube channel"
+    )
     async def play_stream(self, interaction: disnake.ApplicationCommandInteraction, url: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -422,11 +477,10 @@ class Music(commands.Cog):
                 embed=embed
             )
 
-    @commands.slash_command(name="queue")
-    async def queue_group(self, interaction: disnake.ApplicationCommandInteraction):
-        pass
-
-    @queue_group.sub_command(name="clear", description="Clear the queue")
+    @queue_group.sub_command(
+        name="clear",
+        description="Clear the queue"
+    )
     async def clear_queue(self, interaction: disnake.ApplicationCommandInteraction):
         vc: wavelink.Player = interaction.guild.voice_client
 
@@ -461,7 +515,10 @@ class Music(commands.Cog):
                 ephemeral=True
             )
 
-    @queue_group.sub_command(name="remove", description="Remove a track from the queue")
+    @queue_group.sub_command(
+        name="remove",
+        description="Remove a track from the queue"
+    )
     async def remove_queue(self, interaction: disnake.ApplicationCommandInteraction, index: int):
         await interaction.response.defer(ephemeral=True)
 
@@ -478,7 +535,10 @@ class Music(commands.Cog):
 
         await interaction.edit_original_message(embed=delete_embed)
 
-    @queue_group.sub_command(name="add", description="Adds a song to queue")
+    @queue_group.sub_command(
+        name="add",
+        description="Adds a song to queue"
+    )
     async def add_queue(self, interaction: disnake.ApplicationCommandInteraction, *, search: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -503,7 +563,10 @@ class Music(commands.Cog):
         else:
             await vc.play(track)
 
-    @queue_group.sub_command(name="list", description="List the current queue")
+    @queue_group.sub_command(
+        name="list",
+        description="List the current queue"
+    )
     async def queue_list(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -567,7 +630,10 @@ class Music(commands.Cog):
                 )
                 await interaction.edit_original_message(embed=embed)
 
-    @queue_group.sub_command(name="resume", description="Resumes the queue")
+    @queue_group.sub_command(
+        name="resume",
+        description="Resumes the queue"
+    )
     async def resume_queue(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -578,7 +644,7 @@ class Music(commands.Cog):
             return
 
         else:
-            getNextSong = vc.queue.get()
+            getNextSong = vc.queue[0]  # ! vc.queue.get()
             await vc.play(getNextSong)
 
             embed = disnake.Embed(
@@ -589,15 +655,17 @@ class Music(commands.Cog):
                 embed=embed
             )
 
-    @commands.slash_command(name="modes")
-    async def modes(self, interaction: disnake.ApplicationCommandInteraction):
-        pass
-
-    @modes.sub_command(name="bassboost", description="Bassboost the song")
+    @modes.sub_command(
+        name="bassboost",
+        description="Bassboost the song"
+    )
     async def bassboost(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
-    @commands.slash_command(name="pause", description="Pause the current track")
+    @settings.sub_command(
+        name="pause",
+        description="Pause the current track"
+    )
     async def pause(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -626,7 +694,10 @@ class Music(commands.Cog):
                 await interaction.edit_original_message(embed=embed)
                 await vc.pause()
 
-    @commands.slash_command(name="resume", description="Resume the current track")
+    @settings.sub_command(
+        name="resume",
+        description="Resume the current track"
+    )
     async def resume(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -655,7 +726,10 @@ class Music(commands.Cog):
                 await interaction.edit_original_message(embed=embed)
                 await vc.resume()
 
-    @commands.slash_command(name="volume", description="Changes the volume of the player")
+    @settings.sub_command(
+        name="volume",
+        description="Changes the volume of the player"
+    )
     async def volume(self, interaction: disnake.ApplicationCommandInteraction, volume: int):
         await interaction.response.defer(ephemeral=True)
 
@@ -687,7 +761,10 @@ class Music(commands.Cog):
                     embed=embed
                 )
 
-    @commands.slash_command(name="skip", description="Skips the current track")
+    @settings.sub_command(
+        name="skip",
+        description="Skips the current track"
+    )
     async def skip(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -753,7 +830,10 @@ class Music(commands.Cog):
                     # remove playing song from queue
                     vc.queue.__delitem__(0)
 
-    @commands.slash_command(name="nowplaying", description="Shows the current track")
+    @settings.sub_command(
+        name="nowplaying",
+        description="Shows the current track"
+    )
     async def nowplaying(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -832,7 +912,10 @@ class Music(commands.Cog):
                 embed=embed
             )
 
-    @commands.slash_command(name="seek", description="Seeks to a specific position of the song")
+    @settings.sub_command(
+        name="seek",
+        description="Seeks to a specific position of the song"
+    )
     async def seek(self, interaction: disnake.ApplicationCommandInteraction, time: str):
         await interaction.response.defer(ephemeral=True)
 
@@ -895,11 +978,10 @@ class Music(commands.Cog):
                         embed=embed
                     )
 
-    @commands.slash_command(name="settings", description="Settings for the music player")
-    async def settings(self, interaction: disnake.ApplicationCommandInteraction):
-        pass
-
-    @settings.sub_command(name="loop", description="Enables/Disables the loop of the current track")
+    @settings.sub_command(
+        name="loop",
+        description="Enables/Disables the loop of the current track"
+    )
     async def looping(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -940,7 +1022,10 @@ class Music(commands.Cog):
                     embed=embed
                 )
 
-    @settings.sub_command(name="announce", description="Enables/Disables the announcement of the current track")
+    @settings.sub_command(
+        name="announce",
+        description="Enables/Disables the announcement of the current track"
+    )
     async def announcement(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -964,7 +1049,10 @@ class Music(commands.Cog):
                 embed=embed
             )
 
-    @commands.slash_command(name="disconnect", description="Disconnects the bot from the voice channel")
+    @settings.sub_command(
+        name="disconnect",
+        description="Disconnects the bot from the voice channel"
+    )
     async def disconnect(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
@@ -987,7 +1075,10 @@ class Music(commands.Cog):
             )
             await vc.disconnect()
 
-    @commands.slash_command(name="join", description="Joins the voice channel")
+    @settings.sub_command(
+        name="join",
+        description="Joins the voice channel"
+    )
     async def join(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 

@@ -12,6 +12,13 @@ class Changelog(commands.Cog):
 
     @commands.slash_command(
         name="changelog",
+        description="Shows the changelog for the bot"
+    )
+    async def changelog(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @changelog.sub_command(
+        name="log",
         description="Shows the changelog"
     )
     async def changelog(

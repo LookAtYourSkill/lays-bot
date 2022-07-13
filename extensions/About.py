@@ -17,9 +17,16 @@ class About(commands.Cog):
         self.prefix = "/"
 
     @commands.slash_command(
+        name="about",
+        description="Command Group for about the bot"
+    )
+    async def about(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @about.sub_command_group(
         description="Information about the bot"
     )
-    async def about(
+    async def info(
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
