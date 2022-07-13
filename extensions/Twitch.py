@@ -24,7 +24,7 @@ class Twitch(commands.Cog):
     async def twitch(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @twitch.slash_command(
+    @twitch.sub_command(
         description="Adds a streamer to your watchlist"
     )
     @commands.has_permissions(administrator=True)
@@ -151,7 +151,7 @@ class Twitch(commands.Cog):
             except ValueError:
                 pass
 
-    @twitch.slash_command(
+    @twitch.sub_command(
         description="Removes a streamer from your watchlist"
     )
     @commands.has_permissions(
@@ -260,7 +260,7 @@ class Twitch(commands.Cog):
             except ValueError:
                 pass
 
-    @twitch.slash_command(
+    @twitch.sub_command(
         description="Checks the twitch stream watchlist from this server"
     )
     @commands.cooldown(1, 3600, commands.BucketType.user)
@@ -414,7 +414,7 @@ class Twitch(commands.Cog):
                     embed=embed
                 )
 
-    @twitch.slash_command(
+    @twitch.sub_command(
         name="list",
         description="Lists all streamers from your watchlist"
     )

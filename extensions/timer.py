@@ -25,7 +25,7 @@ class Timer(commands.Cog):
     async def timer(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @timer.slash_command(name="set", description="Creates a timer for yourself or a user")
+    @timer.sub_command(name="set", description="Creates a timer for yourself or a user")
     async def set(interaction: disnake.ApplicationCommandInteraction, time, member: disnake.Member = None, *, message: str):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)

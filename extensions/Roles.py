@@ -18,7 +18,7 @@ class Roles(commands.Cog):
     async def role(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @role.slash_command(description="Add/Remove a role to/from somebody")
+    @role.sub_command(description="Add/Remove a role to/from somebody")
     @commands.has_permissions(manage_roles=True)
     async def manage_role(
         self,

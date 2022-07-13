@@ -427,7 +427,7 @@ class Moderation(commands.Cog):
                     content="Etwas ist schliefgelaufen, es tut mir leid, dass solche Unannehmlichkeiten vorkommen ⛔"
                 )
 
-    @commands.slash_command(invoke_without_command=True)
+    @moderation.sub_command_group(invoke_without_command=True)
     async def clear(
         self,
         interaction: disnake.ApplicationCommandInteraction
