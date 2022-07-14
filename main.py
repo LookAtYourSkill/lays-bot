@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import asyncio
 
 import disnake
 from disnake.ext import commands
@@ -15,6 +16,24 @@ bot = commands.Bot(
     # sync_commands_debug=True
 )
 
+
+async def status_task():
+    while True:
+        await bot.change_presence(
+            activity=disnake.Activity(
+                type=disnake.ActivityType.listening,
+                name=f"{len(bot.guilds)} servers"),
+            status=disnake.Status.idle
+        )
+        await asyncio.sleep(1800)
+        await bot.change_presence(
+            activity=disnake.Activity(
+                type=disnake.ActivityType.listening,
+                name=f"{len(bot.guilds)} servers"),
+            status=disnake.Status.idle
+        )
+        await asyncio.sleep(1800)
+
 with open("etc/config.json", "r") as config_file:
     config = json.load(config_file)
 
@@ -23,12 +42,13 @@ with open("etc/config.json", "r") as config_file:
 async def on_ready():
     print(f"Bot successfully set up!\nLogged in as {bot.user.name}")
     log.info("Bot online")
-    await bot.change_presence(
-        activity=disnake.Activity(
-            type=disnake.ActivityType.listening,
-            name=f"{len(bot.guilds)} servers"),
-        status=disnake.Status.idle
-    )
+    bot.loop.create_task(status_task())
+    # await bot.change_presence(
+    #     activity=disnake.Activity(
+    #         type=disnake.ActivityType.listening,
+    #         name=f"{len(bot.guilds)} servers"),
+    #     status=disnake.Status.idle
+    # )
 
 
 log.info("Loading extensions")
