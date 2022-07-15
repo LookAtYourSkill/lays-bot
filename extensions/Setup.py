@@ -338,7 +338,8 @@ class Setup(commands.Cog):
                 color=disnake.Color.green()
             )
             await interaction.send(
-                embed=set_embed
+                embed=set_embed,
+                ephemeral=True
             )
         else:
             already_embed = disnake.Embed(
@@ -346,7 +347,8 @@ class Setup(commands.Cog):
                 color=disnake.Color.red()
             )
             await interaction.send(
-                embed=already_embed
+                embed=already_embed,
+                ephemeral=True
             )
 
     @category.sub_command(
@@ -362,18 +364,19 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if guild_data[str(interaction.guild.id)]["closed_ticket_category"]:
+        if not guild_data[str(interaction.guild.id)]["closed_ticket_category"]:
 
             guild_data[str(interaction.guild.id)]["closed_ticket_category"] = int(category.id)
             with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
                 json.dump(guild_data, dump_file, indent=4)
 
             change_embed = disnake.Embed(
-                description=f"Die `Closed Ticket Category` wurde erfolgreich auf <#{category}> geändert!",
+                description=f"Die `Closed Ticket Category` wurde erfolgreich auf `{category}` geändert!",
                 color=disnake.Color.green()
             )
             await interaction.response.send_message(
-                embed=change_embed
+                embed=change_embed,
+                ephemeral=True
             )
         else:
             already_embed = disnake.Embed(
@@ -381,7 +384,8 @@ class Setup(commands.Cog):
                 color=disnake.Color.red()
             )
             await interaction.response.send_message(
-                embed=already_embed
+                embed=already_embed,
+                ephemeral=True
             )
 
     @role.sub_command(
