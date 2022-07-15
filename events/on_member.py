@@ -119,6 +119,8 @@ class onJoin(commands.Cog):
                     return
             else:
                 channel = self.bot.get_channel(guild_data[str(member.guild.id)]["welcome_channel"])
+                role = disnake.utils.get(member.guild.roles, id=guild_data[str(member.guild.id)]["join_role"])
+
                 embed = disnake.Embed(
                     title="> Welcome :tada:",
                     description=f"{member.mention} Joined **{member.guild.name}**",
@@ -139,6 +141,7 @@ class onJoin(commands.Cog):
                 await channel.send(
                     embed=embed
                 )
+                await member.add_roles(role, reason="Join Role")
 
     @commands.Cog.listener()
     async def on_member_ban(
