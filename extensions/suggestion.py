@@ -53,7 +53,7 @@ class Suggest(commands.Cog):
         embed = disnake.Embed(
             title="Bug Report :bell: ",
             description=f"{bug}",
-            color=disnake.Color.green()
+            color=disnake.Color.red()
         )
         embed.set_author(
             name=interaction.author.name,
