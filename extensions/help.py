@@ -11,11 +11,13 @@ class Cogs(str, Enum):
     Help = "Help"
     Info = "Info"
     LicenseSystem = "LicenseSystem"
+    Meme = "Meme"
     Moderation = "Moderation"
     Music = "Music"
     Owner = "Owner"
     Roles = "Roles"
     Setup = "Setup"
+    Suggest = "Suggest"
     Change = "Change"
     TicketSystem = "TicketSystem"
     Timer = "Timer"
@@ -44,7 +46,6 @@ class Help(commands.Cog):
             description="Chose the cog you want help from!",
             choices=Cogs
         )
-        # cog: (Optional[str]) = None
         # command: (Optional[str]) = None
     ):
         lol_embed = disnake.Embed(
