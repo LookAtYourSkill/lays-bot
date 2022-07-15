@@ -119,29 +119,52 @@ class onJoin(commands.Cog):
                     return
             else:
                 channel = self.bot.get_channel(guild_data[str(member.guild.id)]["welcome_channel"])
-                role = disnake.utils.get(member.guild.roles, id=guild_data[str(member.guild.id)]["join_role"])
+                if guild_data[str(member.guild.id)]["join_role"]:
+                    role = disnake.utils.get(member.guild.roles, id=guild_data[str(member.guild.id)]["join_role"])
 
-                embed = disnake.Embed(
-                    title="> Welcome :tada:",
-                    description=f"{member.mention} Joined **{member.guild.name}**",
-                    color=disnake.Color.random(),
-                    timestamp=datetime.datetime.utcnow()
-                )
-                embed.set_thumbnail(
-                    url=member.avatar.url
-                )
-                embed.add_field(
-                    name="Total members",
-                    value=f"{member.guild.member_count}",
-                    inline=False
-                )
-                embed.set_footer(
-                    text=f"{member.name} joined"
-                )
-                await channel.send(
-                    embed=embed
-                )
-                await member.add_roles(role, reason="Join Role")
+                    embed = disnake.Embed(
+                        title="> Welcome :tada:",
+                        description=f"{member.mention} Joined **{member.guild.name}**",
+                        color=disnake.Color.random(),
+                        timestamp=datetime.datetime.utcnow()
+                    )
+                    embed.set_thumbnail(
+                        url=member.avatar.url
+                    )
+                    embed.add_field(
+                        name="Total members",
+                        value=f"{member.guild.member_count}",
+                        inline=False
+                    )
+                    embed.set_footer(
+                        text=f"{member.name} joined"
+                    )
+                    await channel.send(
+                        embed=embed
+                    )
+                    await member.add_roles(role, reason="Join Role")
+
+                else:
+                    embed = disnake.Embed(
+                        title="> Welcome :tada:",
+                        description=f"{member.mention} Joined **{member.guild.name}**",
+                        color=disnake.Color.random(),
+                        timestamp=datetime.datetime.utcnow()
+                    )
+                    embed.set_thumbnail(
+                        url=member.avatar.url
+                    )
+                    embed.add_field(
+                        name="Total members",
+                        value=f"{member.guild.member_count}",
+                        inline=False
+                    )
+                    embed.set_footer(
+                        text=f"{member.name} joined"
+                    )
+                    await channel.send(
+                        embed=embed
+                    )
 
     @commands.Cog.listener()
     async def on_member_ban(
