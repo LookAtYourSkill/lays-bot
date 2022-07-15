@@ -31,7 +31,11 @@ class onMessage(commands.Cog):
                     color=disnake.Color.red()
                 )
                 embed.set_image(url=attachment.url)
-                await channel.send(embed=embed)
+
+                if guild_data[str(message.author.guild.id)]["msg_channel"]:
+                    await channel.send(embed=embed)
+                else:
+                    pass
 
         else:
             channel = self.bot.get_channel(
@@ -41,10 +45,15 @@ class onMessage(commands.Cog):
                 description=f"A message from {message.author.mention} was deleted in {message.channel.mention}",
                 color=disnake.Color.red()
             )
-            embed.add_field(name="Message",
-                            value=f"{message.content}",
-                            inline=False)
-            await channel.send(embed=embed)
+            embed.add_field(
+                name="Message",
+                value=f"{message.content}",
+                inline=False
+            )
+            if guild_data[str(message.author.guild.id)]["msg_channel"]:
+                await channel.send(embed=embed)
+            else:
+                pass
 
     @commands.Cog.listener()
     async def on_message_edit(
@@ -79,9 +88,11 @@ class onMessage(commands.Cog):
                 value=f"{after.content}",
                 inline=False
             )
-            await channel.send(
-                embed=embed
-            )
+
+            if guild_data[str(before.author.guild.id)]["msg_channel"]:
+                await channel.send(embed=embed)
+            else:
+                pass
 
 
 def setup(bot):
