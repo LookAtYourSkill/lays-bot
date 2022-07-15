@@ -2,6 +2,7 @@ import datetime
 import json
 import disnake
 from disnake.ext import commands
+import dateutil.parser
 
 
 class onJoin(commands.Cog):
@@ -20,15 +21,18 @@ class onJoin(commands.Cog):
             return
 
         elif not guild_data[str(member.guild.id)]["welcome_channel"]:
-            days = (
-                datetime.datetime.utcnow() - member.created_at
-            ).days
-            if days < 7:
+            string = f"{member.created_at}"
+            LastDate = dateutil.parser.parse(string)
+            now = datetime.datetime.now()
+
+            diff = (now - LastDate.replace(tzinfo=None)).days
+
+            if diff < 7:
                 embed = disnake.Embed(
-                    title="Antialt Detection Kick",
-                    description=f"**Your Account** has to be **at least 7 days old!**\n"
-                                f"**Your Account** Age : `{days}` days old\n"
-                                "**Must be** at least : `7` days old",
+                    title="Antialt Detection Kick ⛔",
+                    description=f":exclamation: **Your Account has to be at least 7 days old!**\n"
+                                f"⌛ **Account Age** : `{diff}` days old\n"
+                                ":exclamation: **Must be** at least : `7` days old",
                     color=disnake.Color.red()
                 )
                 await member.send(
@@ -40,47 +44,40 @@ class onJoin(commands.Cog):
 
                 if guild_data[str(member.guild.id)]["mod_channel"]:
                     embed = disnake.Embed(
-                        title="Antialt Detection Kick",
-                        description=f"`{member}` wurde von der **Alt Detection gekickt!**",
+                        title="Anti Alt Detection Kick ⛔",
+                        description=f"`{member}` was kicked by the **Anti Alt Detection** :white_check_mark:",
                         color=disnake.Color.green()
                     )
-                    channel = self.bot.get_channel(id=guild_data[str(member.guild.id)]["mod_channel"])
+                    embed.add_field(
+                        name="__Ages__",
+                        value=f"⌛ Days old: `{diff}` days\n ⌛ Needed at least : `7` days",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="__Reason__",
+                        value="`Anti Alt Detection`",
+                        inline=False
+                    )
+                    channel = self.bot.get_channel(guild_data[str(member.guild.id)]["mod_channel"])
                     await channel.send(embed=embed)
                 else:
                     return
+            else:
+                return
 
         else:
-            channel = self.bot.get_channel(id=guild_data[str(member.guild.id)]["welcome_channel"])
-            embed = disnake.Embed(
-                title="> Welcome",
-                description=f"{member.mention} Joined **{member.guild.name}**",
-                color=disnake.Color.random(),
-                timestamp=datetime.datetime.utcnow()
-            )
-            embed.set_thumbnail(
-                url=member.avatar_url
-            )
-            embed.add_field(
-                name="Total members",
-                value=f"{member.guild.member_count}",
-                inline=False
-            )
-            embed.set_footer(
-                text=f"{member.name} joined"
-            )
-            await channel.send(
-                embed=embed
-            )
+            string = f"{member.created_at}"
+            LastDate = dateutil.parser.parse(string)
+            now = datetime.datetime.now()
 
-            days = (
-                datetime.datetime.utcnow() - member.created_at
-            ).days
-            if days < 7:
+            diff = (now - LastDate.replace(tzinfo=None)).days
+
+            if diff < 7:
                 embed = disnake.Embed(
-                    title="Antialt Detection Kick",
-                    description=f"**Your Account** has to be **at least 7 days old!**\n"
-                                f"**Your Account** Age : `{days}` days old\n"
-                                "**Must be** at least : `7` days old",
+                    title="Antialt Detection Kick ⛔",
+                    description=f":exclamation: **Your Account has to be at least 7 days old!**\n"
+                                f"⌛ **Account Age** : `{diff}` days old\n"
+                                ":exclamation: **Must be [at least]** : `7` days old",
                     color=disnake.Color.red()
                 )
                 await member.send(
@@ -92,18 +89,50 @@ class onJoin(commands.Cog):
 
                 if guild_data[str(member.guild.id)]["mod_channel"]:
                     embed = disnake.Embed(
-                        title="Antialt Detection Kick",
-                        description=f"`{member}` wurde von der **Alt Detection gekickt!**",
+                        title="Anti Alt Detection Kick ⛔",
+                        description=f"`{member}` was kicked by the **Anti Alt Detection** :white_check_mark:",
                         color=disnake.Color.green()
                     )
+                    embed.add_field(
+                        name="__Ages__",
+                        value=f"⌛ Days old: `{diff}` days\n ⌛ Needed at least : `7` days",
+                        inline=False
+                    )
+                    embed.add_field(
+                        name="__Reason__",
+                        value="`Anti Alt Detection`",
+                        inline=False
+                    )
                     channel = self.bot.get_channel(
-                        id=guild_data[str(member.guild.id)]["mod_channel"]
+                        guild_data[str(member.guild.id)]["mod_channel"]
                     )
                     await channel.send(
                         embed=embed
                     )
                 else:
                     return
+            else:
+                channel = self.bot.get_channel(guild_data[str(member.guild.id)]["welcome_channel"])
+                embed = disnake.Embed(
+                    title="> Welcome :tada:",
+                    description=f"{member.mention} Joined **{member.guild.name}**",
+                    color=disnake.Color.random(),
+                    timestamp=datetime.datetime.utcnow()
+                )
+                embed.set_thumbnail(
+                    url=member.avatar.url
+                )
+                embed.add_field(
+                    name="Total members",
+                    value=f"{member.guild.member_count}",
+                    inline=False
+                )
+                embed.set_footer(
+                    text=f"{member.name} joined"
+                )
+                await channel.send(
+                    embed=embed
+                )
 
     @commands.Cog.listener()
     async def on_member_ban(

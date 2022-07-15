@@ -1,5 +1,7 @@
+import dateutil.parser
 import json
 import time
+import datetime
 
 import disnake
 import humanize
@@ -58,6 +60,12 @@ class Info(commands.Cog):
                 )
 
             else:
+                string = f"{user.created_at}"
+                LastDate = dateutil.parser.parse(string)
+                now = datetime.datetime.now()
+
+                diff = (now - LastDate.replace(tzinfo=None)).days
+
                 loading_embed = disnake.Embed(
                     description="Fetching information about the user...",
                     color=disnake.Color.green()
@@ -86,24 +94,25 @@ class Info(commands.Cog):
                 info_embed.add_field(
                     name="__Name__",
                     value=f"`»`Name: `{user}`\n"
-                        f"`»`ID: `{user.id}`\n"
-                        f"`»`Nick: `{(user.nick if user.nick else 'Nein')}`",
+                          f"`»`ID: `{user.id}`\n"
+                          f"`»`Nick: `{(user.nick if user.nick else 'Nein')}`",
                     inline=False
                 )
                 info_embed.add_field(
                     name="__Account__",
                     value=f"`»`Discord Beigetreten: `{user.created_at.strftime('%d.%m.%Y')}`\n"
-                        f"`»`Bot: `{('Ja' if user.bot else 'Nein')}`\n"
-                        f"`»`Farbe: `{user.color}`\n"
-                        f"`»`Status: `{user.status}`\n"
-                        f"`»`Join Position: `{str(members.index(user) + 1)}`",
+                          f"`»`Tage: `{diff}`\n"
+                          f"`»`Bot: `{('Ja' if user.bot else 'Nein')}`\n"
+                          f"`»`Farbe: `{user.color}`\n"
+                          f"`»`Status: `{user.status}`\n"
+                          f"`»`Join Position: `{str(members.index(user) + 1)}`",
                     inline=False
                 )
                 info_embed.add_field(
                     name="__Server__",
                     value=f"`»`Server Beigetreten: `{user.joined_at.strftime('%d.%m.%Y')}`\n"
-                        f"`»`Rollen: `{len(user.roles)}`\n"
-                        f"`»`Booster: `{('Ja' if user.premium_since else 'Nein')}`",
+                          f"`»`Rollen: `{len(user.roles)}`\n"
+                          f"`»`Booster: `{('Ja' if user.premium_since else 'Nein')}`",
                     inline=False
                 )
                 await interaction.edit_original_message(
@@ -111,6 +120,12 @@ class Info(commands.Cog):
                 )
 
         else:
+            string = f"{user.created_at}"
+            LastDate = dateutil.parser.parse(string)
+            now = datetime.datetime.now()
+
+            diff = (now - LastDate.replace(tzinfo=None)).days
+
             loading_embed = disnake.Embed(
                 description="Fetching information about the user...",
                 color=disnake.Color.green()
@@ -146,6 +161,8 @@ class Info(commands.Cog):
             info_embed.add_field(
                 name="__Account__",
                 value=f"`»`Discord Beigetreten: `{user.created_at.strftime('%d.%m.%Y')}`\n"
+                      # f"`»`Test: `{user.created_at}`\n"
+                      f"`»`Tage: `{diff}`\n"
                       f"`»`Bot: `{('Ja' if user.bot else 'Nein')}`\n"
                       f"`»`Farbe: `{user.color}`\n"
                       f"`»`Status: `{user.status}`\n"
