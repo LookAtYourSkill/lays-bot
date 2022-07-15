@@ -36,9 +36,10 @@ class Changelog(commands.Cog):
 
         changelog_embed = disnake.Embed(
             title=f"⚙️ Changelog [Version: {self.version}]",
-            description="- **Added** License System [Soon Finished]\n"
-                        "- **Fixed** License checks\n"
-                        "- **Added** a license test on one command\n"
+            description="- **Added** License System [Finished :tada: ]\n"
+                        "- **Added** Suggest commands\n"
+                        "- **Fixed** setup commands\n"
+                        "- **Fixed** timer commands\n"
                         "- **Fixed** a few commands\n"
         )
         await interaction.edit_original_message(
