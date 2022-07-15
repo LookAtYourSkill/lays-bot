@@ -27,9 +27,7 @@ class onTimeout(commands.Cog):
             pass
 
         elif old_roles != new_roles:
-            await log_channel.send(
-                f"{before.mention} got their roles updated to: `{''.join(new_roles)}`"
-            )
+            pass
 
         elif before.activity != after.activity:
             pass

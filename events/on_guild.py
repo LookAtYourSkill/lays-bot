@@ -26,15 +26,15 @@ class on_guild(commands.Cog):
 
         new_server = {
             "server_name": f"{str(guild.name)}",
-            "notify_channel": (),
-            "ticket_category": (),
-            "closed_ticket_category": (),
-            "ticket_log_channel": (),
-            "ticket_save_channel": (),
-            "msg_channel": (),
-            "mod_channel": (),
-            "welcome_channel": (),
-            "join_role": (),
+            "notify_channel": False,
+            "ticket_category": False,
+            "closed_ticket_category": False,
+            "ticket_log_channel": False,
+            "ticket_save_channel": False,
+            "msg_channel": False,
+            "mod_channel": False,
+            "welcome_channel": False,
+            "join_role": False,
             "license": [],
             "watchlist": []
         }
