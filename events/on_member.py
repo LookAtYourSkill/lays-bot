@@ -58,6 +58,9 @@ class onJoin(commands.Cog):
                         value="`Anti Alt Detection`",
                         inline=False
                     )
+                    embed.set_footer(
+                        text=f"ID: {member.id}"
+                    )
                     channel = self.bot.get_channel(guild_data[str(member.guild.id)]["mod_channel"])
                     await channel.send(embed=embed)
                 else:
@@ -102,6 +105,9 @@ class onJoin(commands.Cog):
                         name="__Reason__",
                         value="`Anti Alt Detection`",
                         inline=False
+                    )
+                    embed.set_footer(
+                        text=f"ID: {member.id}"
                     )
                     channel = self.bot.get_channel(
                         guild_data[str(member.guild.id)]["mod_channel"]
