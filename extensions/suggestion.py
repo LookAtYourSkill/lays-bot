@@ -30,6 +30,13 @@ class Suggest(commands.Cog):
             description=f"{idea}",
             color=disnake.Color.green()
         )
+        embed.set_author(
+            name=interaction.author.name,
+            icon_url=interaction.author.avatar.url
+        )
+        embed.set_footer(
+            text=f"ID: {interaction.author.id}"
+        )
         message = await sugest_channel.send(embed=embed)
 
         await message.add_reaction("✅")
@@ -47,6 +54,13 @@ class Suggest(commands.Cog):
             title="Bug Report :bell: ",
             description=f"{bug}",
             color=disnake.Color.green()
+        )
+        embed.set_author(
+            name=interaction.author.name,
+            icon_url=interaction.author.avatar.url
+        )
+        embed.set_footer(
+            text=f"ID: {interaction.author.id}"
         )
         message = await bug_report_channel.send(embed=embed)
 
