@@ -604,7 +604,7 @@ class Twitch(commands.Cog):
                                                 print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
                                                 notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
-                                                if notify_channel:
+                                                if i["notify_channel"]:
 
                                                     embed = disnake.Embed(
                                                         title=f"{stream['title']}",
