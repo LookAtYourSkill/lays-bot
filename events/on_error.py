@@ -20,13 +20,12 @@ class onError(commands.Cog):
             commands.BotMissingPermissions
         ):
             embed = disnake.Embed(
-                description=f"Um diesen Befehl auszuführen, fehlen mir folgende Berechtigungen: `` {''.join(error.missing_permissions)}`` ⛔",
+                description=f"The bot misses a few permission to use that command. Required perms: `` {''.join(error.missing_permissions)}`` ⛔",
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         if isinstance(
@@ -34,13 +33,12 @@ class onError(commands.Cog):
             commands.MissingPermissions
         ):
             embed = disnake.Embed(
-                description=f"Um diesen Befehl auszuführen, fehlen dir folgende Berechtigungen: ``{''.join(error.missing_permissions)}`` ⛔",
+                description=f"You dont have permission to use this commands. Required perms: ``{''.join(error.missing_permissions)}`` ⛔",
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         if isinstance(
@@ -48,20 +46,19 @@ class onError(commands.Cog):
             commands.CommandOnCooldown
         ):
             embed = disnake.Embed(
-                description=f"Der Befehl ist noch {round(error.retry_after)} gesperrt ⛔",
+                description=f"You are on cooldown {round(error.retry_after)} ⛔",
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         else:
             channel = self.bot.get_channel(self.error_channel)
 
             error_embed = disnake.Embed(
-                title=f"Error while {error.command.qualified_name}",
+                title=f"Error while {interaction.application_command.name}",
                 description=f"```{error}```",
                 color=disnake.Color.red()
             )
@@ -83,9 +80,8 @@ class onError(commands.Cog):
                 description=f"The Track `{track.title}` could not be found ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         if isinstance(
@@ -96,9 +92,8 @@ class onError(commands.Cog):
                 description="Something is wrong with the queue, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         if isinstance(
@@ -109,9 +104,8 @@ class onError(commands.Cog):
                 description="The queue is full, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         if isinstance(
@@ -122,9 +116,8 @@ class onError(commands.Cog):
                 description=f"The Track `{track.title}` could not be converted ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         if isinstance(
@@ -135,9 +128,8 @@ class onError(commands.Cog):
                 description="Something is wrong with the bot, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=embed,
-                ephemeral=True
+            await interaction.followup(
+                embed=embed
             )
 
         else:
