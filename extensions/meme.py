@@ -30,7 +30,18 @@ class Meme(commands.Cog):
         )
         if response.status_code == 200:
             data = await response.json()
-            await interaction.edit_original_message(data["fact"])
+
+            meme_embed = disnake.Embed(
+                title=data["caption"],
+                description=f"Category: {data['category']}",
+                color=disnake.Color.green()
+            )
+            meme_embed.set_image(url=data["image"])
+
+            await interaction.edit_original_message(
+                embed=meme_embed,
+                ephemeral=True
+            )
         else:
             await interaction.edit_original_message(f"Die API gibt den Status:{response.status_code}.")
 
