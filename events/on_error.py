@@ -6,6 +6,7 @@ import wavelink
 class onError(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.error_channel = 1000043915753304105
 
     @commands.Cog.listener()
     async def on_slash_command_error(
@@ -57,7 +58,14 @@ class onError(commands.Cog):
             )
 
         else:
-            print(error)
+            channel = self.bot.get_channel(self.error_channel)
+
+            error_embed = disnake.Embed(
+                title=f"Error while {error.command.qualified_name}",
+                description=f"```{error}```",
+                color=disnake.Color.red()
+            )
+            await channel.send(embed=error_embed)
 
     @commands.Cog.listener()
     async def on_wavelink_track_exception(

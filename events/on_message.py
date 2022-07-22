@@ -27,7 +27,7 @@ class onMessage(commands.Cog):
                     message.content = "Keine Nachricht angegeben."
 
                 embed = disnake.Embed(
-                    description=f"{message.author.mention} hat in {message.channel.mention} dieses Bild mit der Nachricht `{message.content}` gelöscht",
+                    description=f"A message with image from {message.author.mention} was deleted in {message.channel.mention}\nContent: ``{message.content}``",
                     color=disnake.Color.red()
                 )
                 embed.set_image(url=attachment.url)
