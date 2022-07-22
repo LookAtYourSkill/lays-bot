@@ -1,6 +1,5 @@
 import disnake
-import utils.reddit
-
+import requests
 from disnake.ext import commands
 
 
@@ -23,8 +22,17 @@ class Meme(commands.Cog):
             ephemeral=True
         )
 
-        meme = utils.reddit.get_memes()
-        print(meme)
+        URL = "https://some-random-api.ml/meme"
+        response = requests.get(
+            URL,
+            params={},
+            headers={}
+        )
+        if response.status_code == 200:
+            data = await response.json()
+            await interaction.edit_original_message(data["fact"])
+        else:
+            await interaction.edit_original_message(f"Die API gibt den Status:{response.status_code}.")
 
 
 def setup(bot):
