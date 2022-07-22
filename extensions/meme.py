@@ -7,11 +7,14 @@ class Meme(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="meme")
+    @commands.slash_command(name="meme", description="Get a random meme")
     async def meme(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
-    @meme.sub_command(name="reddit")
+    @meme.sub_command(
+        name="reddit",
+        description="Get a random meme from reddit",
+    )
     async def meme_reddit(self, interaction: disnake.ApplicationCommandInteraction):
         loading_embed = disnake.Embed(
             description="Getting memes from Reddit...",
@@ -29,7 +32,7 @@ class Meme(commands.Cog):
             headers={}
         )
         if response.status_code == 200:
-            data = await response.json()
+            data = response.json()
 
             meme_embed = disnake.Embed(
                 title=data["caption"],
@@ -39,8 +42,7 @@ class Meme(commands.Cog):
             meme_embed.set_image(url=data["image"])
 
             await interaction.edit_original_message(
-                embed=meme_embed,
-                ephemeral=True
+                embed=meme_embed
             )
         else:
             await interaction.edit_original_message(f"Die API gibt den Status:{response.status_code}.")
