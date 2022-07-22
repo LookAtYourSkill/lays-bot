@@ -38,9 +38,8 @@ class Changelog(commands.Cog):
             title=f"⚙️ Changelog [Version: {self.version}]",
             description="- **Added** License System [Finished :tada: ]\n"
                         "- **Added** Suggest commands\n"
-                        "- **Fixed** setup commands\n"
-                        "- **Fixed** timer commands\n"
-                        "- **Fixed** a few commands\n"
+                        "- **Added** meme command\n"
+                        "- **changed** error messages\n"
         )
         await interaction.edit_original_message(
             embed=changelog_embed
