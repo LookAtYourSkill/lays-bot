@@ -15,6 +15,7 @@ class Twitch(commands.Cog):
     '''
     def __init__(self, bot):
         self.bot = bot
+        self.error_channel = 1000043915753304105
         self.check_streams.start()
 
     @commands.slash_command(
@@ -602,9 +603,9 @@ class Twitch(commands.Cog):
                                                 online_users.append(user_name)
 
                                                 print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
-                                                notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
                                                 if i["notify_channel"]:
+                                                    notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
                                                     embed = disnake.Embed(
                                                         title=f"{stream['title']}",
@@ -637,9 +638,21 @@ class Twitch(commands.Cog):
                                                     # send embed to channel
                                                     print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
                                                     # ! print()
-                                                    await notify_channel.send(
-                                                        embed=embed
-                                                    )
+                                                    try:
+                                                        await notify_channel.send(
+                                                            embed=embed
+                                                        )
+                                                    except Exception as e:
+                                                        print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
+                                                        error_embed = disnake.Embed(
+                                                            title=f"Error while sending {user_name} stream notification",
+                                                            description=f"{e}",
+                                                            color=disnake.Color.red()
+                                                        )
+                                                        error_channel = await self.bot.fetch_channel(self.error_channel)
+                                                        await error_channel.send(
+                                                            embed=error_embed
+                                                        )
                                                 else:
                                                     # if there's not a channel, do nothing
                                                     print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
@@ -651,6 +664,8 @@ class Twitch(commands.Cog):
                                             # if anything else happend, do nothing
                                     else:
                                         print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [5] Not in streams... , '{user_name}' {colorama.Fore.RESET}")
+                            else:
+                                continue
                 else:
                     # if no streamer is live, do nothing
                     print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [3] No streams found... 'GENERAL ERROR' {colorama.Fore.RESET}")
