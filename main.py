@@ -43,12 +43,6 @@ async def on_ready():
     print(f"Bot successfully set up!\nLogged in as {bot.user.name}\nCurrently in {len(bot.guilds)} servers")
     log.info("Bot online")
     bot.loop.create_task(status_task())
-    # await bot.change_presence(
-    #     activity=disnake.Activity(
-    #         type=disnake.ActivityType.listening,
-    #         name=f"{len(bot.guilds)} servers"),
-    #     status=disnake.Status.idle
-    # )
 
 
 log.info("Loading extensions")
