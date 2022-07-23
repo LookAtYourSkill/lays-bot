@@ -24,7 +24,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
@@ -37,7 +37,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
@@ -50,12 +50,11 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
         else:
-            print(error)
             channel = self.bot.get_channel(self.error_channel)
 
             error_embed = disnake.Embed(
@@ -81,7 +80,7 @@ class onError(commands.Cog):
                 description=f"The Track `{track.title}` could not be found ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
@@ -105,7 +104,7 @@ class onError(commands.Cog):
                 description="The queue is full, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
@@ -117,7 +116,7 @@ class onError(commands.Cog):
                 description=f"The Track `{track.title}` could not be converted ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
@@ -129,7 +128,7 @@ class onError(commands.Cog):
                 description="Something is wrong with the bot, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup(
+            await interaction.followup.send(
                 embed=embed
             )
 
