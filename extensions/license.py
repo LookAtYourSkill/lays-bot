@@ -70,7 +70,7 @@ class LicenseSystem(commands.Cog):
                             f"👥 Guild: `{licenses[license]['guild']}`\n\n"
                             f"📜 Uses Left: `{licenses[license]['useability']}`\n"
                             f"⌛ Duration: `{licenses[license]['duration']}`\n\n"
-                            f"Status: `{'Actived' if licenses[license]['activated'] else 'Deactivated'}`\n",
+                            f"Status: `{'Active' if licenses[license]['activated'] else 'Not active'}`\n",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
