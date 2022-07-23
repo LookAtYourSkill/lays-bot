@@ -33,9 +33,9 @@ class Owner(commands.Cog):
 
             general["license_check"] = True
             with open("json/general.json", "w") as dump_file:
-                json.dump(general, dump_file, indent=4)
+                json.dump(general, dump_file, indent=4, encoding="UTF-8")
 
-        elif general["license_check"]:
+        else:
             off_embed = disnake.Embed(
                 description="License check is now disabled",
                 color=disnake.Color.red()
@@ -47,17 +47,8 @@ class Owner(commands.Cog):
 
             general["license_check"] = False
             with open("json/general.json", "w") as dump_file:
-                json.dump(general, dump_file, indent=4)
+                json.dump(general, dump_file, indent=4, encoding="UTF-8")
 
-        else:
-            error_embed = disnake.Embed(
-                description="An error occurred",
-                color=disnake.Color.red()
-            )
-            await interaction.response.send_message(
-                embed=error_embed,
-                ephemeral=True
-            )
 
     @set.sub_command(
         name="allservers",

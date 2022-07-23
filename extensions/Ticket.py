@@ -5,6 +5,8 @@ import json
 import pytz
 import os
 
+from checks.check_license import check_license_lol
+
 
 class open_message(disnake.ui.View):
     def __init__(self):
@@ -696,49 +698,19 @@ class TicketSystem(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        with open("json/general.json", "r") as general_info:
-            general = json.load(general_info)
-        with open("json/guild.json", "r") as guild_info:
-            guilds = json.load(guild_info)
-        with open("json/licenses.json", "r") as license_info:
-            licenses = json.load(license_info)
-
-        if general["license_check"]:
-            if not guilds[str(interaction.author.guild.id)]["license"] or guilds[str(interaction.author.guild.id)]["license"] not in licenses:
-                no_licesnse_embed = disnake.Embed(
-                    title="No license ⛔",
-                    description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                    color=disnake.Color.red()
-                )
-                no_licesnse_embed.set_footer(
-                    text="If you dont have a license, please contact the bot owner"
-                )
-                await interaction.response.send_message(
-                    embed=no_licesnse_embed,
-                    ephemeral=True
-                )
-
-            else:
-                if interaction.author.guild_permissions.manage_channels:
-
-                    # Create embed
-                    view = ticket_message()
-                    ticket_embed = disnake.Embed(
-                        title="Ticketsystem",
-                        description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
-                        color=disnake.Color.green()
-                    )
-
-                    # send embed with buttons
-                    await interaction.send(
-                        embed=ticket_embed,
-                        view=view
-                    )
-                else:
-                    await interaction.response.send_message(
-                        content="You don't have the permissions to use this command!",
-                        ephemeral=True
-                    )
+        if not check_license_lol(interaction.author):
+            no_licesnse_embed = disnake.Embed(
+                title="No license ⛔",
+                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                color=disnake.Color.red()
+            )
+            no_licesnse_embed.set_footer(
+                text="If you dont have a license, please contact the bot owner"
+            )
+            await interaction.response.send_message(
+                embed=no_licesnse_embed,
+                ephemeral=True
+            )
 
         else:
             if interaction.author.guild_permissions.manage_channels:
