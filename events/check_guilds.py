@@ -15,6 +15,12 @@ class GuildCheck(commands.Cog):
         with open("json/tickets.json", "r") as ticket_info:
             ticket_data = json.load(ticket_info)
 
+        with open("json/active_check.json", "r") as active_info:
+            active_data = json.load(active_info)
+
+        with open("json/settings.json", "r") as settings_info:
+            settings_data = json.load(settings_info)
+
         # going through all guilds, the bot is in
         for guild in self.bot.guilds:
             # check if the guild is in the json file
@@ -55,6 +61,49 @@ class GuildCheck(commands.Cog):
 
                 with open("json/tickets.json", "w") as dumpfile:
                     json.dump(ticket_data, dumpfile, indent=4)
+
+        for __guild in self.bot.guilds:
+            # check if the guild is in the json file
+            if str(__guild.id) in active_data:
+                pass
+            else:
+                # if not add it to the json file
+                print(f"{__guild.name} has been added to the active check list")
+                active_data[__guild.id] = {
+                    "about": True,
+                    "changelog": True,
+                    "help": True,
+                    "info": True,
+                    "license": True,
+                    "meme": True,
+                    "moderation": True,
+                    "owner": False,
+                    "music": False,
+                    "roles": True,
+                    "setup": True,
+                    "suggestion": True,
+                    "ticket": True,
+                    "timer": False,
+                    "twitch": True,
+                }
+
+                with open("json/active_check.json", "w") as dumpfile:
+                    json.dump(active_data, dumpfile, indent=4)
+
+        for ___guild in self.bot.guilds:
+            # check if the guild is in the json file
+            if str(___guild.id) in settings_data:
+                pass
+            else:
+                # if not add it to the json file
+                print(f"{___guild.name} has been added to the active check list")
+                settings_data[___guild.id] = {
+                    "anti_alt_days": 7,
+                    "twitch_with_everyone": False
+                }
+
+                with open("json/active_check.json", "w") as dumpfile:
+                    json.dump(settings_data, dumpfile, indent=4)
 
 
 def setup(bot):
