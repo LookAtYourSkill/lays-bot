@@ -41,7 +41,8 @@ class GuildCheck(commands.Cog):
                     "welcome_channel": False,
                     "join_role": False,
                     "license": [],
-                    "watchlist": []
+                    "watchlist": [],
+                    "twitch_with_everyone": "off"
                 }
 
                 with open("json/guild.json", "w") as dumpfile:
@@ -98,8 +99,7 @@ class GuildCheck(commands.Cog):
                 # if not add it to the json file
                 print(f"{___guild.name} has been added to the active check list")
                 settings_data[___guild.id] = {
-                    "anti_alt_days": 7,
-                    "twitch_with_everyone": "off"
+                    "anti_alt_days": 7
                 }
 
                 with open("json/settings.json", "w") as dumpfile:
