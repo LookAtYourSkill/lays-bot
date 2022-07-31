@@ -26,7 +26,7 @@ class AntiAlt(commands.Cog):
                 settings_data = json.load(f)
 
             settings_data[str(interaction.guild.id)]["anti_alt_days"] = days
-            with open("json/guild.json", "w") as f:
+            with open("json/settings.json", "w") as f:
                 json.dump(settings_data, f, indent=4)
 
             embed = disnake.Embed(

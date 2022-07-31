@@ -256,60 +256,65 @@ class Twitch(commands.Cog):
         name="with_everyone",
         description="Get choice if live message should get sent with everyone or without"
     )
-    @commands.cooldown(1, 3600, commands.BucketType.user)
     async def live_message(
         self,
         interaction: disnake.ApplicationCommandInteraction,
-        state: State()
+        state: State
     ):
-        if state == "on":
-            loading_embed = disnake.Embed(
-                description="Overriting settings...",
-                color=disnake.Color.blurple()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
+        await interaction.response.defer(ephemeral=True)
 
-            with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
-                settings_data = json.load(settings_file)
+        with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
+            settings_data = json.load(settings_file)
 
-            settings_data[str(interaction.guild.id)]["twitch_with_everyone"] = True
-            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                json.dump(settings_data, dump_file, indent=4)
+        if state:
+            if settings_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "on":
+                loading_embed = disnake.Embed(
+                    description="Overriting settings...",
+                    color=disnake.Color.blurple()
+                )
+                await interaction.edit_original_message(
+                    embed=loading_embed
+                )
 
-            live_message_embed = disnake.Embed(
-                description="Everyone in Live Message is activated!",
-                color=disnake.Color.blurple()
-            )
-            await interaction.edit_original_message(
-                embed=live_message_embed
-            )
-        else:
-            loading_embed = disnake.Embed(
-                description="Overriting settings...",
-                color=disnake.Color.blurple()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
+                with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
+                    settings_data = json.load(settings_file)
 
-            with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
-                settings_data = json.load(settings_file)
+                settings_data[str(interaction.guild.id)]["twitch_with_everyone"] = "off"
+                with open("json/settings.json", "w", encoding="UTF-8") as dump_file:
+                    json.dump(settings_data, dump_file, indent=4)
 
-            settings_data[str(interaction.guild.id)]["twitch_with_everyone"] = False
-            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                json.dump(settings_data, dump_file, indent=4)
+                live_message_embed = disnake.Embed(
+                    description="Everyone in Live Message is deactivated!",
+                    color=disnake.Color.blurple()
+                )
+                await interaction.edit_original_message(
+                    embed=live_message_embed
+                )
+            elif settings_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "off":
+                loading_embed = disnake.Embed(
+                    description="Overriting settings...",
+                    color=disnake.Color.blurple()
+                )
+                await interaction.edit_original_message(
+                    embed=loading_embed
+                )
 
-            live_message_embed = disnake.Embed(
-                description="Everyone in Live Message is deactivated!",
-                color=disnake.Color.blurple()
-            )
-            await interaction.edit_original_message(
-                embed=live_message_embed
-            )
+                with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
+                    settings_data = json.load(settings_file)
+
+                settings_data[str(interaction.guild.id)]["twitch_with_everyone"] = "on"
+                with open("json/settings.json", "w", encoding="UTF-8") as dump_file:
+                    json.dump(settings_data, dump_file, indent=4)
+
+                live_message_embed = disnake.Embed(
+                    description="Everyone in Live Message is activated!",
+                    color=disnake.Color.blurple()
+                )
+                await interaction.edit_original_message(
+                    embed=live_message_embed
+                )
+            else:
+                pass
 
     @twitch.sub_command(
         name="list",
@@ -443,7 +448,7 @@ class Twitch(commands.Cog):
                                                 print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                                 if user_name == stream["user_login"]:
                                                     # check if stream is too long in past
-                                                    if time.time() - started_at < 7300:
+                                                    if time.time() - started_at < 80:
                                                         # if so append streamer to list, so its not sent again
                                                         notification.append(streams[user_name])
                                                         online_users.append(user_name)
@@ -451,7 +456,7 @@ class Twitch(commands.Cog):
                                                         print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
 
                                                         if i["notify_channel"]:
-                                                            if o["twitch_with_everyone"]:
+                                                            if o["twitch_with_everyone"] == "on":
                                                                 notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
                                                                 embed = disnake.Embed(
@@ -567,7 +572,7 @@ class Twitch(commands.Cog):
                             # if no streamer is live, do nothing
                             print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [3] No streams found... 'GENERAL ERROR' {colorama.Fore.RESET}")
 
-        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished {colorama.Fore.RESET}")
+                print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished {colorama.Fore.RESET}")
 
     @loop(seconds=300)
     async def update(self):
