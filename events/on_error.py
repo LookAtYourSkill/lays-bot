@@ -6,7 +6,7 @@ import wavelink
 class onError(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.error_channel = 882721258301685790
+        self.error_channel = 1000043915753304105
 
     @commands.Cog.listener()
     async def on_slash_command_error(
