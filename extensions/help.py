@@ -7,6 +7,7 @@ from disnake.ext import commands
 
 class Cogs(str, Enum):
     About = "About"
+    AntiAlt = "AntiAlt"
     Changelog = "Changelog"
     Help = "Help"
     Info = "Info"
@@ -78,11 +79,11 @@ class Help(commands.Cog):
                     name=f"__{cog.qualified_name}__",
                     value=f"`{cog.description if cog.description else 'No description'}`",
                     inline=False
-            )
-
-                await interaction.edit_original_message(
-                    embed=embed
                 )
+
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
         # check if cog is set
         elif cog:  # and not command:
