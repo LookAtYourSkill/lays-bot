@@ -102,7 +102,7 @@ class GuildCheck(commands.Cog):
                     "twitch_with_everyone": False
                 }
 
-                with open("json/active_check.json", "w") as dumpfile:
+                with open("json/settings.json", "w") as dumpfile:
                     json.dump(settings_data, dumpfile, indent=4)
 
 
