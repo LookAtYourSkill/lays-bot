@@ -72,6 +72,7 @@ class GuildCheck(commands.Cog):
                 print(f"{__guild.name} has been added to the active check list")
                 active_data[__guild.id] = {
                     "about": True,
+                    "antialt": True,
                     "changelog": True,
                     "help": True,
                     "info": True,
