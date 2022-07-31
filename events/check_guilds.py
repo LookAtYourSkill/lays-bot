@@ -99,7 +99,7 @@ class GuildCheck(commands.Cog):
                 print(f"{___guild.name} has been added to the active check list")
                 settings_data[___guild.id] = {
                     "anti_alt_days": 7,
-                    "twitch_with_everyone": False
+                    "twitch_with_everyone": "off"
                 }
 
                 with open("json/settings.json", "w") as dumpfile:
