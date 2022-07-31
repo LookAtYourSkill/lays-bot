@@ -34,6 +34,10 @@ class About(commands.Cog):
     ):
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
+        with open("json/guild.json", "r") as guild_info:
+            guild_data = json.load(guild_info)
+        with open("json/settings.json", "r") as settngs_info:
+            settings_data = json.load(settngs_info)
 
         if not check_license_lol(interaction.author):
             no_licesnse_embed = disnake.Embed(
@@ -63,20 +67,31 @@ class About(commands.Cog):
                 color=interaction.author.color
             )
             about_embed.add_field(
-                name="> ❓ Autor",
-                value=f"`»` Der Bot wurde von `{owner}` geschrieben",
+                name="> ❓ Author",
+                value=f"`»` Bot written by `{owner}`",
                 inline=False
             )
             about_embed.add_field(
-                name="> ❓ Informationen",
-                value=f"`»` Momentane Version: `{self.version}`\n"
+                name="> ❓ Information",
+                value=f"`»` Version: `{self.version}`\n"
                       f"`»` Disnake Version: `{disnake.__version__}`\n"
-                      f"`»` Momentanes Prefix: `{self.prefix}`",
+                      f"`»` Prefix: `{self.prefix}`",
+                inline=False
+            )
+            about_embed.add_field(
+                name="> ❓ Bot Information",
+                value=f"`»` Server: `{len(self.bot.guilds)}`\n`»` User: `{len(self.bot.users)}`",
                 inline=False
             )
             about_embed.add_field(
                 name="> ❓ Lizenz",
                 value=f"`»` Lizenz System Status: `{'Active' if general['license_check'] else 'Inactive'}`",
+                inline=False
+            )
+            about_embed.add_field(
+                name="> ❓ Personal Server Info",
+                value=f"`»` Twitch Everyone: `{'Yes' if guild_data[str(interaction.author.guild.id)]['twitch_with_everyone'] == 'on' else 'No'}`\n"
+                      f"`»` AntiAlt-Days: `{settings_data[str(interaction.author.guild.id)]['anti_alt_days']}`",
                 inline=False
             )
             about_embed.set_author(
