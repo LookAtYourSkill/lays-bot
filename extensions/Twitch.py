@@ -486,6 +486,9 @@ class Twitch(commands.Cog):
                                                                 embed.set_image(
                                                                     url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
                                                                 )
+                                                                embed.set_footer(
+                                                                    text="Live notifications by Lays Bot"
+                                                                )
 
                                                                 # send embed to channel
                                                                 print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
@@ -535,6 +538,9 @@ class Twitch(commands.Cog):
                                                                 )
                                                                 embed.set_image(
                                                                     url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
+                                                                )
+                                                                embed.set_footer(
+                                                                    text="Live notifications by Lays Bot"
                                                                 )
 
                                                                 # send embed to channel
