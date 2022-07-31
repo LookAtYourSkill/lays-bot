@@ -59,7 +59,7 @@ class onError(commands.Cog):
 
             error_embed = disnake.Embed(
                 title=f"Error while command: {interaction.application_command.qualified_name}",
-                description=f"```{error}```",
+                description=f"```{error}``` \nGuild: `{interaction.guild.name}` \nChannel: `{interaction.channel.name}` \nUser: `{interaction.author.name}`",
                 color=disnake.Color.red()
             )
             await channel.send(embed=error_embed)
