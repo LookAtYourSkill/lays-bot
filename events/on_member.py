@@ -17,6 +17,9 @@ class onJoin(commands.Cog):
         with open("json/guild.json", "r") as f:
             guild_data = json.load(f)
 
+        with open("json/settings.json", "r") as f:
+            settings_data = json.load(f)
+
         if member.bot:
             return
 
@@ -27,12 +30,12 @@ class onJoin(commands.Cog):
 
             diff = (now - LastDate.replace(tzinfo=None)).days
 
-            if diff < 7:
+            if diff < settings_data[str(member.guild.id)]["anti_alt_days"]:
                 embed = disnake.Embed(
                     title="Antialt Detection Kick ⛔",
-                    description=f":exclamation: **Your Account has to be at least 7 days old!**\n"
+                    description=f":exclamation: **Your Account has to be at least {settings_data[str(member.guild.id)]['anti_alt_days']} days old!**\n"
                                 f"⌛ **Account Age** : `{diff}` days old\n"
-                                ":exclamation: **Must be** at least : `7` days old",
+                                f":exclamation: **Must be** at least : `{settings_data[str(member.guild.id)]['anti_alt_days']}` days old",
                     color=disnake.Color.red()
                 )
                 await member.send(
@@ -50,7 +53,7 @@ class onJoin(commands.Cog):
                     )
                     embed.add_field(
                         name="__Ages__",
-                        value=f"⌛ Days old: `{diff}` days\n ⌛ Needed at least : `7` days",
+                        value=f"⌛ Days old: `{diff}` days\n ⌛ Needed at least : `{settings_data[str(member.guild.id)]['anti_alt_days']}` days",
                         inline=False
                     )
                     embed.add_field(
@@ -75,12 +78,12 @@ class onJoin(commands.Cog):
 
             diff = (now - LastDate.replace(tzinfo=None)).days
 
-            if diff < 7:
+            if diff < settings_data[str(member.guild.id)]["anti_alt_days"]:
                 embed = disnake.Embed(
                     title="Antialt Detection Kick ⛔",
-                    description=f":exclamation: **Your Account has to be at least 7 days old!**\n"
+                    description=f":exclamation: **Your Account has to be at least {settings_data[str(member.guild.id)]['anti_alt-_days']} days old!**\n"
                                 f"⌛ **Account Age** : `{diff}` days old\n"
-                                ":exclamation: **Must be [at least]** : `7` days old",
+                                f":exclamation: **Must be** at least : `{settings_data[str(member.guild.id)]['anti_alt_days']}` days old",
                     color=disnake.Color.red()
                 )
                 await member.send(
@@ -98,7 +101,7 @@ class onJoin(commands.Cog):
                     )
                     embed.add_field(
                         name="__Ages__",
-                        value=f"⌛ Days old: `{diff}` days\n ⌛ Needed at least : `7` days",
+                        value=f"⌛ Days old: `{diff}` days\n ⌛ Needed at least : `{settings_data[str(member.guild.id)]['anti_alt_days']}` days",
                         inline=False
                     )
                     embed.add_field(
