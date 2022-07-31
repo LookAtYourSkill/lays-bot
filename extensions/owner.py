@@ -23,7 +23,7 @@ class Owner(commands.Cog):
 
         if general["license_check"] is False:
             on_embed = disnake.Embed(
-                description="License check is now enabled",
+                description="License check is now `enabled`",
                 color=disnake.Color.green()
             )
             await interaction.response.send_message(
@@ -33,11 +33,11 @@ class Owner(commands.Cog):
 
             general["license_check"] = True
             with open("json/general.json", "w") as dump_file:
-                json.dump(general, dump_file, indent=4, encoding="UTF-8")
+                json.dump(general, dump_file, indent=4)
 
         else:
             off_embed = disnake.Embed(
-                description="License check is now disabled",
+                description="License check is now `disabled`",
                 color=disnake.Color.red()
             )
             await interaction.response.send_message(
@@ -47,7 +47,7 @@ class Owner(commands.Cog):
 
             general["license_check"] = False
             with open("json/general.json", "w") as dump_file:
-                json.dump(general, dump_file, indent=4, encoding="UTF-8")
+                json.dump(general, dump_file, indent=4)
 
 
     @set.sub_command(

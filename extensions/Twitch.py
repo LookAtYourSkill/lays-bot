@@ -263,11 +263,11 @@ class Twitch(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
-            settings_data = json.load(settings_file)
+        with open("json/guild.json", "r", encoding="UTF-8") as guild_file:
+            guild_data = json.load(guild_file)
 
         if state:
-            if settings_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "on":
+            if guild_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "on":
                 loading_embed = disnake.Embed(
                     description="Overriting settings...",
                     color=disnake.Color.blurple()
@@ -276,21 +276,21 @@ class Twitch(commands.Cog):
                     embed=loading_embed
                 )
 
-                with open("json/guild.json", "r", encoding="UTF-8") as settings_file:
-                    settings_data = json.load(settings_file)
+                with open("json/guild.json", "r", encoding="UTF-8") as file:
+                    guild_data = json.load(file)
 
-                settings_data[str(interaction.guild.id)]["twitch_with_everyone"] = "off"
+                guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "off"
                 with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                    json.dump(settings_data, dump_file, indent=4)
+                    json.dump(guild_data, dump_file, indent=4)
 
                 live_message_embed = disnake.Embed(
-                    description="Everyone in Live Message is deactivated!",
+                    description="Everyone in Live Message is `now deactivated`!",
                     color=disnake.Color.blurple()
                 )
                 await interaction.edit_original_message(
                     embed=live_message_embed
                 )
-            elif settings_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "off":
+            elif guild_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "off":
                 loading_embed = disnake.Embed(
                     description="Overriting settings...",
                     color=disnake.Color.blurple()
@@ -299,15 +299,15 @@ class Twitch(commands.Cog):
                     embed=loading_embed
                 )
 
-                with open("json/guild.json", "r", encoding="UTF-8") as settings_file:
-                    settings_data = json.load(settings_file)
+                with open("json/guild.json", "r", encoding="UTF-8") as file:
+                    guild_data = json.load(file)
 
-                settings_data[str(interaction.guild.id)]["twitch_with_everyone"] = "on"
+                guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "on"
                 with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                    json.dump(settings_data, dump_file, indent=4)
+                    json.dump(guild_data, dump_file, indent=4)
 
                 live_message_embed = disnake.Embed(
-                    description="Everyone in Live Message is activated!",
+                    description="Everyone in Live Message is `now activated`!",
                     color=disnake.Color.blurple()
                 )
                 await interaction.edit_original_message(
