@@ -241,6 +241,43 @@ class Setup(commands.Cog):
             )
 
     @channel.sub_command(
+        name="join_to_create",
+        description="Sets the join to cteate channel"
+    )
+    @commands.has_permissions(administrator=True)
+    async def set_join_to_create_channel(
+        self,
+        interaction: disnake.CommandInteraction,
+        channel: disnake.TextChannel
+    ):
+        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        if not guild_data[str(interaction.guild.id)]["join_to_create_channel"]:
+
+            guild_data[str(interaction.guild.id)]["join_to_create_channel"] = int(channel.id)
+            with open(f"{self.PATH}", "w") as f:
+                json.dump(guild_data, f, indent=4)
+
+            set_embed = disnake.Embed(
+                description=f"Der `Join To Create Channel` wurde auf {channel.mention} gesetzt!",
+                color=disnake.Color.green()
+            )
+            await interaction.response.send_message(
+                embed=set_embed,
+                ephemeral=True
+            )
+        else:
+            already_embed = disnake.Embed(
+                description=f"Der `Join To Create Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['join_to_create_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
+                color=disnake.Color.red()
+            )
+            await interaction.response.send_message(
+                embed=already_embed,
+                ephemeral=True
+            )
+
+    @channel.sub_command(
         name="notification",
         description="Sets the notification channel"
     )
@@ -384,6 +421,43 @@ class Setup(commands.Cog):
                 color=disnake.Color.red()
             )
             await interaction.response.send_message(
+                embed=already_embed,
+                ephemeral=True
+            )
+
+    @category.sub_command(
+        name="join_to_create",
+        description="Sets the open ticket category"
+    )
+    @commands.has_permissions(administrator=True)
+    async def join_to_create_category(
+        self,
+        interaction: disnake.CommandInteraction,
+        category: disnake.CategoryChannel
+    ):
+        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        if not guild_data[str(interaction.guild.id)]["join_to_create_category"]:
+
+            guild_data[str(interaction.guild.id)]["join_to_create_category"] = int(category.id)
+            with open(f"{self.PATH}", "w") as f:
+                json.dump(guild_data, f, indent=4)
+
+            set_embed = disnake.Embed(
+                description=f"Die `Join To Create Category` wurde auf `{category}` gesetzt!",
+                color=disnake.Color.green()
+            )
+            await interaction.send(
+                embed=set_embed,
+                ephemeral=True
+            )
+        else:
+            already_embed = disnake.Embed(
+                description=f"Die `Join To Create Category` wurde bereits auf `{guild_data[str(interaction.guild.id)]['join_to_create_category']}` festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
+                color=disnake.Color.red()
+            )
+            await interaction.send(
                 embed=already_embed,
                 ephemeral=True
             )
@@ -683,6 +757,50 @@ class Change(commands.Cog):
                 embed=not_channel_set_embed
             )
 
+    @channel.sub_command(
+        name="join_to_create",
+        description="Changes the welcome channel"
+    )
+    @commands.has_permissions(administrator=True)
+    async def join_to_create_channel(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        channel: disnake.TextChannel
+    ):
+        loading_embed = disnake.Embed(
+            description="Setting everything up...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        if guild_data[str(interaction.guild.id)]["join_to_create_channel"]:
+
+            guild_data[str(interaction.guild.id)]["join_to_create_channel"] = int(channel.id)
+            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
+
+            change_embed = disnake.Embed(
+                description=f"Der `Join To Create Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=change_embed
+            )
+        else:
+            not_channel_set_embed = disnake.Embed(
+                description="Für `diesen Server` wurde noch kein `Join To Create Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
+                color=disnake.Color.red()
+            )
+            await interaction.edit_original_message(
+                embed=not_channel_set_embed
+            )
+
     @category.sub_command(
         name="ticket_open",
         description="Changes the ticket category"
@@ -721,6 +839,50 @@ class Change(commands.Cog):
         else:
             not_channel_set_embed = disnake.Embed(
                 description="Für `diesen Server` wurde noch keine `Ticket Category` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
+                color=disnake.Color.red()
+            )
+            await interaction.edit_original_message(
+                embed=not_channel_set_embed
+            )
+
+    @category.sub_command(
+        name="join_to_create",
+        description="Changes the ticket category"
+    )
+    @commands.has_permissions(administrator=True)
+    async def join_to_create_category(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        category: disnake.CategoryChannel
+    ):
+        loading_embed = disnake.Embed(
+            description="Setting everything up...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
+
+        if guild_data[str(interaction.guild.id)]["join_to_create_category"]:
+
+            guild_data[str(interaction.guild.id)]["join_to_create_category"] = int(category.id)
+            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
+
+            change_embed = disnake.Embed(
+                description=f"Die `Join To Create Category` wurde erfolgreich auf <#{category.id}> geändert!",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=change_embed
+            )
+        else:
+            not_channel_set_embed = disnake.Embed(
+                description="Für `diesen Server` wurde noch keine `Join To Create Category` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
