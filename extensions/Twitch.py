@@ -1,14 +1,16 @@
-import disnake
-from disnake.ext import commands
+import json
+import time
+from datetime import datetime
 from enum import Enum
 from textwrap import dedent
-import json
-from datetime import datetime
-import time
+from typing import Optional
+
 import colorama
-from utils.twitch import get_streams, get_users
-from disnake.ext.tasks import loop
+import disnake
 from checks.check_license import check_license_lol
+from disnake.ext import commands
+from disnake.ext.tasks import loop
+from utils.twitch import get_streams, get_users
 
 
 class State(str, Enum):
@@ -258,63 +260,49 @@ class Twitch(commands.Cog):
     )
     async def live_message(
         self,
-        interaction: disnake.ApplicationCommandInteraction,
-        state: State
+        interaction: disnake.ApplicationCommandInteraction
     ):
         await interaction.response.defer(ephemeral=True)
 
         with open("json/guild.json", "r", encoding="UTF-8") as guild_file:
             guild_data = json.load(guild_file)
 
-        if state:
-            if guild_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "on":
-                loading_embed = disnake.Embed(
-                    description="Overriting settings...",
-                    color=disnake.Color.blurple()
-                )
-                await interaction.edit_original_message(
-                    embed=loading_embed
-                )
+        loading_embed = disnake.Embed(
+            description="Overriting settings...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.edit_original_message(
+            embed=loading_embed
+        )
 
-                with open("json/guild.json", "r", encoding="UTF-8") as file:
-                    guild_data = json.load(file)
+        if guild_data[str(interaction.guild.id)]["twitch_with_everyone"] == "off":
+            guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "on"
+            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
 
-                guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "off"
-                with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                    json.dump(guild_data, dump_file, indent=4)
+            live_message_embed = disnake.Embed(
+                description="Everyone in Live Message is `now activated`!",
+                color=disnake.Color.blurple()
+            )
+            await interaction.edit_original_message(
+                embed=live_message_embed
+            )
 
-                live_message_embed = disnake.Embed(
-                    description="Everyone in Live Message is `now deactivated`!",
-                    color=disnake.Color.blurple()
-                )
-                await interaction.edit_original_message(
-                    embed=live_message_embed
-                )
-            elif guild_data[str(interaction.author.guild.id)]["twitch_with_everyone"] == "off":
-                loading_embed = disnake.Embed(
-                    description="Overriting settings...",
-                    color=disnake.Color.blurple()
-                )
-                await interaction.edit_original_message(
-                    embed=loading_embed
-                )
+        elif guild_data[str(interaction.guild.id)]["twitch_with_everyone"] == "on":
+            guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "off"
+            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
 
-                with open("json/guild.json", "r", encoding="UTF-8") as file:
-                    guild_data = json.load(file)
+            live_message_embed = disnake.Embed(
+                description="Everyone in Live Message is `now deactivated`!",
+                color=disnake.Color.blurple()
+            )
+            await interaction.edit_original_message(
+                embed=live_message_embed
+            )
 
-                guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "on"
-                with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                    json.dump(guild_data, dump_file, indent=4)
-
-                live_message_embed = disnake.Embed(
-                    description="Everyone in Live Message is `now activated`!",
-                    color=disnake.Color.blurple()
-                )
-                await interaction.edit_original_message(
-                    embed=live_message_embed
-                )
-            else:
-                pass
+        else:
+            pass
 
     @twitch.sub_command(
         name="list",
