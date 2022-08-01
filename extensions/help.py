@@ -11,6 +11,7 @@ class Cogs(str, Enum):
     Changelog = "Changelog"
     Help = "Help"
     Info = "Info"
+    JoinToCreate = "JoinToCreate"
     LicenseSystem = "LicenseSystem"
     Meme = "Meme"
     Moderation = "Moderation"
