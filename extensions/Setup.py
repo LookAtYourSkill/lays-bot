@@ -248,7 +248,7 @@ class Setup(commands.Cog):
     async def set_join_to_create_channel(
         self,
         interaction: disnake.CommandInteraction,
-        channel: disnake.TextChannel
+        channel: disnake.VoiceChannel
     ):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
@@ -765,7 +765,7 @@ class Change(commands.Cog):
     async def join_to_create_channel(
         self,
         interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.TextChannel
+        channel: disnake.VoiceChannel
     ):
         loading_embed = disnake.Embed(
             description="Setting everything up...",
