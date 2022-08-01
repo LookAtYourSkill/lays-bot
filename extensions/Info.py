@@ -123,12 +123,10 @@ class Info(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        with open("json/general.json", "r") as general_info:
-            general = json.load(general_info)
-        with open("json/guild.json", "r") as guild_info:
-            guilds = json.load(guild_info)
-        with open("json/licenses.json", "r") as license_info:
-            licenses = json.load(license_info)
+        with open("json/guild.json", "r") as f:
+            guild_data = json.load(f)
+        with open("json/settings.json", "r") as f:
+            settings_data = json.load(f)
 
         if not check_license_lol(interaction.author):
             no_licesnse_embed = disnake.Embed(
@@ -163,23 +161,29 @@ class Info(commands.Cog):
             server_embed.add_field(
                 name="__Information__",
                 value=f"`»`Name: `{interaction.guild.name}` [`{interaction.guild.id}`]\n"
-                        f"`»`Owner: `{interaction.guild.owner}`\n"
-                        f"`»`Region: `{interaction.guild.region}`",
+                      f"`»`Owner: `{interaction.guild.owner}`\n"
+                      f"`»`Region: `{interaction.guild.region}`",
+                inline=False
+            )
+            server_embed.add_field(
+                name="__Personal Server Info__",
+                value=f"`»` Twitch Everyone: `{'Yes' if guild_data[str(interaction.author.guild.id)]['twitch_with_everyone'] == 'on' else 'No'}`\n"
+                      f"`»` AntiAlt-Days: `{settings_data[str(interaction.author.guild.id)]['anti_alt_days']}`",
                 inline=False
             )
             server_embed.add_field(
                 name="__Daten__",
                 value=f"`»`Erstellt: `{interaction.guild.created_at.strftime('%d.%m.%Y')}`\n"
-                        f"`»` Rollen: `{len(interaction.guild.roles)}`\n"
-                        f"`»`Boost Status: `{interaction.guild.premium_subscription_count} von 30`",
+                      f"`»` Rollen: `{len(interaction.guild.roles)}`\n"
+                      f"`»`Boost Status: `{interaction.guild.premium_subscription_count} von 30`",
                 inline=True
             )
             server_embed.add_field(
                 name="__Channel__",
                 value=f"`»` Channel insgesamt: `{len(interaction.guild.channels) - len(interaction.guild.categories)}`\n"
-                        f"`»` Text Channels: `{len(interaction.guild.text_channels)}`\n"
-                        f"`»` Voice Channels: `{len(interaction.guild.voice_channels)}`\n"
-                        f"`»` Kategorien: `{len(interaction.guild.categories)}`",
+                      f"`»` Text Channels: `{len(interaction.guild.text_channels)}`\n"
+                      f"`»` Voice Channels: `{len(interaction.guild.voice_channels)}`\n"
+                      f"`»` Kategorien: `{len(interaction.guild.categories)}`",
                 inline=False
             )
             await interaction.edit_original_message(
