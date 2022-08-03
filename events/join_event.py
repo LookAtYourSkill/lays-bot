@@ -42,7 +42,7 @@ class join_to_create(commands.Cog):
                 with open("json/join_to_create.json", "w") as json_file:
                     json.dump(data, json_file, indent=4)
 
-        elif after.channel is None or not after.channel.members:
+        elif len(before.channel.members) == 0:  # and after.channel is None:
             if str(before.channel.id) in data["jtcc"]:
                 await before.channel.delete()
 
