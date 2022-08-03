@@ -73,20 +73,22 @@ class Music(commands.Cog):
             icon_url=self.avatar
         )
         if self.announce:
-            channel = await self.client.fetch_channel(self.channel)
-            await channel.send(embed=now_playing)
+            pass
+            # channel = await self.client.fetch_channel(self.channel)
+            # await channel.send(embed=now_playing)
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, vc: wavelink.Player, track: wavelink.Track, reason):
+
         print(f"Track {track.title} ended with reason {reason}")
-        if self.skipping:
-            vc.queue.__delitem__(0)
-            self.skipping = False
+        # if not self.loop:
+            # vc.queue.__delitem__(0)
+            # self.skipping = False
 
-        elif self.loop:
-            await vc.play(track)
+        # elif self.loop:
+            # await vc.play(track)
 
-        elif vc.queue.is_empty:
+        if vc.queue.is_empty:
             # await vc.stop()
             empty = disnake.Embed(
                 description="There are no more tracks in the queue.\nIf you add a song use ``/queue resume`` to resume the queue!",
