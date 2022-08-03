@@ -76,37 +76,35 @@ class onTimeout(commands.Cog):
             await log_channel.send(
                 embed=time_embed
             )
-            if not punisher.bot:
-                _time = after.current_timeout - datetime.now(timezone.utc)
-                time = humanize.precisedelta(_time)
-                await asyncio.sleep(parse_timespan(time))
+            # if not punisher.bot:
+            _time = after.current_timeout - datetime.now(timezone.utc)
+            time = humanize.precisedelta(_time)
+            await asyncio.sleep(parse_timespan(time))
 
-                async for author in before.guild.audit_logs(
-                    limit=1,
-                    action=disnake.AuditLogAction.member_update
-                ):
-                    punisher = author.user
+            async for author in before.guild.audit_logs(
+                limit=1,
+                action=disnake.AuditLogAction.member_update
+            ):
+                punisher = author.user
 
-                untime_embed = disnake.Embed(
-                    title="⚔️ Timeout Log",
-                    description=f"> **User:** {before.mention}'s timeout ended!\n"
-                                f"> **ID**: `{before.id}`\n"
-                                f"> **Untimed from:** {punisher.mention}",
-                    timestamp=datetime.now(timezone.utc),
-                    color=disnake.Color.green()
-                )
-                untime_embed.set_thumbnail(
-                    url=before.avatar.url
-                )
-                untime_embed.set_footer(
-                    text=punisher,
-                    icon_url=punisher.avatar.url
-                )
-                await log_channel.send(
-                    embed=untime_embed
-                )
-            else:
-                pass
+            untime_embed = disnake.Embed(
+                title="⚔️ Timeout Log",
+                description=f"> **User:** {before.mention}'s timeout ended!\n"
+                            f"> **ID**: `{before.id}`\n"
+                            f"> **Untimed from:** {punisher.mention}",
+                timestamp=datetime.now(timezone.utc),
+                color=disnake.Color.green()
+            )
+            untime_embed.set_thumbnail(
+                url=before.avatar.url
+            )
+            untime_embed.set_footer(
+                text=punisher,
+                icon_url=punisher.avatar.url
+            )
+            await log_channel.send(
+                embed=untime_embed
+            )
 
         if not after.current_timeout:
             if before.current_timeout:
@@ -131,9 +129,9 @@ class onTimeout(commands.Cog):
                     text=punisher,
                     icon_url=punisher.avatar.url
                 )
-                await log_channel.send(
-                    embed=untime_embed
-                )
+                # await log_channel.send(
+                #     embed=untime_embed
+                # )
 
             else:
                 pass
