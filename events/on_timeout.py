@@ -2,7 +2,9 @@ import disnake
 from disnake.ext import commands
 import json
 import humanize
+import asyncio
 from datetime import datetime, timezone
+from humanfriendly import parse_timespan
 
 
 class onTimeout(commands.Cog):
@@ -74,33 +76,40 @@ class onTimeout(commands.Cog):
             await log_channel.send(
                 embed=time_embed
             )
+            if not punisher.bot:
+                _time = after.current_timeout - datetime.now(timezone.utc)
+                time = humanize.precisedelta(_time)
+                await asyncio.sleep(parse_timespan(time))
+
+                async for author in before.guild.audit_logs(
+                    limit=1,
+                    action=disnake.AuditLogAction.member_update
+                ):
+                    punisher = author.user
+
+                untime_embed = disnake.Embed(
+                    title="⚔️ Timeout Log",
+                    description=f"> **User:** {before.mention}'s timeout ended!\n"
+                                f"> **ID**: `{before.id}`\n"
+                                f"> **Untimed from:** {punisher.mention}",
+                    timestamp=datetime.now(timezone.utc),
+                    color=disnake.Color.green()
+                )
+                untime_embed.set_thumbnail(
+                    url=before.avatar.url
+                )
+                untime_embed.set_footer(
+                    text=punisher,
+                    icon_url=punisher.avatar.url
+                )
+                await log_channel.send(
+                    embed=untime_embed
+                )
+            else:
+                pass
 
         if not after.current_timeout:
-            if str(before.status).upper() != str(after.status).upper():
-                pass
-
-            elif before.display_name != after.display_name:
-                pass
-
-            elif old_roles != new_roles:
-                pass
-
-            elif before.activity != after.activity:
-                pass
-
-            elif before.activities != after.activities:
-                pass
-
-            elif before.status != after.status:
-                pass
-
-            elif before.nick != after.nick:
-                pass
-
-            elif before.voice != after.voice:
-                pass
-
-            elif before.current_timeout:
+            if before.current_timeout:
                 async for author in before.guild.audit_logs(
                     limit=1,
                     action=disnake.AuditLogAction.member_update
