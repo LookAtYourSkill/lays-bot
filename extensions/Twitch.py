@@ -447,7 +447,7 @@ class Twitch(commands.Cog):
                     embed=embed
                 )
 
-    @loop(seconds=90)
+    @loop(seconds=120)
     async def check_streams(self):
         await self.bot.wait_until_ready()
 
@@ -513,7 +513,7 @@ class Twitch(commands.Cog):
                                         print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                         if user_name == stream["user_login"]:
                                             # check if stream is too long in past
-                                            if time.time() - started_at < 80:
+                                            if time.time() - started_at < 100:
                                                 # if so append streamer to list, so its not sent again
                                                 notification.append(streams[user_name])
                                                 online_users.append(user_name)
@@ -645,7 +645,7 @@ class Twitch(commands.Cog):
 
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished {colorama.Fore.RESET}")
 
-    @loop(seconds=300)
+    @loop(minutes=15)
     async def update(self):
         # TODO create function, that updates the embed as long as the streamer is live
         # TODO store the message in a json file, so it can be used later (for every streamer and server)
