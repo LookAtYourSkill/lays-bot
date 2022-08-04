@@ -24,7 +24,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.followup.send(
+            await interaction.channel.send(
                 embed=embed
             )
 
@@ -33,11 +33,11 @@ class onError(commands.Cog):
             commands.MissingPermissions
         ):
             embed = disnake.Embed(
-                description=f"You dont have permission to use this commands. Required perms: ``{''.join(error.missing_permissions)}`` ⛔",
+                description=f"{interaction.author.mention} dont have permission to use this commands. Required perms: ``{''.join(error.missing_permissions)}`` ⛔",
                 color=disnake.Color.red()
             )
 
-            await interaction.followup.send(
+            await interaction.channel.send(
                 embed=embed
             )
 
@@ -46,11 +46,11 @@ class onError(commands.Cog):
             commands.CommandOnCooldown
         ):
             embed = disnake.Embed(
-                description=f"You are on cooldown {round(error.retry_after)} ⛔",
+                description=f"{interaction.author.mention} is on cooldown {round(error.retry_after)} ⛔",
                 color=disnake.Color.red()
             )
 
-            await interaction.followup.send(
+            await interaction.channel.send(
                 embed=embed
             )
 
