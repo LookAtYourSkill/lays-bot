@@ -74,8 +74,12 @@ class Meme(commands.Cog):
         )
         if response.status_code == 200:
             data = response.json()
-            meme = disnake.Embed(title=data['title'], color=disnake.Color.random()).set_image(url=data['url'])
-            await interaction.response.send_message(embed=meme)
+            meme_embed = disnake.Embed(
+                title=data['title'],
+                color=disnake.Color.green()
+            )
+            meme_embed.set_image(url=data['url'])
+            await interaction.response.send_message(embed=meme_embed)
 
 
 def setup(bot):
