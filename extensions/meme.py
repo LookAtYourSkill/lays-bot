@@ -63,6 +63,20 @@ class Meme(commands.Cog):
             else:
                 await interaction.edit_original_message(f"Die API gibt den Status:{response.status_code}.")
 
+    @meme.sub_command(
+        name="heroku",
+        description="Get a random meme from heruko",
+    )
+    async def meme(self, interaction: disnake.ApplicationCommandInteraction):
+        URL = "https://meme-api.herokuapp.com/gimme"
+        response = requests.get(
+            URL
+        )
+        if response.status_code == 200:
+            data = response.json()
+            meme = disnake.Embed(title=data['title'], color=disnake.Color.random()).set_image(url=data['url'])
+            await interaction.response.send_message(embed=meme)
+
 
 def setup(bot):
     bot.add_cog(Meme(bot))
