@@ -43,9 +43,7 @@ class Meme(commands.Cog):
 
             URL = "https://some-random-api.ml/meme"
             response = requests.get(
-                URL,
-                params={},
-                headers={}
+                URL
             )
             if response.status_code == 200:
                 data = response.json()
