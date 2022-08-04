@@ -3,14 +3,13 @@ import time
 from datetime import datetime
 from enum import Enum
 from textwrap import dedent
-from typing import Optional
 
 import colorama
 import disnake
 from checks.check_license import check_license_lol
 from disnake.ext import commands
 from disnake.ext.tasks import loop
-from utils.twitch import get_streams, get_users
+from utils.twitch import get_streams, get_users, get_all_user_info, get_followers
 
 
 class State(str, Enum):
@@ -253,6 +252,73 @@ class Twitch(commands.Cog):
                     content=f"{interaction.author.mention} Dein Stream Check. Es sind insgesamt **{len(streams)} Streamer Live!**",
                     embed=embed
                 )
+
+    @twitch.sub_command(
+        description="Get information about twitch channel"
+    )
+    async def info(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        streamer: str
+    ):
+        if not check_license_lol(interaction.author):
+            no_licesnse_embed = disnake.Embed(
+                title="No license ⛔",
+                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                color=disnake.Color.red()
+            )
+            no_licesnse_embed.set_footer(
+                text="If you dont have a license, please contact the bot owner"
+            )
+            await interaction.response.send_message(
+                embed=no_licesnse_embed,
+                ephemeral=True
+            )
+
+        else:
+            loading_embed = disnake.Embed(
+                description="Erhalte Daten von Twitch...",
+                color=disnake.Color.blurple()
+            )
+            await interaction.response.send_message(
+                embed=loading_embed,
+                ephemeral=True
+            )
+
+            userData = get_all_user_info(streamer)
+            followUser = get_users(streamer)
+            followData = get_followers(followUser[streamer])
+
+            twitchTime = userData[0]['created_at']
+            # format twitch date to timestamp
+            finalTime = datetime.strptime(twitchTime, '%Y-%m-%dT%H:%M:%SZ').timestamp()
+
+            embed = disnake.Embed(
+                color=disnake.Color.purple()
+            )
+            embed.set_author(
+                name="Twitch Channel Info",
+                icon_url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png",
+                url="https://twitch.tv"
+            )
+            embed.add_field(
+                name="__Information__",
+                value=f"**Name :** `{userData[0]['display_name']}`\n"
+                      f"**Login :** `{userData[0]['login']}`\n"
+                      f"**ID :** `{userData[0]['id']}`\n"
+                      f"**Follower :** `{followData['total']}`\n"
+                      f"**Channel Views :** `{userData[0]['view_count']}`\n"
+                      f"**Link :** [Click here](https://www.twitch.tv/{userData[0]['login']})\n"
+                      f"**Broadcaster Type :** `{'None' if userData[0]['broadcaster_type'] == '' else userData[0]['broadcaster_type']}`\n"
+                      f"**Created At :** <t:{int(finalTime)}:f>",
+                inline=False
+            )
+            embed.set_thumbnail(
+                url=userData[0]['profile_image_url']
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
     @twitch.sub_command(
         name="with_everyone",

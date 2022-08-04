@@ -31,6 +31,47 @@ def get_users(login_names):
         print(f"{colorama.Fore.RED} [ERROR] Failed to get users from Twitch API, possible new access token needed {colorama.Fore.RESET}")
 
 
+def get_all_user_info(login_name):
+    params = {
+        "login": login_name
+    }
+
+    headers = {
+        "Authorization": f'Bearer {config["twitch"]["access_token"]}',
+        "Client-Id": config["twitch"]["client_id"]
+    }
+
+    response = requests.get(
+        "https://api.twitch.tv/helix/users",
+        params=params,
+        headers=headers
+    )
+    if response.status_code == 200:
+        return [entry for entry in response.json()["data"]]
+    else:
+        print(f"{colorama.Fore.RED} [ERROR] Failed to get users from Twitch API, possible new access token needed {colorama.Fore.RESET}")
+
+
+def get_followers(user_id):
+    params = {
+        "to_id": user_id
+    }
+
+    headers = {
+        "Authorization": f'Bearer {config["twitch"]["access_token"]}',
+        "Client-Id": config["twitch"]["client_id"]
+    }
+    response = requests.get(
+        "https://api.twitch.tv/helix/users/follows",
+        params=params,
+        headers=headers
+    )
+    if response.status_code == 200:
+        return response.json()
+    else:
+        print(f"{colorama.Fore.RED} [ERROR] Failed to get followers from Twitch API, possible new access token needed {colorama.Fore.RESET}")
+
+
 def get_streams(users):
     params = {
         "user_id": users.values()
