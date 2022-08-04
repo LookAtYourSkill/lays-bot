@@ -32,40 +32,54 @@ class Twitter(commands.Cog):
             embed=loading_embed
         )
 
-        twitterUser = get_user(user)
+        try:
+            twitterUser = get_user(user)
+            print(twitterUser)
 
-        accountTime = twitterUser["created_at"]
-        changedTime = accountTime[:19] + "Z"
-        # format time to datetime timestamp
-        finalTime = datetime.strptime(changedTime, '%Y-%m-%dT%H:%M:%SZ').timestamp()
+            accountTime = twitterUser["created_at"]
+            changedTime = accountTime[:19] + "Z"
+            # format time to datetime timestamp
+            finalTime = datetime.strptime(changedTime, '%Y-%m-%dT%H:%M:%SZ').timestamp()
 
-        embed = disnake.Embed(
-            color=disnake.Color.blue()
-        )
-        embed.set_author(
-            name="Twitter User Info",
-            icon_url="https://cdn.discordapp.com/attachments/948251167501197342/1004814709851168959/unknown.png",
-            url="https://twitter.com"
-        )
-        embed.set_thumbnail(url=twitterUser["profile_image_url"])
-        embed.add_field(
-            name="__Information__",
-            value=f"**Name:** `{twitterUser['name']}`\n"
-                  f"**Username:** `{twitterUser['username']}`\n"
-                  f"**ID:** `{twitterUser['id']}`\n"
-                  f"**Description:** `{twitterUser['description']}`\n"
-                  f"**Follower:** `{twitterUser['public_metrics']['followers_count']}`\n"
-                  f"**Following:** `{twitterUser['public_metrics']['following_count']}`\n"
-                  f"**Tweets:** `{twitterUser['public_metrics']['tweet_count']}`\n"
-                  f"**Website** [Click here]({twitterUser['url']})\n"
-                  f"**Verified:** `{'Yes' if twitterUser['verified'] else 'No'}`\n"
-                  f"**Created At:** <t:{int(finalTime)}:f>",
-            inline=False
-        )
+            embed = disnake.Embed(
+                color=disnake.Color.blue()
+            )
+            embed.set_author(
+                name="Twitter User Info",
+                icon_url="https://cdn.discordapp.com/attachments/948251167501197342/1004814709851168959/unknown.png",
+                url="https://twitter.com"
+            )
+            embed.set_thumbnail(url=twitterUser["profile_image_url"])
+            embed.add_field(
+                name="__Information__",
+                value=f"**Name:** `{twitterUser['name']}`\n"
+                    f"**Username:** `{twitterUser['username']}`\n"
+                    f"**ID:** `{twitterUser['id']}`\n"
+                    f"**Description:** `{twitterUser['description']}`\n"
+                    f"**Follower:** `{twitterUser['public_metrics']['followers_count']}`\n"
+                    f"**Following:** `{twitterUser['public_metrics']['following_count']}`\n"
+                    f"**Tweets:** `{twitterUser['public_metrics']['tweet_count']}`\n"
+                    f"**Website** [Click here]({twitterUser['url']})\n"
+                    f"**Verified:** `{'Yes' if twitterUser['verified'] else 'No'}`\n"
+                    f"**Created At:** <t:{int(finalTime)}:f>",
+                inline=False
+            )
 
-        await interaction.edit_original_message(
-            embed=embed
-        )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+        except Exception as e:
+            embed = disnake.Embed(
+                title="Error :x:",
+                description=f"User [`{user}`] not found!\n"
+                            f"Please **try it again later** or **check the spelling** of the username!",
+                color=disnake.Color.red()
+            )
+
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
 
 def setup(bot):
