@@ -12,8 +12,8 @@ bot = commands.Bot(
     intents=disnake.Intents.all(),
     command_prefix=commands.when_mentioned_or("%"),
     owner_id=493370963807830016,
-    sync_commands=True
-    # sync_commands_debug=True
+    sync_commands=True,
+    sync_commands_debug=True
 )
 
 
