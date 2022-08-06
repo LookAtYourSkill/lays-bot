@@ -299,7 +299,7 @@ class join_to_create_commands(commands.Cog):
 
             if interaction.author.id == data["jtcc"][str(voice_channel_id)]["owner"]:
                 if interaction.author.voice.channel.permissions_for(member).speak:
-                    await interaction.author.voice.channel.overwrites_for(
+                    await interaction.author.voice.channel.set_permissions(
                         member,
                         speak=False
                     )
@@ -350,7 +350,7 @@ class join_to_create_commands(commands.Cog):
 
             if interaction.author.id == data["jtcc"][str(voice_channel_id)]["owner"]:
                 if not interaction.author.voice.channel.permissions_for(member).speak:
-                    await interaction.author.voice.channel.overwrites_for(
+                    await interaction.author.voice.channel.set_permissions(
                         member,
                         speak=True
                     )
@@ -442,7 +442,7 @@ class join_to_create_commands(commands.Cog):
 
             if interaction.author.id == data["jtcc"][str(voice_channel_id)]["owner"]:
                 if interaction.author.voice.channel.permissions_for(member).connect:
-                    await interaction.author.voice.channel.overwrites_for(
+                    await interaction.author.voice.channel.set_permissions(
                         member,
                         connect=False
                     )
@@ -493,7 +493,7 @@ class join_to_create_commands(commands.Cog):
 
             if interaction.author.id == data["jtcc"][str(voice_channel_id)]["owner"]:
                 if not interaction.author.voice.channel.permissions_for(member).connect:
-                    await interaction.author.voice.channel.overwrites_for(
+                    await interaction.author.voice.channel.set_permissions(
                         member,
                         connect=True
                     )
