@@ -389,6 +389,14 @@ class ticket_message(disnake.ui.View):
                     interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
                 }
             )
+
+            for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=i), read_messages=True, send_messages=True)
+
+            for i in ticket_data[str(interaction.guild.id)]["support_members"]:
+                await ticket.set_permissions(disnake.utils.get(interaction.guild.members, id=i), read_messages=True, send_messages=True)
+
+
             # Json Stuff
             ticket_data[str(interaction.guild.id)][ticket.id] = {}
             ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
@@ -496,6 +504,12 @@ class ticket_message(disnake.ui.View):
                 }
             )
 
+            for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=i), read_messages=True, send_messages=True)
+
+            for i in ticket_data[str(interaction.guild.id)]["support_members"]:
+                await ticket.set_permissions(disnake.utils.get(interaction.guild.members, id=i), read_messages=True, send_messages=True)
+
             # Json Stuff
             ticket_data[str(interaction.guild.id)][ticket.id] = {}
             ticket_data[str(interaction.guild.id)][ticket.id]["author"] = interaction.author.id
@@ -590,6 +604,7 @@ class ticket_message(disnake.ui.View):
                 interaction.guild.categories,
                 id=guild_data[str(interaction.guild.id)]["ticket_category"]
             )
+
             ticket = await interaction.guild.create_text_channel(
                 name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
                 reason="Ticketsystem",
@@ -600,6 +615,12 @@ class ticket_message(disnake.ui.View):
                     interaction.guild.me: disnake.PermissionOverwrite(read_messages=True)
                 }
             )
+
+            for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=i), read_messages=True, send_messages=True)
+
+            for i in ticket_data[str(interaction.guild.id)]["support_members"]:
+                await ticket.set_permissions(disnake.utils.get(interaction.guild.members, id=i), read_messages=True, send_messages=True)
 
             # Json Stuff
             ticket_data[str(interaction.guild.id)][ticket.id] = {}
@@ -733,6 +754,216 @@ class TicketSystem(commands.Cog):
                     content="You don't have the permissions to use this command!",
                     ephemeral=True
                 )
+
+    @ticket.sub_command_group(
+        name="supporter"
+    )
+    async def supporter(self, interaction: disnake.ApplicationCommandInteraction):
+        pass
+
+    @supporter.sub_command(
+        name="add",
+        description="Add a category to the ticket system"
+    )
+    async def add(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = None,
+        role: disnake.Role = None
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        if not check_license_lol(interaction.author):
+            no_licesnse_embed = disnake.Embed(
+                title="No license ⛔",
+                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                color=disnake.Color.red()
+            )
+            no_licesnse_embed.set_footer(
+                text="If you dont have a license, please contact the bot owner"
+            )
+            await interaction.edit_original_message(
+                embed=no_licesnse_embed,
+                ephemeral=True
+            )
+
+        else:
+            with open("json/tickets.json", "r") as f:
+                ticket_data = json.load(f)
+
+            for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                print(i)
+
+            if member:
+                ticket_data[str(interaction.guild.id)]["support_members"] += [member.id]
+
+                with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                    json.dump(ticket_data, f, indent=4)
+
+                embed = disnake.Embed(
+                    title="Ticket System",
+                    description=f"{member.mention} added to support members",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+
+            elif role:
+                ticket_data[str(interaction.guild.id)]["support_roles"] += [role.id]
+
+                with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                    json.dump(ticket_data, f, indent=4)
+
+                embed = disnake.Embed(
+                    title="Ticket System",
+                    description=f"{role.mention} added to support roles",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+
+            else:
+                embed = disnake.Embed(
+                    title="Ticket System",
+                    description="Please specify a member or a role!",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+
+    @supporter.sub_command(
+        name="remove",
+        description="Remove a role or member from the ticket system"
+    )
+    async def remove(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        member: disnake.Member = None,
+        role: disnake.Role = None
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        if not check_license_lol(interaction.author):
+            no_licesnse_embed = disnake.Embed(
+                title="No license ⛔",
+                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                color=disnake.Color.red()
+            )
+            no_licesnse_embed.set_footer(
+                text="If you dont have a license, please contact the bot owner"
+            )
+            await interaction.edit_original_message(
+                embed=no_licesnse_embed,
+                ephemeral=True
+            )
+
+        else:
+            with open("json/tickets.json", "r") as f:
+                ticket_data = json.load(f)
+
+            if member:
+                if member.id in ticket_data[str(interaction.guild.id)]["support_members"]:
+
+                    ticket_data[str(interaction.guild.id)]["support_members"].remove(member.id)
+
+                    with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                        json.dump(ticket_data, f, indent=4)
+
+                    embed = disnake.Embed(
+                        title="Ticket System",
+                        description=f"{member.mention} removed from support members",
+                        color=disnake.Color.green()
+                    )
+                    await interaction.edit_original_message(
+                        embed=embed
+                    )
+
+                elif member.id not in ticket_data[str(interaction.guild.id)]["support_members"]:
+                    embed = disnake.Embed(
+                        title="Ticket System",
+                        description=f"{member.mention} is not in support members",
+                        color=disnake.Color.red()
+                    )
+                    await interaction.edit_original_message(
+                        embed=embed
+                    )
+
+            elif role:
+                if role.id in ticket_data[str(interaction.guild.id)]["support_roles"]:
+
+                    ticket_data[str(interaction.guild.id)]["support_roles"].remove(role.id)
+
+                    with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                        json.dump(ticket_data, f, indent=4)
+
+                    embed = disnake.Embed(
+                        title="Ticket System",
+                        description=f"{role.mention} removed from support roles",
+                        color=disnake.Color.green()
+                    )
+                    await interaction.edit_original_message(
+                        embed=embed
+                    )
+
+                elif role.id not in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                    embed = disnake.Embed(
+                        title="Ticket System",
+                        description=f"{role.mention} is not in support roles",
+                        color=disnake.Color.red()
+                    )
+                    await interaction.edit_original_message(
+                        embed=embed
+                    )
+
+    @supporter.sub_command(
+        name="list",
+        description="List all the roles and members in the ticket system"
+    )
+    async def list(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        if not check_license_lol(interaction.author):
+            no_licesnse_embed = disnake.Embed(
+                title="No license ⛔",
+                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                color=disnake.Color.red()
+            )
+            no_licesnse_embed.set_footer(
+                text="If you dont have a license, please contact the bot owner"
+            )
+            await interaction.edit_original_message(
+                embed=no_licesnse_embed,
+                ephemeral=True
+            )
+
+        else:
+            with open("json/tickets.json", "r") as f:
+                ticket_data = json.load(f)
+
+            support_members = ""
+            support_roles = ""
+
+            for i in ticket_data[str(interaction.guild.id)]["support_members"]:
+                support_members += f"- {interaction.guild.get_member(i).mention}\n"
+
+            for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                support_roles += f"- {interaction.guild.get_role(i).mention}\n"
+
+            embed = disnake.Embed(
+                title="Ticket System",
+                description=f"`»`Support members:\n{support_members}\n`»`Support roles:\n{support_roles}",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
 
     @commands.Cog.listener()
     async def on_ready(self):
