@@ -71,26 +71,29 @@ class onMessage(commands.Cog):
             return
 
         else:
-            channel = self.bot.get_channel(
-                guild_data[str(after.guild.id)]["msg_channel"]
-            )
-            embed = disnake.Embed(
-                description=f"{before.author.mention} has edited a message in {before.channel.mention} \n[Jump to the Message]({after.jump_url})",
-                color=disnake.Color.red()
-            )
-            embed.add_field(
-                name="Old Message",
-                value=f"{before.content}",
-                inline=False
-            )
-            embed.add_field(
-                name="New Message",
-                value=f"{after.content}",
-                inline=False
-            )
+            if before.content != after.content:
+                channel = self.bot.get_channel(
+                    guild_data[str(after.guild.id)]["msg_channel"]
+                )
+                embed = disnake.Embed(
+                    description=f"{before.author.mention} has edited a message in {before.channel.mention} \n[Jump to the Message]({after.jump_url})",
+                    color=disnake.Color.red()
+                )
+                embed.add_field(
+                    name="Old Message",
+                    value=f"{before.content}",
+                    inline=False
+                )
+                embed.add_field(
+                    name="New Message",
+                    value=f"{after.content}",
+                    inline=False
+                )
 
-            if guild_data[str(before.author.guild.id)]["msg_channel"]:
-                await channel.send(embed=embed)
+                if guild_data[str(before.author.guild.id)]["msg_channel"]:
+                    await channel.send(embed=embed)
+                else:
+                    pass
             else:
                 pass
 
