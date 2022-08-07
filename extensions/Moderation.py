@@ -117,9 +117,8 @@ class Moderation(commands.Cog):
                 ephemeral=True
             )
             if not user.isdigit():
-                banned_users = await interaction.guild.bans()
                 member_name, member_discriminator = user.split("#")
-                for ban_entry in banned_users:
+                async for ban_entry in interaction.author.guild.bans():
                     user = ban_entry.user
                     if (user.name, user.discriminator) == (member_name, member_discriminator):
                         try:
