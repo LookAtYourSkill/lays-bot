@@ -1,4 +1,5 @@
 import json
+import sys
 
 import disnake
 from disnake.ext import commands
@@ -75,6 +76,7 @@ class About(commands.Cog):
                 name="> ❓ Information",
                 value=f"`»` Version: `{self.version}`\n"
                       f"`»` Disnake Version: `{disnake.__version__}`\n"
+                      f"`»` Python Version: `{sys.version[:6]}`\n"
                       f"`»` Prefix: `{self.prefix}`",
                 inline=False
             )
