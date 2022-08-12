@@ -52,10 +52,10 @@ class Timer(commands.Cog):
                 member = interaction.author
 
             real_time = humanfriendly.parse_timespan(time)
-            real_real_time = real_time + datetime.timedelta(hours=2)
+            print(real_time)
 
             timers[str(interaction.author.id)] = {
-                "end_time": set_end_time(real_real_time),
+                "end_time": set_end_time(real_time),
                 "message": message,
                 "member": member.id,
                 "author": interaction.author.id,
