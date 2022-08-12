@@ -36,7 +36,8 @@ class on_guild(commands.Cog):
             "welcome_channel": False,
             "join_role": False,
             "license": [],
-            "watchlist": []
+            "watchlist": [],
+            "twitch_with_everyone": "off"
         }
 
         guild_data[str(guild.id)] = new_server
