@@ -53,7 +53,6 @@ class Timer(commands.Cog):
 
             real_time = humanfriendly.parse_timespan(time)
 
-
             timers[str(interaction.author.id)] = {
                 "end_time": set_end_time(real_time),
                 "message": message,
