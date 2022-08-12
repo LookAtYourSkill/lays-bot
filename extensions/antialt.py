@@ -7,6 +7,7 @@ class AntiAlt(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @commands.has_permissions(administrator=True)
     @commands.slash_command(name="antialt", description="Anti Alt Group Command")
     async def antialt(self, interaction: disnake.ApplicationCommandInteraction):
         pass
