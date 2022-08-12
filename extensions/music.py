@@ -91,7 +91,7 @@ class Music(commands.Cog):
         if vc.queue.is_empty:
             # await vc.stop()
             empty = disnake.Embed(
-                description="There are no more tracks in the queue.\nIf you add a song use ``/queue resume`` to resume the queue!",
+                description="There are no more tracks in the queue.\nIf you add a song use ``/music settings skip`` to resume the queue!",
                 color=disnake.Color.red()
             )
             channel = await self.client.fetch_channel(self.channel)
@@ -642,31 +642,6 @@ class Music(commands.Cog):
                     icon_url=interaction.guild.icon.url
                 )
                 await interaction.edit_original_message(embed=embed)
-
-    @queue_group.sub_command(
-        name="resume",
-        description="Resumes the queue"
-    )
-    async def resume_queue(self, interaction: disnake.ApplicationCommandInteraction):
-        await interaction.response.defer(ephemeral=True)
-
-        vc: wavelink.Player = interaction.guild.voice_client
-        # if not vc.queue.is_empty and not vc.is_playing():
-
-        if vc.is_playing():
-            return
-
-        else:
-            getNextSong = vc.queue[0]  # ! vc.queue.get()
-            await vc.play(getNextSong)
-
-            embed = disnake.Embed(
-                description=f"Resumed the queue! Playing: ``{getNextSong.title}``",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=embed
-            )
 
     @modes.sub_command(
         name="bassboost",
