@@ -6,7 +6,7 @@ import wavelink
 class onError(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.error_channel = 1000043915753304105
+        self.error_channel = 872945922743619657
 
     @commands.Cog.listener()
     async def on_slash_command_error(
@@ -24,8 +24,9 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.channel.send(
-                embed=embed
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         if isinstance(
@@ -37,8 +38,9 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.channel.send(
-                embed=embed
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         if isinstance(
@@ -50,11 +52,22 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.channel.send(
-                embed=embed
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         else:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} an error has occured. ⛔",
+                color=disnake.Color.red()
+            )
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
             channel = self.bot.get_channel(self.error_channel)
 
             error_embed = disnake.Embed(
@@ -80,8 +93,10 @@ class onError(commands.Cog):
                 description=f"The Track `{track.title}` could not be found ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup.send(
-                embed=embed
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         if isinstance(
@@ -92,8 +107,10 @@ class onError(commands.Cog):
                 description="Something is wrong with the queue, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup(
-                embed=embed
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         if isinstance(
@@ -104,8 +121,10 @@ class onError(commands.Cog):
                 description="The queue is full, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup.send(
-                embed=embed
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         if isinstance(
@@ -116,8 +135,10 @@ class onError(commands.Cog):
                 description=f"The Track `{track.title}` could not be converted ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup.send(
-                embed=embed
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         if isinstance(
@@ -128,8 +149,10 @@ class onError(commands.Cog):
                 description="Something is wrong with the bot, please try again later ⛔",
                 color=disnake.Color.red()
             )
-            await interaction.followup.send(
-                embed=embed
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
             )
 
         else:
