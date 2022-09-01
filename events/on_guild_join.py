@@ -3,7 +3,7 @@ from disnake.ext import commands
 import disnake
 
 
-class on_guild(commands.Cog):
+class on_guild_add(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -57,4 +57,4 @@ class on_guild(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(on_guild(bot))
+    bot.add_cog(on_guild_add(bot))
