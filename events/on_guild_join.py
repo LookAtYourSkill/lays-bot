@@ -1,3 +1,4 @@
+from binhex import openrsrc
 import json
 from disnake.ext import commands
 import disnake
@@ -49,11 +50,66 @@ class on_guild_add(commands.Cog):
 
         new_ticket = {
             "ticket_counter": 0,
+            "support_members": [],
+            "support_roles": []
         }
 
         ticket_data[str(guild.id)] = new_ticket
         with open("json/tickets.json", "w") as f:
             json.dump(ticket_data, f, indent=4)
+
+        with open("json/active_check.json", "r") as f:
+            active_data = json.load(f)
+
+        active_data[guild.id] = {
+            "about": True,
+            "antialt": True,
+            "changelog": True,
+            "help": True,
+            "info": True,
+            "license": True,
+            "meme": True,
+            "moderation": True,
+            "owner": False,
+            "music": False,
+            "roles": True,
+            "setup": True,
+            "suggestion": True,
+            "ticket": True,
+            "timer": False,
+            "twitter": False,
+            "twitch": True
+        }
+
+        with open("json/active_check.json", "w") as dumpfile:
+            json.dump(active_data, dumpfile, indent=4)
+
+        with open("json/settings.json", "r") as f:
+            settings_data = json.load(f)
+
+        settings_data[guild.id] = {
+            "anti_alt_days": 7
+        }
+
+        with open("json/settings.json", "w") as dumpfile:
+            json.dump(settings_data, dumpfile, indent=4)
+
+        embed = disnake.Embed(
+            title="I just got added to a server!",
+            description=f"Server Name: `{guild.name}`\n"
+                        f"Server ID: `{guild.id}`\n"
+                        f"Server Owner: `{guild.owner}`\n"
+                        f"Server Owner ID: `{guild.owner.id}`\n"
+                        f"Server Member Count: `{guild.member_count}`",
+            color=disnake.Color.green()
+        )
+
+        send_channel = self.bot.get_channel(
+            882721258301685790
+        )
+        await send_channel.send(
+            embed=embed
+        )
 
 
 def setup(bot):

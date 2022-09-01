@@ -57,7 +57,9 @@ class GuildCheck(commands.Cog):
                 # if not add it to the json file
                 print(f"{_guild.name} has been added to the ticket list")
                 ticket_data[_guild.id] = {
-                    "ticket_counter": 0
+                    "ticket_counter": 0,
+                    "support_members": [],
+                    "support_roles": []
                 }
 
                 with open("json/tickets.json", "w") as dumpfile:
@@ -86,7 +88,8 @@ class GuildCheck(commands.Cog):
                     "suggestion": True,
                     "ticket": True,
                     "timer": False,
-                    "twitch": True,
+                    "twitter": False,
+                    "twitch": True
                 }
 
                 with open("json/active_check.json", "w") as dumpfile:
@@ -98,7 +101,7 @@ class GuildCheck(commands.Cog):
                 pass
             else:
                 # if not add it to the json file
-                print(f"{___guild.name} has been added to the active check list")
+                print(f"{___guild.name} has been added to the settings list")
                 settings_data[___guild.id] = {
                     "anti_alt_days": 7
                 }
