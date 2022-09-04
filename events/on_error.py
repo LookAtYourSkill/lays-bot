@@ -59,7 +59,7 @@ class onError(commands.Cog):
 
         else:
             embed = disnake.Embed(
-                description=f"{interaction.author.mention} an error has occured. ⛔",
+                description=f"{interaction.author.mention} the error has been send to the developer and will be taken care of as soon as possible! I hope for your patience ⛔",
                 color=disnake.Color.red()
             )
 
@@ -72,7 +72,7 @@ class onError(commands.Cog):
 
             error_embed = disnake.Embed(
                 title=f"Error while command: {interaction.application_command.qualified_name}",
-                description=f"```{error}``` \nGuild: `{interaction.guild.name}` \nChannel: `{interaction.channel.name}` \nUser: `{interaction.author.name}`",
+                description=f"```{error}``` \nGuild: `{interaction.guild.name}` \nChannel: `{interaction.channel.name}` \nUser: `{interaction.author}` \nID: `{interaction.author.id}`",
                 color=disnake.Color.red()
             )
             await channel.send(embed=error_embed)
