@@ -83,6 +83,26 @@ class Owner(commands.Cog):
         msg += "```"
         await interaction.response.send_message(msg)
 
+    @commands.is_owner()
+    @set.sub_command(name="send", description="Sends a message to a user")
+    async def send(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        user_id,
+        *,
+        message: str
+    ):
+        user = await self.bot.fetch_user(user_id)
+        embed = disnake.Embed(
+            description=message,
+            color=disnake.Color.green()
+        )
+        await user.send(embed=embed)
+        await interaction.response.send_message(
+            f"Message sent to {user.mention}",
+            ephemeral=True
+        )
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
