@@ -11,7 +11,7 @@ class Cogs(str, Enum):
     Changelog = "Changelog"
     Help = "Help"
     Info = "Info"
-    JoinToCreate = "JoinToCreate"
+    JoinToCreate = "joinToCreate"
     LicenseSystem = "LicenseSystem"
     Meme = "Meme"
     Moderation = "Moderation"
@@ -24,6 +24,7 @@ class Cogs(str, Enum):
     TicketSystem = "TicketSystem"
     Timer = "Timer"
     Twitch = "Twitch"
+    Twitter = "Twitter"
 
 
 class Help(commands.Cog):
@@ -64,6 +65,8 @@ class Help(commands.Cog):
             description="This is the help command. Use `/help <cog>` to get help for a command.",
             color=interaction.author.color
         )
+
+        print(self.bot.cogs)
 
         # check if the cog is set
         if not cog:  # and not command:

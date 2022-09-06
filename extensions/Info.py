@@ -201,7 +201,7 @@ class Info(commands.Cog):
             ephemeral=True
         )
         ping_embed = disnake.Embed(
-            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: ``{humanize.precisedelta(round(time.time()-startTime))}``",
+            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: ``{humanize.naturalday(round(time.time()-startTime))}``",
             color=disnake.Color.green()
         )
         ping_embed.set_author(

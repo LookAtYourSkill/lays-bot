@@ -34,7 +34,6 @@ class Twitter(commands.Cog):
 
         try:
             twitterUser = get_user(user)
-            print(twitterUser)
 
             accountTime = twitterUser["created_at"]
             changedTime = accountTime[:19] + "Z"
@@ -55,11 +54,11 @@ class Twitter(commands.Cog):
                 value=f"**Name:** `{twitterUser['name']}`\n"
                     f"**Username:** `{twitterUser['username']}`\n"
                     f"**ID:** `{twitterUser['id']}`\n"
-                    f"**Description:** `{twitterUser['description']}`\n"
+                    f"**Description:** `{twitterUser['description'] if twitterUser['description'] else 'No description'}`\n"
                     f"**Follower:** `{twitterUser['public_metrics']['followers_count']}`\n"
                     f"**Following:** `{twitterUser['public_metrics']['following_count']}`\n"
                     f"**Tweets:** `{twitterUser['public_metrics']['tweet_count']}`\n"
-                    f"**Website** [Click here]({twitterUser['url']})\n"
+                    f"**Website** [Click here]({twitterUser['url'] if twitterUser['url'] else 'https://twitter.com'})\n"
                     f"**Verified:** `{'Yes' if twitterUser['verified'] else 'No'}`\n"
                     f"**Created At:** <t:{int(finalTime)}:f>",
                 inline=False
