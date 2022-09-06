@@ -3,7 +3,7 @@ from disnake.ext import commands
 import json
 
 
-class join_to_create_commands(commands.Cog):
+class joinToCreate(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -528,4 +528,4 @@ class join_to_create_commands(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(join_to_create_commands(bot))
+    bot.add_cog(joinToCreate(bot))
