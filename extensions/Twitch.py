@@ -235,6 +235,11 @@ class Twitch(commands.Cog):
                         ),
                         inline=False
                     )
+
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+
             else:
                 embed.add_field(
                     name="__Nobody is Live!__",
@@ -242,14 +247,7 @@ class Twitch(commands.Cog):
                     inline=False
                 )
 
-            if len(streams) == 1:
                 await interaction.edit_original_message(
-                    content=f"{interaction.author.mention} Dein Stream Check. Es ist **1 Streamer Live!**",
-                    embed=embed
-                )
-            else:
-                await interaction.edit_original_message(
-                    content=f"{interaction.author.mention} Dein Stream Check. Es sind insgesamt **{len(streams)} Streamer Live!**",
                     embed=embed
                 )
 
