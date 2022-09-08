@@ -6,7 +6,7 @@ import humanfriendly
 import humanize
 from disnake.ext import commands
 
-from checks.check_license import check_license_lol
+from checks.check_license import license_check
 
 
 class Moderation(commands.Cog):
@@ -38,7 +38,7 @@ class Moderation(commands.Cog):
         delete_message_days: int = None
     ):
 
-        if check_license_lol(interaction.author):
+        if license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -93,7 +93,7 @@ class Moderation(commands.Cog):
         user
     ):
 
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -163,7 +163,7 @@ class Moderation(commands.Cog):
         time: str,
         reason: str
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -221,7 +221,7 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         member: disnake.Member
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -275,7 +275,7 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -331,7 +331,7 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -388,7 +388,7 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -444,7 +444,7 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",

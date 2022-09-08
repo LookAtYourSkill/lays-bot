@@ -3,7 +3,7 @@ import json
 import disnake
 from disnake.ext import commands
 
-from checks.check_license import check_license_lol
+from checks.check_license import license_check
 
 
 class Roles(commands.Cog):
@@ -29,7 +29,7 @@ class Roles(commands.Cog):
         role: disnake.Role,
         reason="Role remove/add per Command"
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",

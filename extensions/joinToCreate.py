@@ -2,11 +2,14 @@ import disnake
 from disnake.ext import commands
 import json
 
+from checks.check_license import check_license
+
 
 class joinToCreate(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @check_license()
     @commands.slash_command(
         name="join_to_create",
     )

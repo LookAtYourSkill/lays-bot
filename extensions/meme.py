@@ -2,7 +2,7 @@ import disnake
 import requests
 from disnake.ext import commands
 
-from checks.check_license import check_license_lol
+from checks.check_license import license_check
 
 
 class Meme(commands.Cog):
@@ -18,7 +18,7 @@ class Meme(commands.Cog):
         description="Get a random meme from reddit",
     )
     async def meme_reddit(self, interaction: disnake.ApplicationCommandInteraction):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",

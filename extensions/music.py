@@ -7,6 +7,8 @@ import wavelink
 from disnake.ext import commands
 from wavelink.ext import spotify
 
+from checks.check_license import check_license
+
 
 class Music(commands.Cog):
     '''
@@ -145,6 +147,7 @@ class Music(commands.Cog):
         #     await vc.play(nextSong)
             # print(reason)
 
+    @check_license()
     @commands.slash_command(
         name="music",
         description="Music commands",
@@ -152,6 +155,7 @@ class Music(commands.Cog):
     async def music(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @music.sub_command_group(
         name="settings",
         description="Settings for the music module"
@@ -159,6 +163,7 @@ class Music(commands.Cog):
     async def settings(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @music.sub_command_group(
         name="modes",
         invoke_without_command=True
@@ -166,6 +171,7 @@ class Music(commands.Cog):
     async def modes(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @music.sub_command_group(
         name="play",
         invoke_without_command=True
@@ -173,6 +179,7 @@ class Music(commands.Cog):
     async def play_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @music.sub_command_group(
         name="playlist",
         invoke_without_command=True
@@ -180,6 +187,7 @@ class Music(commands.Cog):
     async def play_playlist_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @music.sub_command_group(
         name="stream",
         invoke_without_command=True
@@ -187,6 +195,7 @@ class Music(commands.Cog):
     async def play_stream_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @music.sub_command_group(
         name="queue",
         invoke_without_command=True
@@ -194,6 +203,7 @@ class Music(commands.Cog):
     async def queue_group(self, interaction: disnake.ApplicationCommandInteraction):
         pass
 
+    @check_license()
     @play_group.sub_command(
         name="youtube",
         description="Play a song from youtube"

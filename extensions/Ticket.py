@@ -5,7 +5,7 @@ import json
 import pytz
 import os
 
-from checks.check_license import check_license_lol
+from checks.check_license import license_check
 
 
 class open_message(disnake.ui.View):
@@ -719,7 +719,7 @@ class TicketSystem(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -773,7 +773,7 @@ class TicketSystem(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -846,7 +846,7 @@ class TicketSystem(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
@@ -928,7 +928,7 @@ class TicketSystem(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
                 description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",

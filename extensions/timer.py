@@ -9,7 +9,7 @@ from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils._time import get_time, remove_expired_timers, set_end_time
 
-from checks.check_license import check_license_lol
+from checks.check_license import license_check
 
 
 class Timer(commands.Cog):
@@ -32,7 +32,7 @@ class Timer(commands.Cog):
         with open("json/timer.json", "r") as timer_info:
             timers = json.load(timer_info)
 
-        if not check_license_lol(interaction.author):
+        if not license_check(interaction.author):
 
             no_licesnse_embed = disnake.Embed(
                 title="No license ⛔",
