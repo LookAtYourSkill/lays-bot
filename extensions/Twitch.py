@@ -6,7 +6,7 @@ from textwrap import dedent
 
 import colorama
 import disnake
-from checks._check_license import license_check
+from checks._check_license import check_license
 from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils.twitch import get_streams, get_users, get_all_user_info, get_followers
@@ -24,8 +24,9 @@ class Twitch(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.error_channel = 1000043915753304105
-        # self.check_streams.start()
+        self.check_streams.start()
 
+    @check_license()
     @commands.slash_command(
         name="twitch",
         description="Group for twitch commands"
@@ -42,68 +43,52 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer
     ):
+        loading_embed = disnake.Embed(
+            description="Füge Streamer zur Watchlist hinzu...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
 
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
+        try:
+            with open("json/guild.json", "r", encoding="UTF-8") as file:
+                data = json.load(file)
+            with open("json/watchlist.json", "r", encoding="UTF-8") as file2:
+                data2 = json.load(file2)
 
-        else:
-            loading_embed = disnake.Embed(
-                description="Füge Streamer zur Watchlist hinzu...",
-                color=disnake.Color.blurple()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
+            if streamer in data[str(interaction.guild.id)]["watchlist"]:
+                alreday_streamer_error_embed = disnake.Embed(
+                    description=f"Der Streamer [`{streamer}`] **ist bereits** in der **Watchlist**!",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(
+                    embed=alreday_streamer_error_embed
+                )
+            elif streamer not in data[str(interaction.guild.id)]["watchlist"]:
+                data[str(interaction.guild.id)]["watchlist"].append(streamer.lower())
+                with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                    json.dump(data, dump_file, indent=4)
 
-            try:
-                with open("json/guild.json", "r", encoding="UTF-8") as file:
-                    data = json.load(file)
-                with open("json/watchlist.json", "r", encoding="UTF-8") as file2:
-                    data2 = json.load(file2)
+                if streamer in data2["overall_watchlist"]:
+                    pass
 
-                if streamer in data[str(interaction.guild.id)]["watchlist"]:
-                    alreday_streamer_error_embed = disnake.Embed(
-                        description=f"Der Streamer [`{streamer}`] **ist bereits** in der **Watchlist**!",
-                        color=disnake.Color.red()
-                    )
-                    await interaction.edit_original_message(
-                        embed=alreday_streamer_error_embed
-                    )
-                elif streamer not in data[str(interaction.guild.id)]["watchlist"]:
-                    data[str(interaction.guild.id)]["watchlist"].append(streamer.lower())
-                    with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                        json.dump(data, dump_file, indent=4)
+                else:
+                    data2["overall_watchlist"].append(streamer.lower())
 
-                    if streamer in data2["overall_watchlist"]:
-                        pass
+                    with open("json/watchlist.json", "w", encoding="UTF-8") as dump_file2:
+                        json.dump(data2, dump_file2, indent=4)
 
-                    else:
-                        data2["overall_watchlist"].append(streamer.lower())
-
-                        with open("json/watchlist.json", "w", encoding="UTF-8") as dump_file2:
-                            json.dump(data2, dump_file2, indent=4)
-
-                    add_embed = disnake.Embed(
-                        description=f"Der Streamer [`{streamer}`] wurde zur Watchlist **hinzugefügt**!",
-                        color=disnake.Color.blurple()
-                    )
-                    await interaction.edit_original_message(
-                        embed=add_embed
-                    )
-            except ValueError:
-                pass
+                add_embed = disnake.Embed(
+                    description=f"Der Streamer [`{streamer}`] wurde zur Watchlist **hinzugefügt**!",
+                    color=disnake.Color.blurple()
+                )
+                await interaction.edit_original_message(
+                    embed=add_embed
+                )
+        except ValueError:
+            pass
 
     @twitch.sub_command(
         description="Removes a streamer from your watchlist"
@@ -116,58 +101,42 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer
     ):
+        loading_embed = disnake.Embed(
+            description="Entferne Steramer von Watchlist...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
 
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
+        try:
+            with open("json/guild.json", "r", encoding="UTF-8") as file:
+                data = json.load(file)
 
-        else:
-            loading_embed = disnake.Embed(
-                description="Entferne Steramer von Watchlist...",
-                color=disnake.Color.blurple()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
+            if streamer not in data[str(interaction.guild.id)]["watchlist"]:
+                alreday_streamer_error_embed = disnake.Embed(
+                    description=f"Der Streamer [`{streamer}`] **ist nicht** in der **Watchlist**!",
+                    color=disnake.Color.red()
+                )
+                await interaction.response.send_message(
+                    embed=alreday_streamer_error_embed,
+                    ephemeral=True
+                )
+            elif streamer in data[str(interaction.guild.id)]["watchlist"]:
+                data[str(interaction.guild.id)]["watchlist"].remove(streamer.lower())
+                with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                    json.dump(data, dump_file, indent=4)
 
-            try:
-                with open("json/guild.json", "r", encoding="UTF-8") as file:
-                    data = json.load(file)
-
-                if streamer not in data[str(interaction.guild.id)]["watchlist"]:
-                    alreday_streamer_error_embed = disnake.Embed(
-                        description=f"Der Streamer [`{streamer}`] **ist nicht** in der **Watchlist**!",
-                        color=disnake.Color.red()
-                    )
-                    await interaction.response.send_message(
-                        embed=alreday_streamer_error_embed,
-                        ephemeral=True
-                    )
-                elif streamer in data[str(interaction.guild.id)]["watchlist"]:
-                    data[str(interaction.guild.id)]["watchlist"].remove(streamer.lower())
-                    with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                        json.dump(data, dump_file, indent=4)
-
-                    remove_embed = disnake.Embed(
-                        description=f"Der Streamer [`{streamer}`] wurde aus der Watchlist **entfernt**!",
-                        color=disnake.Color.blurple()
-                    )
-                    await interaction.edit_original_message(
-                        embed=remove_embed
-                    )
-            except ValueError:
-                pass
+                remove_embed = disnake.Embed(
+                    description=f"Der Streamer [`{streamer}`] wurde aus der Watchlist **entfernt**!",
+                    color=disnake.Color.blurple()
+                )
+                await interaction.edit_original_message(
+                    embed=remove_embed
+                )
+        except ValueError:
+            pass
 
     @twitch.sub_command(
         description="Checks the twitch stream watchlist from this server"
@@ -177,79 +146,64 @@ class Twitch(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
+        loading_embed = disnake.Embed(
+            description="Erhalte Daten von Twitch...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
 
-        else:
-            loading_embed = disnake.Embed(
-                description="Erhalte Daten von Twitch...",
-                color=disnake.Color.blurple()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
+        with open("json/guild.json", "r", encoding="UTF-8") as data_file:
+            guild_data = json.load(data_file)
 
-            with open("json/guild.json", "r", encoding="UTF-8") as data_file:
-                guild_data = json.load(data_file)
+        users = get_users(guild_data[str(interaction.guild.id)]["watchlist"])
+        streams = get_streams(users)
 
-            users = get_users(guild_data[str(interaction.guild.id)]["watchlist"])
-            streams = get_streams(users)
+        embed = disnake.Embed(
+            color=disnake.Color.purple()
+        )
+        embed.set_author(
+            name="Who is Live?",
+            icon_url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png",
+            url="https://twitch.tv"
+        )
+        embed.set_thumbnail(
+            url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png"
+        )
+        if streams:
+            for stream in streams.values():
 
-            embed = disnake.Embed(
-                color=disnake.Color.purple()
-            )
-            embed.set_author(
-                name="Who is Live?",
-                icon_url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png",
-                url="https://twitch.tv"
-            )
-            embed.set_thumbnail(
-                url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png"
-            )
-            if streams:
-                for stream in streams.values():
-
-                    embed.add_field(
-                        name=f"Name : {stream['user_name']}",
-                        value=dedent(
-                            f"""
-                                **Title :** __{stream["title"]}__
-                                **Viewer :** ``{stream["viewer_count"]}``
-                                **Game :** ``{stream["game_name"]}``
-                                **Streamt gestartet:** ``{stream["started_at"][11:][:5]} Uhr am {stream["started_at"][8:][:2]}.{stream["started_at"][5:][:2]}.{stream["started_at"][:4]}``
-                                **Link :** https://www.twitch.tv/{stream["user_login"]}
-                                >-------------------------------------------------------------------------<
-                            """
-                        ),
-                        inline=False
-                    )
-
-                await interaction.edit_original_message(
-                    embed=embed
-                )
-
-            else:
                 embed.add_field(
-                    name="__Nobody is Live!__",
-                    value="No streamer from your watchlist is live!",
+                    name=f"Name : {stream['user_name']}",
+                    value=dedent(
+                        f"""
+                            **Title :** __{stream["title"]}__
+                            **Viewer :** ``{stream["viewer_count"]}``
+                            **Game :** ``{stream["game_name"]}``
+                            **Streamt gestartet:** ``{stream["started_at"][11:][:5]} Uhr am {stream["started_at"][8:][:2]}.{stream["started_at"][5:][:2]}.{stream["started_at"][:4]}``
+                            **Link :** https://www.twitch.tv/{stream["user_login"]}
+                            >-------------------------------------------------------------------------<
+                        """
+                    ),
                     inline=False
                 )
 
-                await interaction.edit_original_message(
-                    embed=embed
-                )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+        else:
+            embed.add_field(
+                name="__Nobody is Live!__",
+                value="No streamer from your watchlist is live!",
+                inline=False
+            )
+
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
     @twitch.sub_command(
         description="Get information about twitch channel"
@@ -259,75 +213,60 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer: str
     ):
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+        loading_embed = disnake.Embed(
+            description="Erhalte Daten von Twitch...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        try:
+            userData = get_all_user_info(streamer)
+            followUser = get_users(streamer)
+            followData = get_followers(followUser[streamer])
+
+            twitchTime = userData[0]['created_at']
+            # format twitch date to timestamp
+            finalTime = datetime.strptime(twitchTime, '%Y-%m-%dT%H:%M:%SZ').timestamp()
+
+            embed = disnake.Embed(
+                color=disnake.Color.purple()
+            )
+            embed.set_author(
+                name="Twitch Channel Info",
+                icon_url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png",
+                url="https://twitch.tv"
+            )
+            embed.add_field(
+                name="__Information__",
+                value=f"**Name :** `{userData[0]['display_name']}`\n"
+                    f"**Login :** `{userData[0]['login']}`\n"
+                    f"**ID :** `{userData[0]['id']}`\n"
+                    f"**Follower :** `{followData['total']}`\n"
+                    f"**Channel Views :** `{userData[0]['view_count']}`\n"
+                    f"**Link :** [Click here](https://www.twitch.tv/{userData[0]['login']})\n"
+                    f"**Broadcaster Type :** `{'None' if userData[0]['broadcaster_type'] == '' else userData[0]['broadcaster_type']}`\n"
+                    f"**Created At :** <t:{int(finalTime)}:f>",
+                inline=False
+            )
+            embed.set_thumbnail(
+                url=userData[0]['profile_image_url']
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+        except Exception as e:
+            embed = disnake.Embed(
+                title="Error :x:",
+                description=f"Streamer [`{streamer}`] not found!\n"
+                            "Please **try it again later** or **check the spelling** of the username!",
                 color=disnake.Color.red()
             )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
+            await interaction.edit_original_message(
+                embed=embed
             )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
-
-        else:
-            loading_embed = disnake.Embed(
-                description="Erhalte Daten von Twitch...",
-                color=disnake.Color.blurple()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
-
-            try:
-                userData = get_all_user_info(streamer)
-                followUser = get_users(streamer)
-                followData = get_followers(followUser[streamer])
-
-                twitchTime = userData[0]['created_at']
-                # format twitch date to timestamp
-                finalTime = datetime.strptime(twitchTime, '%Y-%m-%dT%H:%M:%SZ').timestamp()
-
-                embed = disnake.Embed(
-                    color=disnake.Color.purple()
-                )
-                embed.set_author(
-                    name="Twitch Channel Info",
-                    icon_url="https://static-cdn.jtvnw.net/jtv_user_pictures/8a6381c7-d0c0-4576-b179-38bd5ce1d6af-profile_image-300x300.png",
-                    url="https://twitch.tv"
-                )
-                embed.add_field(
-                    name="__Information__",
-                    value=f"**Name :** `{userData[0]['display_name']}`\n"
-                        f"**Login :** `{userData[0]['login']}`\n"
-                        f"**ID :** `{userData[0]['id']}`\n"
-                        f"**Follower :** `{followData['total']}`\n"
-                        f"**Channel Views :** `{userData[0]['view_count']}`\n"
-                        f"**Link :** [Click here](https://www.twitch.tv/{userData[0]['login']})\n"
-                        f"**Broadcaster Type :** `{'None' if userData[0]['broadcaster_type'] == '' else userData[0]['broadcaster_type']}`\n"
-                        f"**Created At :** <t:{int(finalTime)}:f>",
-                    inline=False
-                )
-                embed.set_thumbnail(
-                    url=userData[0]['profile_image_url']
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
-            except Exception as e:
-                embed = disnake.Embed(
-                    title="Error :x:",
-                    description=f"Streamer [`{streamer}`] not found!\n"
-                                "Please **try it again later** or **check the spelling** of the username!",
-                    color=disnake.Color.red()
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
 
     @twitch.sub_command(
         name="with_everyone",
@@ -388,62 +327,48 @@ class Twitch(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
-        else:
-            loading_embed = disnake.Embed(
-                description="Lade Antwort...",
+        loading_embed = disnake.Embed(
+            description="Lade Antwort...",
+            color=disnake.Color.blurple()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
+
+        with open("json/guild.json", "r", encoding="UTF-8") as file:
+            data = json.load(file)
+
+        if data[str(interaction.guild.id)]["watchlist"]:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} the watchlist from {interaction.guild.name}",
                 color=disnake.Color.blurple()
             )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
+            streamer_list = []
+            for streamer in data[str(interaction.guild.id)]["watchlist"]:
+                streamer_list.append(streamer)
+
+            embed.add_field(
+                name="__Streamer__",
+                value="\n".join(streamer_list),
+                inline=False
             )
-
-            with open("json/guild.json", "r", encoding="UTF-8") as file:
-                data = json.load(file)
-
-            if data[str(interaction.guild.id)]["watchlist"]:
-                embed = disnake.Embed(
-                    description=f"{interaction.author.mention} the watchlist from {interaction.guild.name}",
-                    color=disnake.Color.blurple()
-                )
-                streamer_list = []
-                for streamer in data[str(interaction.guild.id)]["watchlist"]:
-                    streamer_list.append(streamer)
-
-                embed.add_field(
-                    name="__Streamer__",
-                    value="\n".join(streamer_list),
-                    inline=False
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
-            else:
-                embed = disnake.Embed(
-                    description=f"{interaction.author.mention}",
-                    color=disnake.Color.red()
-                )
-                embed.add_field(
-                    name="__Watchlist is empty!__",
-                    value="There wasnt added a streamer to the watchlist till now!",
-                    inline=False
-                )
-                await interaction.edit_original_message(
-                    embed=embed
-                )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+        else:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention}",
+                color=disnake.Color.red()
+            )
+            embed.add_field(
+                name="__Watchlist is empty!__",
+                value="There wasnt added a streamer to the watchlist till now!",
+                inline=False
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
     @loop(seconds=120)
     async def check_streams(self):
@@ -513,7 +438,7 @@ class Twitch(commands.Cog):
                                             print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
-                                                if time.time() - started_at < 14250:
+                                                if time.time() - started_at < 140:
                                                     # if so append streamer to list, so its not sent again
                                                     notification.append(streams[user_name])
                                                     online_users.append(user_name)

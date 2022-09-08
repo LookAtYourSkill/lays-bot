@@ -1,5 +1,8 @@
-from disnake.ext import commands
 import json
+
+import disnake
+import colorama
+from disnake.ext import commands
 from disnake.ext.tasks import loop
 
 
@@ -8,6 +11,7 @@ class twitchCheck(commands.Cog):
         self.bot = bot
         self.check_twitch.start()
 
+    '''
     @commands.Cog.listener()
     async def on_ready(self):
         with open("json/guild.json", "r") as guild_info:
@@ -17,7 +21,7 @@ class twitchCheck(commands.Cog):
             if guild_data[i]["twitch_notifications"] == "on":
                 continue
             else:
-                if guild_data[i]["notification_channel"] is False:
+                if guild_data[i]["notify_channel"] is False:
                     print(f"{i} has no notification channel")
 
                 if guild_data[i]["watchlist"] is None:
@@ -26,24 +30,30 @@ class twitchCheck(commands.Cog):
                     guild_data[i]["twitch_notifications"] = "on"
                     with open("json/guild.json", "w") as dumpfile:
                         json.dump(guild_data, dumpfile, indent=4)
+    '''
 
-    @loop(seconds=10)
+    @loop(hours=1)
     async def check_twitch(self):
-        print("checking twitch")
+        await self.bot.wait_until_ready()
+
+        print(f"{colorama.Fore.LIGHTWHITE_EX} [TWITCH CHECK] [TASK] Checking guilds... {colorama.Fore.RESET}")
+
         with open("json/guild.json", "r") as guild_info:
             guild_data = json.load(guild_info)
 
         for i in guild_data:
             if guild_data[i]["twitch_notifications"] == "on":
+                print(f"{colorama.Fore.GREEN} [TWITCH CHECK] [SUCCESS] {i} is already on. {colorama.Fore.RESET}")
                 continue
             else:
-                if guild_data[i]["notification_channel"] is False:
-                    print(f"{i} has no notification channel")
+                if guild_data[str(i)]["notify_channel"] is False:
+                    print(f"{colorama.Fore.RED} [TWITCH CHECK] [ERROR] {i} has no notification channel. {colorama.Fore.RESET}")
 
-                if guild_data[i]["watchlist"] is None:
-                    print(f"{i} has no watchlist")
+                if not guild_data[str(i)]["watchlist"]:
+                    print(f"{colorama.Fore.RED} [TWITCH CHECK] [ERROR] {i} has no watchlist. {colorama.Fore.RESET}")
                 else:
-                    guild_data[i]["twitch_notifications"] = "on"
+                    print(f"{colorama.Fore.GREEN} [TWITCH CHECK] [SUCCESS] {i} is now on. {colorama.Fore.RESET}")
+                    guild_data[str(i)]["twitch_notifications"] = "on"
                     with open("json/guild.json", "w") as dumpfile:
                         json.dump(guild_data, dumpfile, indent=4)
 

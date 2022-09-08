@@ -3,7 +3,7 @@ import json
 import disnake
 from disnake.ext import commands
 
-from checks._check_license import license_check
+from checks._check_license import check_license
 
 
 class Roles(commands.Cog):
@@ -13,6 +13,7 @@ class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @check_license()
     @commands.slash_command(
         name="role",
         description="Manage roles for users per chat"
@@ -29,66 +30,34 @@ class Roles(commands.Cog):
         role: disnake.Role,
         reason="Role remove/add per Command"
     ):
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
+        loading_embed = disnake.Embed(
+            description="Fetching roles from user...",
+            color=disnake.Color.green()
+        )
+        await interaction.response.send_message(
+            embed=loading_embed,
+            ephemeral=True
+        )
 
-        else:
-            loading_embed = disnake.Embed(
-                description="Fetching roles from user...",
-                color=disnake.Color.green()
-            )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
-            )
-
-            if interaction.author.top_role.position > role.position:
-                if role in member.roles:
-                    await member.remove_roles(role, reason=reason)
-                    remove_embed = disnake.Embed(
-                        description=f"{member.mention} wurde die Rolle `{role}` entfernt!",
-                        color=disnake.Color.red()
-                    )
-                    await interaction.edit_original_message(
-                        embed=remove_embed
-                    )
-                elif role not in member.roles:
-                    await member.add_roles(role, reason=reason)
-                    add_embed = disnake.Embed(
-                        description=f"{member.mention} wurde die Rolle `{role}` hinzugefügt ✅",
-                        color=disnake.Color.green()
-                    )
-                    await interaction.edit_original_message(
-                        embed=add_embed
-                    )
-                else:
-                    top_role_under_role_embed = disnake.Embed(
-                        description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest ❌",
-                        color=disnake.Color.red()
-                    )
-                    await interaction.edit_original_message(
-                        embed=top_role_under_role_embed
-                    )
-
-            elif role not in interaction.guild.roles:
-                not_role_embed = disnake.Embed(
-                    description=f"Die Rolle `{role}` konnte auf diesen Server nicht gefunden werden ❌"
+        if interaction.author.top_role.position > role.position:
+            if role in member.roles:
+                await member.remove_roles(role, reason=reason)
+                remove_embed = disnake.Embed(
+                    description=f"{member.mention} wurde die Rolle `{role}` entfernt!",
+                    color=disnake.Color.red()
                 )
                 await interaction.edit_original_message(
-                    embed=not_role_embed
+                    embed=remove_embed
                 )
-
+            elif role not in member.roles:
+                await member.add_roles(role, reason=reason)
+                add_embed = disnake.Embed(
+                    description=f"{member.mention} wurde die Rolle `{role}` hinzugefügt ✅",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=add_embed
+                )
             else:
                 top_role_under_role_embed = disnake.Embed(
                     description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest ❌",
@@ -97,6 +66,23 @@ class Roles(commands.Cog):
                 await interaction.edit_original_message(
                     embed=top_role_under_role_embed
                 )
+
+        elif role not in interaction.guild.roles:
+            not_role_embed = disnake.Embed(
+                description=f"Die Rolle `{role}` konnte auf diesen Server nicht gefunden werden ❌"
+            )
+            await interaction.edit_original_message(
+                embed=not_role_embed
+            )
+
+        else:
+            top_role_under_role_embed = disnake.Embed(
+                description=f"Deine Höchste Rolle [`{interaction.author.top_role}`] ist niedriger als die Rolle [`{role}`], die du hinzufügen möchtest ❌",
+                color=disnake.Color.red()
+            )
+            await interaction.edit_original_message(
+                embed=top_role_under_role_embed
+            )
 
 
 def setup(bot):

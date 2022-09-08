@@ -1,4 +1,3 @@
-from binhex import openrsrc
 import json
 from disnake.ext import commands
 import disnake
@@ -38,7 +37,8 @@ class on_guild_add(commands.Cog):
             "join_role": False,
             "license": [],
             "watchlist": [],
-            "twitch_with_everyone": "off"
+            "twitch_with_everyone": "off",
+            "twitch_notifications": "off"
         }
 
         guild_data[str(guild.id)] = new_server
