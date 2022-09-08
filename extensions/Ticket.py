@@ -5,7 +5,7 @@ import json
 import pytz
 import os
 
-from checks.check_license import license_check
+from checks._check_license import license_check
 
 
 class open_message(disnake.ui.View):

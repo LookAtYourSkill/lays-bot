@@ -2,7 +2,7 @@ import disnake
 import requests
 from disnake.ext import commands
 
-from checks.check_license import license_check
+from checks._check_license import license_check
 
 
 class Meme(commands.Cog):

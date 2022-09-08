@@ -32,8 +32,8 @@ class LicenseSystem(commands.Cog):
     '''
     def __init__(self, bot):
         self.bot = bot
-        self.license_check.start()
-        self.license_check_expired.start()
+        # self.license_check.start()
+        # self.license_check_expired.start()
 
     @commands.slash_command(
         name="license",
@@ -355,7 +355,7 @@ class LicenseSystem(commands.Cog):
                         print(f"{colorama.Fore.RED} [LICENSE CHECK] [ERROR] Could not send message to {user.name}#{user.discriminator}! {colorama.Fore.RESET}")
 
                 else:
-                    print(f"{colorama.Fore.GREEN} [LICENSE ] [SUCCESS] License {license} not expired. {colorama.Fore.RESET}")
+                    print(f"{colorama.Fore.GREEN} [LICENSE CHECK] [SUCCESS] License {license} not expired. {colorama.Fore.RESET}")
             else:
                 print(f"{colorama.Fore.GREEN} [LICENSE CHECK] [SUCCESS] License {license} skipping. {colorama.Fore.RESET}")
 

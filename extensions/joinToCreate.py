@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import json
 
-from checks.check_license import check_license
+from checks._check_license import check_license
 
 
 class joinToCreate(commands.Cog):

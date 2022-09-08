@@ -9,7 +9,7 @@ from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils._time import get_time, remove_expired_timers, set_end_time
 
-from checks.check_license import license_check
+from checks._check_license import check_license
 
 
 class Timer(commands.Cog):
@@ -20,6 +20,7 @@ class Timer(commands.Cog):
         self.bot = bot
         self.check_timers.start()
 
+    @check_license()
     @commands.slash_command(
         name="timer",
         description="Set a timer for a user"
@@ -32,61 +33,45 @@ class Timer(commands.Cog):
         with open("json/timer.json", "r") as timer_info:
             timers = json.load(timer_info)
 
-        if not license_check(interaction.author):
+        if member is None:
+            member = interaction.author
 
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
+        real_time = humanfriendly.parse_timespan(time)
 
-        else:
-            if member is None:
-                member = interaction.author
+        timers[str(interaction.author.id)] = {
+            "end_time": set_end_time(real_time),
+            "message": message,
+            "member": member.id,
+            "author": interaction.author.id,
+            # "messsage_id": interaction.message.id,
+            "channel": interaction.channel.id
+        }
 
-            real_time = humanfriendly.parse_timespan(time)
+        with open("json/timer.json", "w") as dump_file:
+            json.dump(timers, dump_file, indent=4, default=str)
 
-            timers[str(interaction.author.id)] = {
-                "end_time": set_end_time(real_time),
-                "message": message,
-                "member": member.id,
-                "author": interaction.author.id,
-                # "messsage_id": interaction.message.id,
-                "channel": interaction.channel.id
-            }
-
-            with open("json/timer.json", "w") as dump_file:
-                json.dump(timers, dump_file, indent=4, default=str)
-
-            embed = disnake.Embed(
-                title="Timer",
-                description=f"{interaction.author.mention} set a timer for `{humanize.naturaldelta(time)}`. I will remind you when its finished!",
-                color=disnake.Color.green()
-            )
-            embed.add_field(
-                name="Message",
-                value=f"`{message}`",
-                inline=False
-            )
-            embed.add_field(
-                name="Member",
-                value=member.mention,
-                inline=False
-            )
-            embed.set_author(
-                name=interaction.author.name,
-                icon_url=interaction.author.avatar.url
-            )
-            await interaction.response.send_message(
-                embed=embed
-            )
+        embed = disnake.Embed(
+            title="Timer",
+            description=f"{interaction.author.mention} set a timer for `{humanize.naturaldelta(time)}`. I will remind you when its finished!",
+            color=disnake.Color.green()
+        )
+        embed.add_field(
+            name="Message",
+            value=f"`{message}`",
+            inline=False
+        )
+        embed.add_field(
+            name="Member",
+            value=member.mention,
+            inline=False
+        )
+        embed.set_author(
+            name=interaction.author.name,
+            icon_url=interaction.author.avatar.url
+        )
+        await interaction.response.send_message(
+            embed=embed
+        )
 
     @loop(minutes=1)
     async def check_timers(self):

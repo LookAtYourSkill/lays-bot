@@ -7,7 +7,7 @@ import wavelink
 from disnake.ext import commands
 from wavelink.ext import spotify
 
-from checks.check_license import check_license
+from checks._check_license import check_license
 
 
 class Music(commands.Cog):

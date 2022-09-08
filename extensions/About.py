@@ -4,7 +4,7 @@ import sys
 import disnake
 from disnake.ext import commands
 
-from checks.check_license import check_license
+from checks._check_license import check_license
 
 
 class About(commands.Cog):

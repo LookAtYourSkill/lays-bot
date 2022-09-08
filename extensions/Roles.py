@@ -3,7 +3,7 @@ import json
 import disnake
 from disnake.ext import commands
 
-from checks.check_license import license_check
+from checks._check_license import license_check
 
 
 class Roles(commands.Cog):
