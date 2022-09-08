@@ -57,6 +57,29 @@ class onError(commands.Cog):
                 ephemeral=True
             )
 
+        if isinstance(
+            error,
+            commands.CheckFailure
+        ):
+            no_licesnse_embed = disnake.Embed(
+                title="No license ⛔",
+                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
+                color=disnake.Color.red()
+            )
+            no_licesnse_embed.set_footer(
+                text="If you dont have a license, please contact the bot owner or the server owner"
+            )
+
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} This server does not have a valid license ⛔",
+                color=disnake.Color.red()
+            )
+
+            await interaction.response.send_message(
+                embed=embed,
+                ephemeral=True
+            )
+
         else:
             embed = disnake.Embed(
                 description=f"{interaction.author.mention} the error has been send to the developer and will be taken care of as soon as possible! I hope for your patience ⛔",
