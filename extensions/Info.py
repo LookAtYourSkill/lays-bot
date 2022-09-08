@@ -20,7 +20,7 @@ class Info(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         global startTime
-        startTime = time.time()
+        startTime = round(datetime.datetime.timestamp(datetime.datetime.now()))
 
     @commands.slash_command(
         name="info",
@@ -201,7 +201,7 @@ class Info(commands.Cog):
             ephemeral=True
         )
         ping_embed = disnake.Embed(
-            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: ``{humanize.naturalday(round(time.time()-startTime))}``",
+            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: {disnake.utils.format_dt(startTime, style='R')}",
             color=disnake.Color.green()
         )
         ping_embed.set_author(
