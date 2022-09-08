@@ -2,7 +2,7 @@ from disnake.ext import commands
 import json
 
 
-class GuildCheck(commands.Cog):
+class guildCheck(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -42,7 +42,8 @@ class GuildCheck(commands.Cog):
                     "join_role": False,
                     "license": [],
                     "watchlist": [],
-                    "twitch_with_everyone": "off"
+                    "twitch_with_everyone": "off",
+                    "twitch_notifications": "off"
                 }
 
                 with open("json/guild.json", "w") as dumpfile:
@@ -111,4 +112,4 @@ class GuildCheck(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(GuildCheck(bot))
+    bot.add_cog(guildCheck(bot))
