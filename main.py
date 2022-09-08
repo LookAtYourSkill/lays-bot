@@ -58,11 +58,29 @@ for filename in os.listdir("./extensions"):
 log.info("Loaded events")
 for filename in os.listdir("./events"):
     if filename.endswith(".py"):
+        if filename.startswith("_"):
+            continue
         try:
             bot.load_extension(f"events.{filename[:-3]}")
             print(f"Loaded event {filename}")
         except Exception as e:
             print(f"Failed to load event {filename}, {e}")
+    else:
+        continue
+
+
+log.info("Loaded checks")
+for filename in os.listdir("./checks"):
+    if filename.endswith(".py"):
+        if filename.startswith("_"):
+            continue
+        try:
+            bot.load_extension(f"checks.{filename[:-3]}")
+            print(f"Loaded check {filename}")
+        except Exception as e:
+            print(f"Failed to load check {filename}, {e}")
+    else:
+        continue
 
 print("----------------------------------------------------")
 log.info("Finished")
