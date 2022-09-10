@@ -38,8 +38,8 @@ def check_license():
                 if guild_data[str(guild)]["license"] in licenses:
                     return True
             else:
-                return False
-                # raise commands.CheckFailure("This server does not have a valid license.")
+                # return False
+                raise commands.CheckFailure("This server does not have a valid license.")
         else:
             return True
 
