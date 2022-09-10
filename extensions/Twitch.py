@@ -446,111 +446,58 @@ class Twitch(commands.Cog):
                                                     print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
 
                                                     if i["notify_channel"]:
-                                                        if i["twitch_with_everyone"] == "on":
-                                                            notify_channel = await self.bot.fetch_channel(i["notify_channel"])
+                                                        notify_channel = await self.bot.fetch_channel(i["notify_channel"])
 
-                                                            embed = disnake.Embed(
-                                                                title=f"{stream['title']}",
-                                                                color=disnake.Color.purple(),
-                                                                url=f"https://www.twitch.tv/{stream['user_login']}"
-                                                            )
-                                                            embed.add_field(
-                                                                name="Streamer",
-                                                                value=f"`{stream['user_name']}`",
-                                                                inline=True
-                                                            )
-                                                            embed.add_field(
-                                                                name="Game",
-                                                                value=f"`{stream['game_name']}`",
-                                                                inline=True
-                                                            )
-                                                            embed.add_field(
-                                                                name="Viewer",
-                                                                value=f"`{stream['viewer_count']}`",
-                                                                inline=True
-                                                            )
-                                                            embed.set_author(
-                                                                name="Twitch Notification",
-                                                                icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
-                                                            )
-                                                            embed.set_image(
-                                                                url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
-                                                            )
-                                                            embed.set_footer(
-                                                                text="Live notifications by Lays Bot"
-                                                            )
+                                                        embed = disnake.Embed(
+                                                            title=f"{stream['title']}",
+                                                            color=disnake.Color.purple(),
+                                                            url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                        )
+                                                        embed.add_field(
+                                                            name="Streamer",
+                                                            value=f"`{stream['user_name']}`",
+                                                            inline=True
+                                                        )
+                                                        embed.add_field(
+                                                            name="Game",
+                                                            value=f"`{stream['game_name']}`",
+                                                            inline=True
+                                                        )
+                                                        embed.add_field(
+                                                            name="Viewer",
+                                                            value=f"`{stream['viewer_count']}`",
+                                                            inline=True
+                                                        )
+                                                        embed.set_author(
+                                                            name="Twitch Notification",
+                                                            icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                                                        )
+                                                        embed.set_image(
+                                                            url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
+                                                        )
+                                                        embed.set_footer(
+                                                            text="Live notifications by Lays Bot"
+                                                        )
 
-                                                            # send embed to channel
-                                                            print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
-                                                            # ! print()
-                                                            try:
-                                                                await notify_channel.send(
-                                                                    "@everyone",
-                                                                    embed=embed
-                                                                )
-                                                            except Exception as e:
-                                                                print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
-                                                                error_embed = disnake.Embed(
-                                                                    title=f"Error while sending {user_name} stream notification",
-                                                                    description=f"{e}",
-                                                                    color=disnake.Color.red()
-                                                                )
-                                                                error_channel = await self.bot.fetch_channel(self.error_channel)
-                                                                await error_channel.send(
-                                                                    embed=error_embed
-                                                                )
-                                                        else:
-                                                            notify_channel = await self.bot.fetch_channel(i["notify_channel"])
-
-                                                            embed = disnake.Embed(
-                                                                title=f"{stream['title']}",
-                                                                color=disnake.Color.purple(),
-                                                                url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                        # send embed to channel
+                                                        print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
+                                                        # ! print()
+                                                        try:
+                                                            await notify_channel.send(
+                                                                "@everyone" if i["twitch_everyone"] == "on" else "",
+                                                                embed=embed
                                                             )
-                                                            embed.add_field(
-                                                                name="Streamer",
-                                                                value=f"`{stream['user_name']}`",
-                                                                inline=True
+                                                        except Exception as e:
+                                                            print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
+                                                            error_embed = disnake.Embed(
+                                                                title=f"Error while sending {user_name} stream notification",
+                                                                description=f"{e}",
+                                                                color=disnake.Color.red()
                                                             )
-                                                            embed.add_field(
-                                                                name="Game",
-                                                                value=f"`{stream['game_name']}`",
-                                                                inline=True
+                                                            error_channel = await self.bot.fetch_channel(self.error_channel)
+                                                            await error_channel.send(
+                                                                embed=error_embed
                                                             )
-                                                            embed.add_field(
-                                                                name="Viewer",
-                                                                value=f"`{stream['viewer_count']}`",
-                                                                inline=True
-                                                            )
-                                                            embed.set_author(
-                                                                name="Twitch Notification",
-                                                                icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
-                                                            )
-                                                            embed.set_image(
-                                                                url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
-                                                            )
-                                                            embed.set_footer(
-                                                                text="Live notifications by Lays Bot"
-                                                            )
-
-                                                            # send embed to channel
-                                                            print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
-                                                            # ! print()
-                                                            try:
-                                                                await notify_channel.send(
-                                                                    embed=embed
-                                                                )
-                                                            except Exception as e:
-                                                                print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
-                                                                error_embed = disnake.Embed(
-                                                                    title=f"Error while sending {user_name} stream notification",
-                                                                    description=f"{e}",
-                                                                    color=disnake.Color.red()
-                                                                )
-                                                                error_channel = await self.bot.fetch_channel(self.error_channel)
-                                                                await error_channel.send(
-                                                                    embed=error_embed
-                                                                )
                                                     else:
                                                         # if there's not a channel, do nothing
                                                         print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
@@ -569,7 +516,7 @@ class Twitch(commands.Cog):
                         print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [3] No streams found... {colorama.Fore.RESET}")
                 else:
                     # if there's no streamer, do nothing
-                    print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [2] Server hasn't set notification channel... {colorama.Fore.RESET}")
+                    print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [2] Server hasn't set notification channel or watchlist ... {colorama.Fore.RESET}")
 
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished {colorama.Fore.RESET}")
 
