@@ -31,6 +31,7 @@ class guildCheck(commands.Cog):
                 print(f"{guild.name} has been added to the guild list")
                 guild_data[guild.id] = {
                     "server_name": f"{str(guild.name)}",
+                    "server_id": f"{str(guild.id)}",
                     "notify_channel": False,
                     "ticket_category": False,
                     "closed_ticket_category": False,
