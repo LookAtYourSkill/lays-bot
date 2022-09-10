@@ -9,7 +9,7 @@ import disnake
 from checks._check_license import check_license
 from disnake.ext import commands
 from disnake.ext.tasks import loop
-from utils.twitch import get_streams, get_users, get_all_user_info, get_followers
+from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams
 
 
 class State(str, Enum):
@@ -25,6 +25,7 @@ class Twitch(commands.Cog):
         self.bot = bot
         self.error_channel = 1000043915753304105
         self.check_streams.start()
+        self.update.start()
 
     @check_license()
     @commands.slash_command(
@@ -383,6 +384,9 @@ class Twitch(commands.Cog):
         with open("json/watchlist.json", "r", encoding="UTF-8") as file:
             watchlist_data = json.load(file)
 
+        with open("json/twitch_updates.json", "r", encoding="UTF-8") as twitch_file:
+            twitch_data = json.load(twitch_file)
+
         with open("json/guild.json", "r", encoding="UTF-8") as file:
             for i in json.load(file).values():
                 print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
@@ -483,10 +487,15 @@ class Twitch(commands.Cog):
                                                         print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
                                                         # ! print()
                                                         try:
-                                                            await notify_channel.send(
-                                                                "@everyone" if i["twitch_everyone"] == "on" else "",
+                                                            message = await notify_channel.send(
+                                                                "@everyone" if i["twitch_with_everyone"] == "on" else "",
                                                                 embed=embed
                                                             )
+
+                                                            twitch_data[stream["user_login"]][i]["message_id"] = message
+                                                            with open("json/twitch_updates.json", "w") as f:
+                                                                json.dump(twitch_data, f, indent=4)
+
                                                         except Exception as e:
                                                             print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
                                                             error_embed = disnake.Embed(
@@ -522,6 +531,8 @@ class Twitch(commands.Cog):
 
     @loop(minutes=15)
     async def update(self):
+        update_streams()
+        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [UPDATE] Updated {colorama.Fore.RESET}")
         # TODO create function, that updates the embed as long as the streamer is live
         # TODO store the message in a json file, so it can be used later (for every streamer and server)
         # ! EXAMPLE:
