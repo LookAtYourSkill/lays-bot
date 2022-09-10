@@ -12,7 +12,7 @@ def license_check(interaction: disnake.ApplicationCommandInteraction):
         licenses = json.load(license_info)
 
     if general["license_check"]:
-        if interaction.guild.id in guilds:
+        if str(interaction.guild.id) in guilds:
             if guilds[str(interaction.guild.id)]["license"] in licenses and guilds[str(interaction.guild.id)]["license"]:
                 return True
             else:
