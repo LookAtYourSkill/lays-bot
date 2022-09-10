@@ -1,5 +1,7 @@
 import json
+from secrets import choice
 import time
+from typing import Optional
 from datetime import datetime
 from enum import Enum
 from textwrap import dedent
@@ -258,7 +260,7 @@ class Twitch(commands.Cog):
             await interaction.edit_original_message(
                 embed=embed
             )
-        except Exception as e:
+        except Exception as _:
             embed = disnake.Embed(
                 title="Error :x:",
                 description=f"Streamer [`{streamer}`] not found!\n"
@@ -269,13 +271,22 @@ class Twitch(commands.Cog):
                 embed=embed
             )
 
+    choices = ["off", "everyone", "pingrole", "pingrole_and_everyone"]
+
     @twitch.sub_command(
         name="with_everyone",
         description="Get choice if live message should get sent with everyone or without"
     )
+    # ! NEUE MODIS: OFF, EVERYONE, PINGROLE AND PINGROLE + EVERYONE
     async def live_message(
         self,
-        interaction: disnake.ApplicationCommandInteraction
+        interaction: disnake.ApplicationCommandInteraction,
+        choice: (Optional[str]) = commands.Param(
+            None,
+            name="option",
+            description="Select the option you want",
+            choices=[i for i in choices]
+        )
     ):
         await interaction.response.defer(ephemeral=True)
 
@@ -290,34 +301,30 @@ class Twitch(commands.Cog):
             embed=loading_embed
         )
 
-        if guild_data[str(interaction.guild.id)]["twitch_with_everyone"] == "off":
-            guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "on"
-            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            live_message_embed = disnake.Embed(
-                description="Everyone in Live Message is `now activated`!",
-                color=disnake.Color.blurple()
+        if choice.lower() == guild_data[str(interaction.guild.id)]["twitch_with_everyone_or_pingrole"]:
+            embed = disnake.Embed(
+                title="Error :x:",
+                description=f"**{choice}** is already the current setting!",
+                color=disnake.Color.red()
             )
             await interaction.edit_original_message(
-                embed=live_message_embed
-            )
-
-        elif guild_data[str(interaction.guild.id)]["twitch_with_everyone"] == "on":
-            guild_data[str(interaction.guild.id)]["twitch_with_everyone"] = "off"
-            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            live_message_embed = disnake.Embed(
-                description="Everyone in Live Message is `now deactivated`!",
-                color=disnake.Color.blurple()
-            )
-            await interaction.edit_original_message(
-                embed=live_message_embed
+                embed=embed
             )
 
         else:
-            pass
+            guild_data[str(interaction.guild.id)]["twitch_with_everyone_or_pingrole"] = choice
+
+            with open("json/guild.json", "w", encoding="UTF-8") as guild_file:
+                json.dump(guild_data, guild_file, indent=4)
+
+            embed = disnake.Embed(
+                title="Success :white_check_mark:",
+                description=f"**{choice}** is now the current setting!",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
 
     @twitch.sub_command(
         name="list",
@@ -365,6 +372,138 @@ class Twitch(commands.Cog):
             embed.add_field(
                 name="__Watchlist is empty!__",
                 value="There wasnt added a streamer to the watchlist till now!",
+                inline=False
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+    @twitch.sub_command_group(
+        name="pingrole",
+        description="Set the role which should get pinged when a streamer goes live"
+    )
+    async def pingrole(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        pass
+
+    @pingrole.sub_command(
+        name="add",
+        description="Set the role which should get pinged when a streamer goes live"
+    )
+    async def _add(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        role: disnake.Role
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/guild.json", "r", encoding="UTF-8") as file:
+            guild_data = json.load(file)
+
+        if role.id in guild_data[str(interaction.guild.id)]["twitch_ping_role"]:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention}",
+                color=disnake.Color.red()
+            )
+            embed.add_field(
+                name="__Role already in list!__",
+                value="This role is already in the list!",
+                inline=False
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+        else:
+            guild_data[str(interaction.guild.id)]["twitch_ping_role"].append(role.id)
+
+            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
+
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} the role `{role.name}` is now set as ping role!",
+                color=disnake.Color.blurple()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+    @pingrole.sub_command(
+        name="remove",
+        description="Remove the role which should get pinged when a streamer goes live"
+    )
+    async def _remove(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        role: disnake.Role
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/guild.json", "r", encoding="UTF-8") as file:
+            guild_data = json.load(file)
+
+        if role.id in guild_data[str(interaction.guild.id)]["twitch_ping_role"]:
+
+            guild_data[str(interaction.guild.id)]["twitch_ping_role"].remove(role.id)
+
+            with open("json/guild.json", "w", encoding="UTF-8") as dump_file:
+                json.dump(guild_data, dump_file, indent=4)
+
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} the role `{role.name}` is now removed as ping role!",
+                color=disnake.Color.blurple()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+        else:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} the role `{role.name}` is not set as ping role!",
+                color=disnake.Color.red()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+    @pingrole.sub_command(
+        name="list",
+        description="Lists all roles which should get pinged when a streamer goes live"
+    )
+    async def _list(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/guild.json", "r", encoding="UTF-8") as file:
+            guild_data = json.load(file)
+
+        if guild_data[str(interaction.guild.id)]["twitch_ping_role"]:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention} the ping role from {interaction.guild.name}",
+                color=disnake.Color.blurple()
+            )
+            role_list = []
+            for role in guild_data[str(interaction.guild.id)]["twitch_ping_role"]:
+                role_list.append(f"<@&{role}>")
+
+            embed.add_field(
+                name="__Role__",
+                value="\n".join(role_list),
+                inline=False
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+        else:
+            embed = disnake.Embed(
+                description=f"{interaction.author.mention}",
+                color=disnake.Color.red()
+            )
+            embed.add_field(
+                name="__Ping role is empty!__",
+                value="There wasnt added a ping role till now!",
                 inline=False
             )
             await interaction.edit_original_message(
@@ -487,8 +626,11 @@ class Twitch(commands.Cog):
                                                         print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
                                                         # ! print()
                                                         try:
+                                                            role_list = []
+                                                            for role in i["twitch_ping_role"]:
+                                                                role_list.append(f"<@&{role}>")
                                                             message = await notify_channel.send(
-                                                                "@everyone" if i["twitch_with_everyone"] == "on" else "",
+                                                                f"{role_list} " if i["twitch_with_everyone_or_pingrole"] == "pingrole" else "@everyone" and f"<@&{i['twitch_ping_role']}>" if i["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if i["twitch_with_everyone_or_pingrole"] == "everyone" else "",
                                                                 embed=embed
                                                             )
 
