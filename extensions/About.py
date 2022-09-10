@@ -77,12 +77,6 @@ class About(commands.Cog):
             value=f"`»` Lizenz System Status: `{'Active' if general['license_check'] else 'Inactive'}`",
             inline=False
         )
-        about_embed.add_field(
-            name="> ❓ Personal Server Info",
-            value=f"`»` Twitch Everyone: `{'Yes' if guild_data[str(interaction.author.guild.id)]['twitch_with_everyone'] == 'on' else 'No'}`\n"
-                    f"`»` AntiAlt-Days: `{settings_data[str(interaction.author.guild.id)]['anti_alt_days']}`",
-            inline=False
-        )
         about_embed.set_author(
             name=owner,
             icon_url=owner.avatar.url

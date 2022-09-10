@@ -137,7 +137,7 @@ class Info(commands.Cog):
         )
         server_embed.add_field(
             name="__Personal Server Info__",
-            value=f"`»` Twitch Everyone: `{'Yes' if guild_data[str(interaction.author.guild.id)]['twitch_with_everyone'] == 'on' else 'No'}`\n"
+            value=f"`»` Twitch Everyone: `{guild_data[str(interaction.author.guild.id)]['twitch_with_everyone_or_pingrole']}`\n"
                     f"`»` AntiAlt-Days: `{settings_data[str(interaction.author.guild.id)]['anti_alt_days']}`",
             inline=False
         )

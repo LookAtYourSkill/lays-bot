@@ -17,8 +17,6 @@ class onError(commands.Cog):
         error: commands.CommandError
     ):
 
-        print(interaction.data)
-
         with open("json/errors.json", "r") as f:
             error_data = json.load(f)
 
