@@ -43,8 +43,9 @@ class guildCheck(commands.Cog):
                     "join_role": False,
                     "license": [],
                     "watchlist": [],
-                    "twitch_with_everyone": "off",
-                    "twitch_notifications": "off"
+                    "twitch_with_everyone_or_pingrole": "off",
+                    "twitch_notifications": "off",
+                    "twitch_ping_role": []
                 }
 
                 with open("json/guild.json", "w") as dumpfile:

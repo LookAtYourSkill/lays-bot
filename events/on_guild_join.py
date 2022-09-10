@@ -38,8 +38,9 @@ class on_guild_add(commands.Cog):
             "join_role": False,
             "license": [],
             "watchlist": [],
-            "twitch_with_everyone": "off",
-            "twitch_notifications": "off"
+            "twitch_with_everyone_or_pingrole": "off",
+            "twitch_notifications": "off",
+            "twitch_ping_role": []
         }
 
         guild_data[str(guild.id)] = new_server
@@ -106,7 +107,7 @@ class on_guild_add(commands.Cog):
         )
 
         send_channel = self.bot.get_channel(
-            882721258301685790
+            1014844750584614962
         )
         await send_channel.send(
             embed=embed
