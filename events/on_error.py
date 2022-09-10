@@ -1,3 +1,5 @@
+import json
+
 import disnake
 from disnake.ext import commands
 import wavelink
@@ -14,6 +16,28 @@ class onError(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         error: commands.CommandError
     ):
+
+        print(interaction.data)
+
+        with open("json/errors.json", "r") as f:
+            error_data = json.load(f)
+
+        errors = 0
+        for _ in error_data:
+            errors += 1
+
+        error_data[errors] = {
+            "error": str(error),
+            "status": "open / error",
+            "command": interaction.application_command.name,
+            "user": interaction.user.name,
+            "user id": interaction.user.id,
+            "guild": interaction.guild.name,
+            "guild id": interaction.guild.id
+        }
+
+        with open("json/errors.json", "w") as f:
+            json.dump(error_data, f, indent=4)
 
         if isinstance(
             error,
