@@ -51,11 +51,13 @@ class twitchCheck(commands.Cog):
 
                 if not guild_data[str(i)]["watchlist"]:
                     print(f"{colorama.Fore.RED} [TWITCH CHECK] [ERROR] {i} has no watchlist. {colorama.Fore.RESET}")
+
                 else:
-                    print(f"{colorama.Fore.GREEN} [TWITCH CHECK] [SUCCESS] {i} is now on. {colorama.Fore.RESET}")
-                    guild_data[str(i)]["twitch_notifications"] = "on"
-                    with open("json/guild.json", "w") as dumpfile:
-                        json.dump(guild_data, dumpfile, indent=4)
+                    if guild_data[str(i)]["notify_channel"] and guild_data[str(i)]["watchlist"]:
+                        print(f"{colorama.Fore.GREEN} [TWITCH CHECK] [SUCCESS] {i} is now on. {colorama.Fore.RESET}")
+                        guild_data[str(i)]["twitch_notifications"] = "on"
+                        with open("json/guild.json", "w") as dumpfile:
+                            json.dump(guild_data, dumpfile, indent=4)
 
 
 def setup(bot):
