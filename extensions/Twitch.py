@@ -1,5 +1,5 @@
+from asyncore import dispatcher_with_send
 import json
-from secrets import choice
 import time
 from typing import Optional
 from datetime import datetime
@@ -521,10 +521,10 @@ class Twitch(commands.Cog):
         # load json files and setup local variables=
 
         with open("json/watchlist.json", "r", encoding="UTF-8") as file:
-            watchlist_data = json.load(file)
+            watchlist_data: dict = json.load(file)
 
         with open("json/twitch_updates.json", "r", encoding="UTF-8") as twitch_file:
-            twitch_data = json.load(twitch_file)
+            twitch_data: dict = json.load(twitch_file)
 
         with open("json/guild.json", "r", encoding="UTF-8") as file:
             for i in json.load(file).values():
@@ -630,12 +630,12 @@ class Twitch(commands.Cog):
                                                             for role in i["twitch_ping_role"]:
                                                                 role_list.append(f"<@&{role}>")
                                                             message = await notify_channel.send(
-                                                                f"{role_list} " if i["twitch_with_everyone_or_pingrole"] == "pingrole" else "@everyone" and f"<@&{i['twitch_ping_role']}>" if i["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if i["twitch_with_everyone_or_pingrole"] == "everyone" else "",
+                                                                f"{' '.join(role_list)} " if i["twitch_with_everyone_or_pingrole"] == "pingrole" else "@everyone" and f"{' '.join(role_list)}" if i["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if i["twitch_with_everyone_or_pingrole"] == "everyone" else "",
                                                                 embed=embed
                                                             )
 
-                                                            twitch_data[stream["user_login"]][i]["message_id"] = message
-                                                            with open("json/twitch_updates.json", "w") as f:
+                                                            twitch_data[stream["user_login"]][i["server_id"]]["message_id"] = message.id
+                                                            with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                                                 json.dump(twitch_data, f, indent=4)
 
                                                         except Exception as e:
