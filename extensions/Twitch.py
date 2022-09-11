@@ -257,6 +257,7 @@ class Twitch(commands.Cog):
             embed.set_thumbnail(
                 url=userData[0]['profile_image_url']
             )
+            embed.set_image(userData[0]['offline_image_url'])
             await interaction.edit_original_message(
                 embed=embed
             )
