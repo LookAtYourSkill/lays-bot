@@ -581,7 +581,7 @@ class Twitch(commands.Cog):
                                             print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
-                                                if time.time() - started_at < 140:
+                                                if time.time() - started_at < 25000:
                                                     # if so append streamer to list, so its not sent again
                                                     notification.append(streams[user_name])
                                                     online_users.append(user_name)
@@ -630,7 +630,7 @@ class Twitch(commands.Cog):
                                                             for role in i["twitch_ping_role"]:
                                                                 role_list.append(f"<@&{role}>")
                                                             message = await notify_channel.send(
-                                                                f"{' '.join(role_list)} " if i["twitch_with_everyone_or_pingrole"] == "pingrole" else "@everyone" and f"{' '.join(role_list)}" if i["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if i["twitch_with_everyone_or_pingrole"] == "everyone" else "",
+                                                                f"{' '.join(role_list)} " if i["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if i["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if i["twitch_with_everyone_or_pingrole"] == "everyone" else "",
                                                                 embed=embed
                                                             )
 
