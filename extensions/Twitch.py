@@ -1,4 +1,3 @@
-from asyncore import dispatcher_with_send
 import json
 import time
 from typing import Optional
@@ -690,5 +689,5 @@ class Twitch(commands.Cog):
         pass
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Twitch(bot))
