@@ -28,7 +28,7 @@ class guildCheck(commands.Cog):
                 pass
             else:
                 # if not add it to the json file
-                print(f"{guild.name} has been added to the guild list")
+                # !! print(f"{guild.name} has been added to the guild list")
                 guild_data[guild.id] = {
                     "server_name": f"{str(guild.name)}",
                     "server_id": f"{str(guild.id)}",
@@ -58,7 +58,7 @@ class guildCheck(commands.Cog):
                 pass
             else:
                 # if not add it to the json file
-                print(f"{_guild.name} has been added to the ticket list")
+                # !! print(f"{_guild.name} has been added to the ticket list")
                 ticket_data[_guild.id] = {
                     "ticket_counter": 0,
                     "support_members": [],
@@ -74,7 +74,7 @@ class guildCheck(commands.Cog):
                 pass
             else:
                 # if not add it to the json file
-                print(f"{__guild.name} has been added to the active check list")
+                # !! print(f"{__guild.name} has been added to the active check list")
                 active_data[__guild.id] = {
                     "about": True,
                     "antialt": True,
@@ -104,7 +104,7 @@ class guildCheck(commands.Cog):
                 pass
             else:
                 # if not add it to the json file
-                print(f"{___guild.name} has been added to the settings list")
+                # !! print(f"{___guild.name} has been added to the settings list")
                 settings_data[___guild.id] = {
                     "anti_alt_days": 7
                 }
