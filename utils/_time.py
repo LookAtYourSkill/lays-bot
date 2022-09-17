@@ -28,7 +28,7 @@ def remove_expired_timers():
 
 
 def set_end_time(time):
-    end_date = datetime.datetime.now() + datetime.timedelta(seconds=time)
+    end_date = datetime.datetime.now() + datetime.timedelta(seconds=time) + datetime.timedelta(hours=2)
     return end_date.strftime("%d.%m.%Y %H:%M:%S")
 
     # return datetime.datetime.now() + datetime.timedelta(seconds=time)
