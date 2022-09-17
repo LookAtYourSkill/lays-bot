@@ -1,5 +1,6 @@
 import json
 import time
+from tkinter import W
 from typing import Optional
 from datetime import datetime
 from enum import Enum
@@ -24,7 +25,7 @@ class Twitch(commands.Cog):
     '''
     def __init__(self, bot):
         self.bot = bot
-        self.error_channel = 1000043915753304105
+        self.error_channel = 882721258301685790
         self.check_streams.start()
         self.update.start()
 
@@ -514,9 +515,10 @@ class Twitch(commands.Cog):
     async def check_streams(self):
         await self.bot.wait_until_ready()
 
-        print(f"{colorama.Fore.LIGHTWHITE_EX} [TWITCH] [TASK] Checking twitch streams...{colorama.Fore.RESET}")
+        print(f"\n{colorama.Fore.LIGHTWHITE_EX} [TWITCH] [TASK] Checking twitch streams...{colorama.Fore.RESET}")
 
         online_users = []
+        notifications = 0
 
         # load json files and setup local variables=
 
@@ -527,16 +529,15 @@ class Twitch(commands.Cog):
             twitch_data: dict = json.load(twitch_file)
 
         with open("json/guild.json", "r", encoding="UTF-8") as file:
-            for i in json.load(file).values():
-                print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
-                if i["twitch_notifications"] == "on":
+            for guild in json.load(file).values():
+                # ! print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
+                if guild["twitch_notifications"] == "on":
 
                     # with open("json/settings.json", "r", encoding="UTF-8") as file:
-                        # for o in json.load(file).values():
+                    # for o in json.load(file).values():
 
-                    # ! print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
-                    print(f"{colorama.Fore.MAGENTA} {i['watchlist']} {colorama.Fore.RESET}")
-                    print(f"{colorama.Fore.BLUE} [TWITCH] [PENDING] [2] Going through guilds... {colorama.Fore.RESET}")
+                    # !! print(f"{colorama.Fore.MAGENTA} {i['watchlist']} {colorama.Fore.RESET}")
+                    # !! print(f"{colorama.Fore.BLUE} [TWITCH] [PENDING] [2] Going through guilds... {colorama.Fore.RESET}")
 
                     # get all streamers from watchlist
                     users = get_users(watchlist_data["overall_watchlist"])
@@ -544,7 +545,7 @@ class Twitch(commands.Cog):
 
                     # check if any streamer of the watchlist is live
                     if streams:
-                        print(f"{colorama.Fore.BLUE} [TWITCH] [PENDING] [3] Check for streams... {colorama.Fore.RESET}")
+                        # !! print(f"{colorama.Fore.BLUE} [TWITCH] [PENDING] [3] Check for streams... {colorama.Fore.RESET}")
 
                         # for logging purposes
                         # !! print('---------------------------------------------------------------------------------')
@@ -553,16 +554,17 @@ class Twitch(commands.Cog):
 
                         # go through all streams
                         for stream in streams.values():
-                            print(f"{colorama.Fore.LIGHTYELLOW_EX} [TWITCH] [DATA] [!] {stream['user_login']} is live! {colorama.Fore.RESET}")
-                            print(f"{colorama.Fore.BLUE} [TWITCH] [PENDING] [4] Check if streamer is in watchlist... , '{stream['user_login']}' {colorama.Fore.RESET}")
+                            # !! print(f"{colorama.Fore.LIGHTYELLOW_EX} [TWITCH] [DATA] [!] {stream['user_login']} is live! {colorama.Fore.RESET}")
+                            # !! print(f"{colorama.Fore.BLUE} [TWITCH] [PENDING] [4] Check if streamer is in watchlist... , '{stream['user_login']}' {colorama.Fore.RESET}")
 
                             # check if streamer is in not in watchlist, and if so, break and do nothing
-                            if stream["user_login"] not in i['watchlist']:
-                                print(f"{colorama.Fore.LIGHTRED_EX} [TWITCH] [ERROR] [5] Streamer not in watchlist... , '{stream['user_login']}' {colorama.Fore.RESET}")
+                            if stream["user_login"] not in guild['watchlist']:
+                                continue
+                                # !! print(f"{colorama.Fore.LIGHTRED_EX} [TWITCH] [ERROR] [5] Streamer not in watchlist... , '{stream['user_login']}' {colorama.Fore.RESET}")
                                 # print()
                             else:
                                 # check if streamer is in watchlist and if so, create embed and send it to channel
-                                if stream["user_login"] in i['watchlist']:
+                                if stream["user_login"] in guild['watchlist']:
 
                                     notification = []
                                     for user_name in watchlist_data["overall_watchlist"]:
@@ -578,18 +580,18 @@ class Twitch(commands.Cog):
                                             # convert time aswell to readable format
                                             started_at = time.mktime(giga_time.timetuple()) + giga_time.microsecond / 1E6
                                             # check if username is the streamer, which get asked for
-                                            print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
+                                            # !! print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
-                                                if time.time() - started_at < 140:
+                                                if time.time() - started_at < 9900:
                                                     # if so append streamer to list, so its not sent again
                                                     notification.append(streams[user_name])
                                                     online_users.append(user_name)
 
-                                                    print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
+                                                    # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
 
-                                                    if i["notify_channel"]:
-                                                        notify_channel = await self.bot.fetch_channel(i["notify_channel"])
+                                                    if guild["notify_channel"]:
+                                                        notify_channel = await self.bot.fetch_channel(guild["notify_channel"])
 
                                                         embed = disnake.Embed(
                                                             title=f"{stream['title']}",
@@ -623,23 +625,23 @@ class Twitch(commands.Cog):
                                                         )
 
                                                         # send embed to channel
-                                                        print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
-                                                        # ! print()
+                                                        # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
                                                         try:
                                                             role_list = []
-                                                            for role in i["twitch_ping_role"]:
+                                                            for role in guild["twitch_ping_role"]:
                                                                 role_list.append(f"<@&{role}>")
+                                                            notifications += 1
                                                             message = await notify_channel.send(
-                                                                f"{' '.join(role_list)} " if i["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if i["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if i["twitch_with_everyone_or_pingrole"] == "everyone" else "",
+                                                                f"{' '.join(role_list)} " if guild["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if guild["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if guild["twitch_with_everyone_or_pingrole"] == "everyone" else "",
                                                                 embed=embed
                                                             )
 
-                                                            twitch_data[stream["user_login"]][i["server_id"]]["message_id"] = message.id
+                                                            twitch_data[stream["user_login"]][guild["server_id"]]["message_id"] = message.id
                                                             with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                                                 json.dump(twitch_data, f, indent=4)
 
                                                         except Exception as e:
-                                                            print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
+                                                            # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
                                                             error_embed = disnake.Embed(
                                                                 title=f"Error while sending {user_name} stream notification",
                                                                 description=f"{e}",
@@ -650,31 +652,174 @@ class Twitch(commands.Cog):
                                                                 embed=error_embed
                                                             )
                                                     else:
+                                                        continue
                                                         # if there's not a channel, do nothing
-                                                        print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
+                                                        # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
                                                 else:
+                                                    continue
                                                     # if stream is too long inthe past, do nothing
-                                                    print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [6] Timeout: Stream started too long ago... , '{user_name}' {colorama.Fore.RESET}")
+                                                    # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [6] Timeout: Stream started too long ago... , '{user_name}' {colorama.Fore.RESET}")
                                             else:
-                                                print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [6] Wrong streamer name... [given: '{user_name}' | required: '{stream['user_login']}'] {colorama.Fore.RESET}")
+                                                continue
+                                                # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [6] Wrong streamer name... [given: '{user_name}' | required: '{stream['user_login']}'] {colorama.Fore.RESET}")
                                                 # if anything else happend, do nothing
                                         else:
-                                            print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [5] Not in streams... , '{user_name}' {colorama.Fore.RESET}")
+                                            continue
+                                            # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [5] Not in streams... , '{user_name}' {colorama.Fore.RESET}")
                                 else:
                                     continue
                     else:
+                        continue
                         # if no streamer is live, do nothing
-                        print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [3] No streams found... {colorama.Fore.RESET}")
+                        # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [3] No streams found... {colorama.Fore.RESET}")
                 else:
+                    continue
                     # if there's no streamer, do nothing
-                    print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [2] Server hasn't set notification channel or watchlist ... {colorama.Fore.RESET}")
+                    # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [2] Server hasn't set notification channel or watchlist ... {colorama.Fore.RESET}")
 
-        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished with [{notifications}] notifications{colorama.Fore.RESET}")
 
     @loop(minutes=15)
     async def update(self):
+        print(f"\n{colorama.Fore.WHITE} [TWITCH] [TASK] Starting update... {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLACK}##########################################################################################{colorama.Fore.RESET}")
         update_streams()
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [UPDATE] Updated {colorama.Fore.RESET}")
+
+        with open("json/twitch_updates.json", "r", encoding='UTF-8') as f:
+            twitch_data = json.load(f)
+        with open("json/guild.json", "r", encoding='UTF-8') as f:
+            guild_data = json.load(f)
+
+        # loop through all streamer in the json file
+        for streamer in twitch_data:
+            # loop through all servers in the json file from the streamer
+            for server in twitch_data[streamer]:
+                # check if the server has twitch notification enabled
+                if guild_data[server]["twitch_notifications"] == "on":
+                    # check if a message_id and a notificaion channel are set
+                    if twitch_data[streamer][server]["message_id"] is not None and guild_data[server]["notify_channel"] is not None:
+
+                        twitch_data[streamer][server]["last_update"] = datetime.now().timestamp()
+
+                        # check if status from the streamer is live or offline
+                        if twitch_data[streamer][server]["status"] == "offline":
+
+                            # get the message as object
+                            channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data[streamer][server]["channel_id"])
+                            message: disnake.Message = channel.get_partial_message(twitch_data[streamer][server]["message_id"])
+
+                            embed = disnake.Embed(
+                                title=f"{twitch_data[streamer][server]['title']}",
+                                url=f"https://www.twitch.tv/{streamer}",
+                                color=disnake.Color.purple()
+                            )
+                            embed.set_author(
+                                name="Twitch Notification",
+                                icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                            )
+                            embed.add_field(
+                                name="Streamer",
+                                value=f"{twitch_data[streamer][server]['user_name']}",
+                                inline=True
+                            )
+                            embed.add_field(
+                                name="Information",
+                                value=f"Game: `{twitch_data[streamer][server]['game_name']}`\nViewer: `{twitch_data[streamer][server]['viewer_count']}`",
+                                inline=True
+                            )
+                            embed.add_field(
+                                name="Durations",
+                                value=f"`Started At`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
+                                      f"`Ended At`: {disnake.utils.format_dt(twitch_data[streamer][server]['ended_at'], style='R')}\n"
+                                      f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
+                                inline=True
+                            )
+                            embed.add_field(
+                                name="Ended at",
+                                value=f"{disnake.utils.format_dt(twitch_data[streamer][server]['ended_at'], style='R')}",
+                                inline=True
+                            )
+                            embed.set_footer(
+                                text="Live notifications by Lays Bot"
+                            )
+                            await message.edit(
+                                embed=embed
+                            )
+
+                            twitch_data[streamer][server]["message_id"] = None
+                            with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
+                                json.dump(twitch_data, f, indent=4)
+                        else:
+                            print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [1] Updating message... , '{streamer}' {colorama.Fore.RESET}")
+                            try:
+
+                                ended_at_raw = datetime.now().timestamp()
+                                twitch_data[streamer][server]["ended_at"] = ended_at_raw
+
+                                with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
+                                    json.dump(twitch_data, f, indent=4)
+
+                                channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data[streamer][server]["channel_id"])
+                                message: disnake.Message = channel.get_partial_message(twitch_data[streamer][server]["message_id"])
+
+                                print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [2] Creating embed... , '{streamer}' {colorama.Fore.RESET}")
+                                embed = disnake.Embed(
+                                    title=f"{twitch_data[streamer][server]['title']}",
+                                    color=disnake.Color.purple(),
+                                    url=f"https://www.twitch.tv/{streamer}"
+                                )
+                                embed.add_field(
+                                    name="Streamer",
+                                    value=f"`{twitch_data[streamer][server]['user_name']}`",
+                                    inline=True
+                                )
+                                embed.add_field(
+                                    name="Information",
+                                    value=f"Game: `{twitch_data[streamer][server]['game_name']}`\nViewer: `{twitch_data[streamer][server]['viewer_count']}`",
+                                    inline=True
+                                )
+                                embed.add_field(
+                                    name="Durations",
+                                    value=f"`Started At`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
+                                          f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
+                                    inline=True
+                                )
+                                embed.set_author(
+                                    name="Twitch Notification",
+                                    icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                                )
+                                embed.set_image(
+                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
+                                )
+                                embed.set_footer(
+                                    text="Live notifications by Lays Bot"
+                                )
+                                await message.edit(
+                                    embed=embed
+                                )
+                                print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [3] Message updated... , '{streamer}' {colorama.Fore.RESET}")
+
+                            except Exception as e:
+
+                                print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while updating : {e} {colorama.Fore.RESET}")
+                                error_embed = disnake.Embed(
+                                    title=f"Error while updating {streamer} stream notification",
+                                    description=f"{e}",
+                                    color=disnake.Color.red()
+                                )
+                                error_channel = await self.bot.fetch_channel(self.error_channel)
+                                await error_channel.send(
+                                    embed=error_embed
+                                )
+                    else:
+                        print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No message and no channel found... , '{streamer}' {colorama.Fore.RESET}")
+                else:
+                    continue
+        print(f"{colorama.Fore.BLACK}##########################################################################################{colorama.Fore.RESET}")
+
+        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH] [DONE] Finished updating... {colorama.Fore.RESET}")
+
         # TODO create function, that updates the embed as long as the streamer is live
         # TODO store the message in a json file, so it can be used later (for every streamer and server)
         # ! EXAMPLE:
@@ -686,7 +831,6 @@ class Twitch(commands.Cog):
         #         message_id: message_id
         #     }
         # TODO what to update? - title, viewer count, game name, time
-        pass
 
 
 def setup(bot: commands.Bot):
