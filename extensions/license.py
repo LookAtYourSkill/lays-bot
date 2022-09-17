@@ -323,7 +323,7 @@ class LicenseSystem(commands.Cog):
                 # convert it to an datetime object
                 date2 = datetime.datetime.strptime(date_2_string, "%d.%m.%Y %H:%M:%S")
 
-                print(f"{colorama.Fore.LIGHTGREEN_EX} [LICENSE CHECK] [CHECK] Checking license {license}... {colorama.Fore.RESET}")
+                # !! print(f"{colorama.Fore.LIGHTGREEN_EX} [LICENSE CHECK] [CHECK] Checking license {license}... {colorama.Fore.RESET}")
                 # check if the license is expired || if the local time is older than the license's end time
                 if date1 < date2:
                     # change json
@@ -335,7 +335,7 @@ class LicenseSystem(commands.Cog):
                     with open("json/licenses.json", "w") as dumpfile:
                         json.dump(licenses, dumpfile, indent=4)
 
-                    print(f"{colorama.Fore.RED} [LICENSE CHECK] [EXPIRED] License {license} expired. {colorama.Fore.RESET}")
+                    # !! print(f"{colorama.Fore.RED} [LICENSE CHECK] [EXPIRED] License {license} expired. {colorama.Fore.RESET}")
 
                     user = self.bot.get_user(licenses[license]["owner"])
                     embed = disnake.Embed(
@@ -352,12 +352,15 @@ class LicenseSystem(commands.Cog):
                     try:
                         await user.send(embed=embed)
                     except disnake.HTTPException:
-                        print(f"{colorama.Fore.RED} [LICENSE CHECK] [ERROR] Could not send message to {user.name}#{user.discriminator}! {colorama.Fore.RESET}")
+                        continue
+                        # !! print(f"{colorama.Fore.RED} [LICENSE CHECK] [ERROR] Could not send message to {user.name}#{user.discriminator}! {colorama.Fore.RESET}")
 
                 else:
-                    print(f"{colorama.Fore.GREEN} [LICENSE CHECK] [SUCCESS] License {license} not expired. {colorama.Fore.RESET}")
+                    continue
+                    # !! print(f"{colorama.Fore.GREEN} [LICENSE CHECK] [SUCCESS] License {license} not expired. {colorama.Fore.RESET}")
             else:
-                print(f"{colorama.Fore.GREEN} [LICENSE CHECK] [SUCCESS] License {license} skipping. {colorama.Fore.RESET}")
+                continue
+                # !! print(f"{colorama.Fore.GREEN} [LICENSE CHECK] [SUCCESS] License {license} skipping. {colorama.Fore.RESET}")
 
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [LICENSE CHECK] [DONE] Finished {colorama.Fore.RESET}")
 

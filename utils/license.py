@@ -30,7 +30,7 @@ def remove_expired_licenses():
     for license in license_copy:
         # check if duration is lifetime
         if license_copy[license]["duration"] == "Lifetime" and license_copy[license]["duration"] is None:
-            print(f"{license} is Lifetime | Skipped")
+            # !! print(f"{license} is Lifetime | Skipped")
             continue
         else:
             # check if the license is expired
