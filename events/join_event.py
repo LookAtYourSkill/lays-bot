@@ -17,7 +17,7 @@ class join_to_create(commands.Cog):
         with open("json/guild.json", "r") as guild_file:
             guild_data = json.load(guild_file)
 
-        if guild_data[str(member.guild.id)]["join_to_create_channel"] and guild_data[str(member.guild.id)]["join_to_create_category"]:
+        if guild_data[str(member.guild.id)]["join_to_create_channel"] is not None and guild_data[str(member.guild.id)]["join_to_create_category"] is not None:
             if before.channel is None and after.channel is not None:
                 channel = disnake.utils.get(
                     member.guild.voice_channels,
