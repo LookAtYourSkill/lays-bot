@@ -1,6 +1,5 @@
 import json
 import time
-from tkinter import W
 from typing import Optional
 from datetime import datetime
 from enum import Enum
