@@ -42,6 +42,7 @@ class twitchCheck(commands.Cog):
         with open("json/guild.json", "r") as guild_info:
             guild_data = json.load(guild_info)
 
+        # i = guild id
         for i in guild_data:
             if guild_data[i]["twitch_notifications"] == "on":
                 # !! print(f"{colorama.Fore.GREEN} [TWITCH CHECK] [SUCCESS] {i} is already on. {colorama.Fore.RESET}")
