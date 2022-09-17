@@ -579,7 +579,7 @@ class Twitch(commands.Cog):
                                             # convert time aswell to readable format
                                             started_at = time.mktime(giga_time.timetuple()) + giga_time.microsecond / 1E6
                                             # check if username is the streamer, which get asked for
-                                            # !! print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
+                                            print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
                                                 if time.time() - started_at < 9900:
