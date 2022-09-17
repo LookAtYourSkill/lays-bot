@@ -368,7 +368,7 @@ class LicenseSystem(commands.Cog):
     async def license_check_expired(self):
         await self.bot.wait_until_ready()
         print(f"{colorama.Fore.LIGHTWHITE_EX} [LICENSE REMOVE] [TASK] Removing expired licenses...{colorama.Fore.RESET}")
-        # use method created in the other file
+        # use method created in the other file to remove expired licenses
         remove_expired_licenses()
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [LICENSE REMOVE] [DONE] Finished {colorama.Fore.RESET}")
 
