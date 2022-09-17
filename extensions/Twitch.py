@@ -620,7 +620,7 @@ class Twitch(commands.Cog):
                                                             url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
                                                         )
                                                         embed.set_footer(
-                                                            text="Live notifications by Lays Bot"
+                                                            text="Live Notifications by Lays Bot"
                                                         )
 
                                                         # send embed to channel
@@ -740,7 +740,7 @@ class Twitch(commands.Cog):
                                 inline=True
                             )
                             embed.set_footer(
-                                text="Live notifications by Lays Bot"
+                                text="Live Notifications by Lays Bot"
                             )
                             await message.edit(
                                 embed=embed
@@ -792,7 +792,7 @@ class Twitch(commands.Cog):
                                     url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
                                 )
                                 embed.set_footer(
-                                    text="Live notifications by Lays Bot"
+                                    text="Live Notifications by Lays Bot"
                                 )
                                 await message.edit(
                                     embed=embed
