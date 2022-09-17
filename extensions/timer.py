@@ -76,7 +76,7 @@ class Timer(commands.Cog):
     @loop(minutes=1)
     async def check_timers(self):
         await self.bot.wait_until_ready()
-        print(f"\n{colorama.Fore.LIGHTWHITE_EX} [TIMER] [TASK] Checking timers...{colorama.Fore.RESET}")
+        print(f"\n{colorama.Fore.LIGHTWHITE_EX} [TIMER] [TASK] Checking timers... {colorama.Fore.RESET}")
         with open("json/timer.json", "r") as timer_info:
             timers = json.load(timer_info)
 
@@ -113,7 +113,7 @@ class Timer(commands.Cog):
                 continue
                 # !! print(f"{colorama.Fore.GREEN} [TIMER] [SUCCESS] Timer is still running...{colorama.Fore.RESET}")
 
-        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TIMER] [DONE] Finished {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.LIGHTWHITE_EX} [TIMER] [DONE] Finished checking timers! {colorama.Fore.RESET}")
 
 
 def setup(bot):

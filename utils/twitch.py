@@ -128,6 +128,7 @@ def update_streams():
                             "channel_id": guild["notify_channel"],
                             "game_id": stream[streamer]["game_id"],
                             "game_name": stream[streamer]["game_name"],
+                            "game_list": [],
                             "viewer_count": stream[streamer]["viewer_count"],
                             "started_at": finalTime,
                             "ended_at": None,
@@ -152,6 +153,7 @@ def update_streams():
                                 "channel_id": guild["notify_channel"],
                                 "game_id": stream[streamer]["game_id"],
                                 "game_name": stream[streamer]["game_name"],
+                                "game_list": [],
                                 "viewer_count": stream[streamer]["viewer_count"],
                                 "started_at": finalTime,
                                 "ended_at": None,
@@ -181,6 +183,15 @@ def update_streams():
 
                             with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                 json.dump(twitch_updates, file, indent=4)
+
+                            if stream[streamer]["game_name"] not in twitch_updates[streamer][guild['server_id']]["game_list"]:
+                                list_of_games: list = twitch_updates[streamer][guild['server_id']]["game_list"]
+                                list_of_games.append(stream[streamer]["game_name"])
+
+                                with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
+                                    json.dump(twitch_updates, file, indent=4)
+                            else:
+                                continue
 
                 else:
                     # !! print(f"{colorama.Fore.RED} [INFO] {i} is not live! - {guild['server_name']} {colorama.Fore.RESET}")
