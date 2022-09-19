@@ -4,3 +4,4 @@ humanize
 humanfriendly
 colorama
 asyncio
+pycopy-copy
