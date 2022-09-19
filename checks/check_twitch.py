@@ -35,7 +35,7 @@ class twitchCheck(commands.Cog):
     async def check_twitch(self):
         await self.bot.wait_until_ready()
 
-        print(f"\n{colorama.Fore.GREEN} [TWITCH CHECK] [TASK] Checking guilds...{colorama.Fore.RESET}")
+        print(f"{colorama.Fore.CYAN} [TWITCH CHECK] [TASK] Checking guilds...{colorama.Fore.RESET}")
 
         # !! print(f"{colorama.Fore.LIGHTWHITE_EX} [TWITCH CHECK] [TASK] Checking guilds... {colorama.Fore.RESET}")
 
@@ -63,7 +63,7 @@ class twitchCheck(commands.Cog):
                         with open("json/guild.json", "w") as dumpfile:
                             json.dump(guild_data, dumpfile, indent=4)
 
-        print(f"{colorama.Fore.GREEN} [TWITCH CHECK] [DONE] Finished checking guilds. {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.CYAN} [TWITCH CHECK] [DONE] Finished checking guilds. {colorama.Fore.RESET}")
 
 
 def setup(bot):
