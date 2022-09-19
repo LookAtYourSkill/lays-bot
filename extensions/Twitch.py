@@ -1,8 +1,8 @@
 import json
 import time
+import copy
 from typing import Optional
 from datetime import datetime
-from enum import Enum
 from textwrap import dedent
 
 import colorama
@@ -11,11 +11,6 @@ from checks._check_license import check_license
 from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams
-
-
-class State(str, Enum):
-    on = "True"
-    off = "False"
 
 
 class Twitch(commands.Cog):
@@ -694,23 +689,26 @@ class Twitch(commands.Cog):
         with open("json/guild.json", "r", encoding='UTF-8') as f:
             guild_data = json.load(f)
 
+        # create copy to use data from file and make changes
+        twitch_data_copy = copy.copy(twitch_data)
+
         # loop through all streamer in the json file
-        for streamer in twitch_data:
+        for streamer in twitch_data_copy:
             # loop through all servers in the json file from the streamer
-            for server in twitch_data[streamer]:
+            for server in twitch_data_copy[streamer]:
                 # check if the server has twitch notification enabled
                 if guild_data[server]["twitch_notifications"] == "on":
                     # check if a message_id and a notificaion channel are set
-                    if twitch_data[streamer][server]["message_id"] is not None and guild_data[server]["notify_channel"] is not None:
+                    if twitch_data_copy[streamer][server]["message_id"] is not None and guild_data[server]["notify_channel"] is not None:
 
-                        twitch_data[streamer][server]["last_update"] = datetime.now().timestamp()
+                        twitch_data_copy[streamer][server]["last_update"] = datetime.now().timestamp()
 
                         # check if status from the streamer is live or offline
-                        if twitch_data[streamer][server]["status"] == "offline":
+                        if twitch_data_copy[streamer][server]["status"] == "offline":
 
                             # get the message as object
-                            channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data[streamer][server]["channel_id"])
-                            message: disnake.Message = channel.get_partial_message(twitch_data[streamer][server]["message_id"])
+                            channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data_copy[streamer][server]["channel_id"])
+                            message: disnake.Message = channel.get_partial_message(twitch_data_copy[streamer][server]["message_id"])
                             newline = '\n'
 
                             embed = disnake.Embed(
@@ -725,16 +723,16 @@ class Twitch(commands.Cog):
                             )
                             embed.add_field(
                                 name="Stream Information",
-                                value=f"**Streamer**: `{twitch_data[streamer][server]['user_name']}`\n"
-                                      f"**Viewer**: `{twitch_data[streamer][server]['viewer_count']}`\n"
-                                      f"**Games played**: `{f'{newline}'.join(twitch_data[streamer][server]['game_list'] if twitch_data[streamer][server]['game_list'] else twitch_data[streamer][server]['game_name'])}`\n",
+                                value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
+                                      f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
+                                      f"**Games played**: `{f'{newline}'.join(twitch_data_copy[streamer][server]['game_list'] if twitch_data_copy[streamer][server]['game_list'] else twitch_data_copy[streamer][server]['game_name'])}`\n",
                                 inline=False
                             )
                             embed.add_field(
                                 name="Durations",
-                                value=f"`Started At`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
-                                      f"`Ended At`: {disnake.utils.format_dt(twitch_data[streamer][server]['ended_at'], style='R')}\n"
-                                      f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
+                                value=f"`Started At`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='R')}\n"
+                                      f"`Ended At`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['ended_at'], style='R')}\n"
+                                      f"`Last Update`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['last_update'], style='R')}",
                                 inline=False
                             )
                             embed.set_footer(
