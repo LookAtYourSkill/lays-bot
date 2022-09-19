@@ -744,8 +744,12 @@ class Twitch(commands.Cog):
                                 embed=embed
                             )
 
-                            twitch_data[streamer][server]["message_id"] = None
-                            twitch_data[streamer][server]["game_list"] = []
+                            # only to set the settings back (is more data traffic)
+                            # !! twitch_data[streamer][server]["message_id"] = None
+                            # !! twitch_data[streamer][server]["game_list"] = []
+
+                            # to delete the data -> less data traffic
+                            del twitch_data[streamer]
                             with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                 json.dump(twitch_data, f, indent=4)
                         else:
