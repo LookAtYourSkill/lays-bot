@@ -201,6 +201,7 @@ def update_streams():
                         if guild['server_id'] in twitch_updates[streamer]:
                             # change status to offline
                             twitch_updates[streamer][guild['server_id']]['status'] = "offline"
+                            twitch_updates[streamer][guild['server_id']]['ended_at'] = datetime.now().timestamp()
 
                             with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                 json.dump(twitch_updates, file, indent=4)

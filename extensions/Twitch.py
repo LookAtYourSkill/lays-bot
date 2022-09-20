@@ -754,12 +754,6 @@ class Twitch(commands.Cog):
                             print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
                             try:
 
-                                ended_at_raw = datetime.now().timestamp()
-                                twitch_data[streamer][server]["ended_at"] = ended_at_raw
-
-                                with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
-                                    json.dump(twitch_data, f, indent=4)
-
                                 channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data[streamer][server]["channel_id"])
                                 message: disnake.Message = channel.get_partial_message(twitch_data[streamer][server]["message_id"])
 
