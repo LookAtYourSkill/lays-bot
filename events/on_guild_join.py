@@ -32,6 +32,8 @@ class on_guild_add(commands.Cog):
             "closed_ticket_category": False,
             "ticket_log_channel": False,
             "ticket_save_channel": False,
+            "join_to_create_channel": False,
+            "join_to_create_category": False,
             "msg_channel": False,
             "mod_channel": False,
             "welcome_channel": False,
