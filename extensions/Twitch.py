@@ -611,9 +611,13 @@ class Twitch(commands.Cog):
                                                             value=f"`{stream['viewer_count']}`",
                                                             inline=True
                                                         )
+                                                        embed.set_thumbnail(
+                                                            url=twitch_data[stream['user_login']][guild['server_id']]['profile_pic']
+                                                        )
                                                         embed.set_author(
-                                                            name="Twitch Notification",
-                                                            icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                                                            name={stream['user_login']},
+                                                            icon_url=twitch_data[stream['user_login']][guild['server_id']]['profile_pic'],
+                                                            url=f"https://www.twitch.tv/{stream['user_login']}"
                                                         )
                                                         embed.set_image(
                                                             url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
@@ -710,6 +714,10 @@ class Twitch(commands.Cog):
                             channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data_copy[streamer][server]["channel_id"])
                             message: disnake.Message = channel.get_partial_message(twitch_data_copy[streamer][server]["message_id"])
                             newline = '\n'
+                            gamelist = []
+
+                            for game in twitch_data_copy[streamer][server]["game_list"]:
+                                gamelist.append(f"- `{game}`")
 
                             embed = disnake.Embed(
                                 title=f"{streamer} is now offline",
@@ -718,23 +726,25 @@ class Twitch(commands.Cog):
                             )
                             embed.set_author(
                                 name=streamer,
-                                icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                                icon_url=twitch_data_copy[streamer][server]["profile_pic"],
                                 url=f"https://www.twitch.tv/{streamer}"
                             )
                             embed.add_field(
                                 name="Stream Information",
                                 value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
                                       f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
-                                      f"**Games played**: `{f'{newline}'.join(twitch_data_copy[streamer][server]['game_list'] if twitch_data_copy[streamer][server]['game_list'] else twitch_data_copy[streamer][server]['game_name'])}`\n",
+                                      f"**Games played**: {newline}{f'{newline}'.join(gamelist)}\n",
+                                      # !! f"**Games played**: {newline}`{f'{newline}- '.join(twitch_data_copy[streamer][server]['game_list'] if twitch_data_copy[streamer][server]['game_list'] else twitch_data_copy[streamer][server]['game_name'])}`\n",
                                 inline=False
                             )
                             embed.add_field(
                                 name="Durations",
-                                value=f"`Started At`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='R')}\n"
-                                      f"`Ended At`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['ended_at'], style='R')}\n"
+                                value=f"`Started`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='R')}\n"
+                                      f"`Ended`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['ended_at'], style='R')}\n"
                                       f"`Last Update`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['last_update'], style='R')}",
                                 inline=False
                             )
+                            embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                             embed.set_footer(
                                 text="Live Notifications by Lays Bot"
                             )
@@ -772,14 +782,15 @@ class Twitch(commands.Cog):
                                 )
                                 embed.add_field(
                                     name="Durations",
-                                    value=f"`Started At`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
+                                    value=f"`Started`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
                                           f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
                                     inline=False
                                 )
                                 embed.set_author(
                                     name="Twitch Notification",
-                                    icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+                                    icon_url=twitch_data_copy[streamer][server]["profile_pic"],
                                 )
+                                embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                                 embed.set_image(
                                     url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
                                 )
