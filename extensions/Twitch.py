@@ -720,7 +720,7 @@ class Twitch(commands.Cog):
                                 gamelist.append(f"- `{game}`")
 
                             embed = disnake.Embed(
-                                title=f"{streamer} is now offline",
+                                title="Stream is offline",
                                 url=f"https://www.twitch.tv/{streamer}",
                                 color=disnake.Color.purple()
                             )
@@ -788,7 +788,7 @@ class Twitch(commands.Cog):
                                 )
                                 embed.set_author(
                                     name="Twitch Notification",
-                                    icon_url=twitch_data_copy[streamer][server]["profile_pic"],
+                                    icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png"
                                 )
                                 embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                                 embed.set_image(
