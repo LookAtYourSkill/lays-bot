@@ -61,7 +61,7 @@ class Owner(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        msg = "```js\n"
+        msg = "```\n"
         msg += "|        Informationen zu allen Server        |--------|----------------------|\n"
         msg += "|---------------------|-----------------------|--------|----------------------|\n"
         msg += "| {!s:19s} | {!s:21s} | {!s:>6s} | {!s:20s} |\n".format("ID", "Name", "Member", "Owner")
@@ -81,7 +81,7 @@ class Owner(commands.Cog):
             else:
                 msg += "| {!s:19s} | {!s:21s} | {!s:>6s} | {!s:20s} |\n".format(guild.id, guild.name, guild.member_count, guild.owner)
         msg += "|---------------------|-----------------------|--------|----------------------|\n"
-        msg += "|      Insgesamt      |-----------------------| {!s:>6s} |----------------------|\n".format(len(set(self.bot.get_all_members())))
+        msg += "|      Insgesamt      | {!s:>21s} | {!s:>6s} |----------------------|\n".format(len(self.bot.guilds), len(set(self.bot.get_all_members())))
         msg += "```"
         await interaction.edit_original_message(msg)
 
