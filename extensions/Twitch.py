@@ -735,7 +735,7 @@ class Twitch(commands.Cog):
                                 url=f"https://www.twitch.tv/{streamer}"
                             )
                             embed.add_field(
-                                name="Information",
+                                name="__Information__",
                                 value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
                                       f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
                                       f"**Games played**: {newline}{f'{newline}'.join(gamelist)}\n",
@@ -743,7 +743,7 @@ class Twitch(commands.Cog):
                                 inline=False
                             )
                             embed.add_field(
-                                name="Durations",
+                                name="__Durations__",
                                 value=f"`Started`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='R')}\n"
                                       f"`Ended`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['ended_at'], style='R')}\n"
                                       f"`Last Update`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['last_update'], style='R')}",
@@ -780,14 +780,14 @@ class Twitch(commands.Cog):
                                     url=f"https://www.twitch.tv/{streamer}"
                                 )
                                 embed.add_field(
-                                    name="Information",
+                                    name="__Information__",
                                     value=f"**Streamer**: `{twitch_data[streamer][server]['user_name']}`\n"
                                           f"**Viewer**: `{twitch_data[streamer][server]['viewer_count']}`\n"
                                           f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
                                     inline=False
                                 )
                                 embed.add_field(
-                                    name="Durations",
+                                    name="__Durations__",
                                     value=f"`Started`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
                                           f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
                                     inline=False
