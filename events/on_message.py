@@ -47,7 +47,7 @@ class onMessage(commands.Cog):
             )
             embed.add_field(
                 name="Message",
-                value=f"{message.content}",
+                value=f": {message.content}",
                 inline=False
             )
             if guild_data[str(message.author.guild.id)]["msg_channel"]:
