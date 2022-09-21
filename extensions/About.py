@@ -81,6 +81,7 @@ class About(commands.Cog):
             name=owner,
             icon_url=owner.avatar.url
         )
+        about_embed.set_thumbnail(self.bot.user.avatar.url)
         await interaction.edit_original_message(
             embed=about_embed
         )

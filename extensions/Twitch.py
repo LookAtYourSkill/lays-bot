@@ -721,7 +721,7 @@ class Twitch(commands.Cog):
 
                             embed = disnake.Embed(
                                 title="Stream is offline",
-                                url=f"https://www.twitch.tv/{streamer}",
+                                # !! url=f"https://www.twitch.tv/{streamer}",
                                 color=disnake.Color.purple()
                             )
                             embed.set_author(
@@ -746,7 +746,8 @@ class Twitch(commands.Cog):
                             )
                             embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                             embed.set_footer(
-                                text="Live Notifications by Lays Bot"
+                                text="Live Notifications by Lays Bot",
+                                icon_url=self.bot.user.avatar.url
                             )
                             await message.edit(
                                 embed=embed
@@ -795,7 +796,8 @@ class Twitch(commands.Cog):
                                     url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
                                 )
                                 embed.set_footer(
-                                    text="Live Notifications by Lays Bot"
+                                    text="Live Notifications by Lays Bot",
+                                    icon_url=self.bot.user.avatar.url
                                 )
                                 await message.edit(
                                     embed=embed
