@@ -832,6 +832,70 @@ class Twitch(commands.Cog):
         #     }
         # TODO what to update? - title, viewer count, game name, time
 
+        # Idea 1 [WhILE LIVE]
+        """
+        embed = disnake.Embed(
+            title=f"{twitch_data[streamer][server]['title']}",
+            color=disnake.Color.purple(),
+            url=f"https://www.twitch.tv/{streamer}"
+        )
+        embed.add_field(
+            name="Stream Information",
+            value=f"**Streamer**: `{twitch_data[streamer][server]['user_name']}`\n"
+                    f"**Viewer**: `{twitch_data[streamer][server]['viewer_count']}`\n"
+                    f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
+            inline=False
+        )
+        embed.add_field(
+            name="Durations",
+            value=f"`Started`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
+                    f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
+            inline=False
+        )
+        embed.set_author(
+            name="Twitch Notification",
+            icon_url=twitch_data_copy[streamer][server]["profile_pic"],
+        )
+        embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
+        embed.set_image(
+            url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
+        )
+        embed.set_footer(
+            text="Live Notifications by Lays Bot"
+        )
+        """
+        # Idea 2 [WHILE LIVE]
+        """
+        embed = disnake.Embed(
+            title=f"{twitch_data[streamer][server]['title']}",
+            color=disnake.Color.purple(),
+            url=f"https://www.twitch.tv/{streamer}"
+        )
+        embed.add_field(
+            name="Stream Information",
+            value=f"**Streamer**: `{twitch_data[streamer][server]['user_name']}`\n"
+                    f"**Viewer**: `{twitch_data[streamer][server]['viewer_count']}`\n"
+                    f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
+            inline=False
+        )
+        embed.add_field(
+            name="Durations",
+            value=f"`Started`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
+                    f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
+            inline=False
+        )
+        embed.set_author(
+            name="Twitch Notification",
+            icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png",
+        )
+        embed.set_image(
+            url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
+        )
+        embed.set_footer(
+            text="Live Notifications by Lays Bot"
+        )
+        """
+
 
 def setup(bot: commands.Bot):
     bot.add_cog(Twitch(bot))
