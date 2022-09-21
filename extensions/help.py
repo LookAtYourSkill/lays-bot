@@ -51,13 +51,14 @@ class Help(commands.Cog):
         )
         # command: (Optional[str]) = None
     ):
+        await interaction.response.defer(ephemeral=True)
+
         lol_embed = disnake.Embed(
             description="Gettings everything ready...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=lol_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=lol_embed
         )
 
         embed = disnake.Embed(

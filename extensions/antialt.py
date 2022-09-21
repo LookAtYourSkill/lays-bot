@@ -18,6 +18,7 @@ class AntiAlt(commands.Cog):
     @antialt.sub_command(name="set", description="Set a level for the days for the anti alt system")
     async def antialt_set(self, interaction: disnake.ApplicationCommandInteraction, days: int):
         await interaction.response.defer(ephemeral=True)
+
         if days < 0:
             embed = disnake.Embed(
                 title="Anti Alt Detection",
@@ -44,6 +45,7 @@ class AntiAlt(commands.Cog):
     @antialt.sub_command(name="get", description="Get the current level for the days for the anti alt system")
     async def antialt_get(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
+
         with open("json/settings.json", "r") as f:
             settings_data = json.load(f)
 

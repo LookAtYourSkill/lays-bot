@@ -21,10 +21,11 @@ class joinToCreate(commands.Cog):
         description="Change the name of the voice channel"
     )
     async def change_name(self, interaction: disnake.ApplicationCommandInteraction, *, name):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             voice_channel_id = interaction.author.voice.channel.id
@@ -47,14 +48,12 @@ class joinToCreate(commands.Cog):
                     description=f"{interaction.author.mention}, I changed the name of your voice channel [{voice_channel.mention}] to `{name}`",
                     color=disnake.Color.green()
                 )
-                await interaction.response.send_message(
-                    embed=change_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=change_embed
                 )
             else:
-                await interaction.response.send_message(
-                    content="You are not the owner of this voice channel",
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    content="You are not the owner of this voice channel"
                 )
 
     @join_to_create.sub_command(
@@ -62,10 +61,11 @@ class joinToCreate(commands.Cog):
         description="Kick a member from your voice channel"
     )
     async def kick_member(self, interaction: disnake.ApplicationCommandInteraction, *, member: disnake.Member):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -81,9 +81,8 @@ class joinToCreate(commands.Cog):
                     description=f"{interaction.author.mention}, I kicked {member.mention} from your voice channel [<#{voice_channel_id}>]",
                     color=disnake.Color.orange()
                 )
-                await interaction.response.send_message(
-                    embed=kick_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=kick_embed
                 )
 
     @join_to_create.sub_command(
@@ -91,10 +90,11 @@ class joinToCreate(commands.Cog):
         description="Deletes the voice channel"
     )
     async def delete_voice_channel(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -115,17 +115,15 @@ class joinToCreate(commands.Cog):
                     description=f"{interaction.author.mention}, I deleted your voice channel",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=close_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=close_embed
                 )
             else:
                 not_owner_embed = disnake.Embed(
                     description=f"{interaction.author.mention}, you are not the owner of this voice channel!"
                 )
-                await interaction.response.send_message(
-                    embed=not_owner_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=not_owner_embed
                 )
 
     @join_to_create.sub_command(
@@ -133,10 +131,11 @@ class joinToCreate(commands.Cog):
         description="Change the voice channel to private"
     )
     async def change_voice_channel_to_private(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -162,18 +161,16 @@ class joinToCreate(commands.Cog):
                         description=f"{interaction.author.mention}, I changed your voice channel [<#{voice_channel_id}>] to private. No one can join your voice channel anymore",
                         color=disnake.Color.green()
                     )
-                    await interaction.response.send_message(
-                        embed=private_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=private_embed
                     )
                 else:
                     not_owner_embed = disnake.Embed(
                         description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.red()
                     )
-                    await interaction.response.send_message(
-                        embed=not_owner_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=not_owner_embed
                     )
 
             else:
@@ -181,9 +178,8 @@ class joinToCreate(commands.Cog):
                     description=f"{interaction.author.mention}, your voice channel is **already private**",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=already_private_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=already_private_embed
                 )
 
     @join_to_create.sub_command(
@@ -191,10 +187,11 @@ class joinToCreate(commands.Cog):
         description="Change the voice channel to public"
     )
     async def change_voice_channel_to_public(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -220,18 +217,16 @@ class joinToCreate(commands.Cog):
                         description=f"{interaction.author.mention}, I changed your voice channel [<#{voice_channel_id}>] to `public`. Everyone can join your voice channel",
                         color=disnake.Color.green()
                     )
-                    await interaction.response.send_message(
-                        embed=public_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=public_embed
                     )
                 else:
                     not_owner_embed = disnake.Embed(
                         description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.red()
                     )
-                    await interaction.response.send_message(
-                        embed=not_owner_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=not_owner_embed
                     )
 
             else:
@@ -239,9 +234,8 @@ class joinToCreate(commands.Cog):
                     description=f"{interaction.author.mention}, your voice channel is **already public**",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=already_public_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=already_public_embed
                 )
 
     @join_to_create.sub_command(
@@ -249,10 +243,11 @@ class joinToCreate(commands.Cog):
         description="Change the voice channel user limit"
     )
     async def change_voice_channel_user_limit(self, interaction: disnake.ApplicationCommandInteraction, limit: int):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -270,18 +265,16 @@ class joinToCreate(commands.Cog):
                     description=f"{interaction.author.mention}, I changed your voice channel [<#{voice_channel_id}>] user limit to `{limit}`",
                     color=disnake.Color.green()
                 )
-                await interaction.response.send_message(
-                    embed=limit_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=limit_embed
                 )
             else:
                 not_owner_embed = disnake.Embed(
                     description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=not_owner_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=not_owner_embed
                 )
 
     @join_to_create.sub_command(
@@ -290,9 +283,8 @@ class joinToCreate(commands.Cog):
     )
     async def vc_mute(self, interaction: disnake.ApplicationCommandInteraction, member: disnake.Member):
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -312,27 +304,24 @@ class joinToCreate(commands.Cog):
                         description=f"{interaction.author.mention}, I muted the user [{member.mention}] in your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.green()
                     )
-                    await interaction.response.send_message(
-                        embed=mute_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=mute_embed
                     )
                 else:
                     already_mute_embed = disnake.Embed(
                         description=f"{interaction.author.mention}, the user [{member.mention}] is already muted in your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.red()
                     )
-                    await interaction.response.send_message(
-                        embed=already_mute_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=already_mute_embed
                     )
             else:
                 not_owner_embed = disnake.Embed(
                     description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=not_owner_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=not_owner_embed
                 )
 
     @join_to_create.sub_command(
@@ -340,10 +329,11 @@ class joinToCreate(commands.Cog):
         description="Unmute a user in the voice channel"
     )
     async def vc_unmute(self, interaction: disnake.ApplicationCommandInteraction, member: disnake.Member):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -363,27 +353,24 @@ class joinToCreate(commands.Cog):
                         description=f"{interaction.author.mention}, I unmuted the user [{member.mention}] in your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.green()
                     )
-                    await interaction.response.send_message(
-                        embed=unmute_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=unmute_embed
                     )
                 else:
                     already_unmuted_embed = disnake.Embed(
                         description=f"{interaction.author.mention}, the user [{member.mention}] is already unmuted in your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.red()
                     )
-                    await interaction.response.send_message(
-                        embed=already_unmuted_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=already_unmuted_embed
                     )
             else:
                 not_owner_embed = disnake.Embed(
                     description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=not_owner_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=not_owner_embed
                 )
 
     @join_to_create.sub_command(
@@ -391,10 +378,11 @@ class joinToCreate(commands.Cog):
         description="Get information about the voice channel"
     )
     async def vc_info(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -422,9 +410,8 @@ class joinToCreate(commands.Cog):
                         f"Status: `{data['jtcc'][str(voice_channel_id)]['state']}`"
             )
 
-            await interaction.response.send_message(
-                embed=info_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=info_embed
             )
 
     @join_to_create.sub_command(
@@ -432,10 +419,11 @@ class joinToCreate(commands.Cog):
         description="Ban a user from the voice channel"
     )
     async def vc_ban(self, interaction: disnake.ApplicationCommandInteraction, member: disnake.Member):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -455,27 +443,24 @@ class joinToCreate(commands.Cog):
                         description=f"{interaction.author.mention}, I banned the user [{member.mention}] from your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.green()
                     )
-                    await interaction.response.send_message(
-                        embed=ban_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=ban_embed
                     )
                 else:
                     already_banned_embed = disnake.Embed(
                         description=f"{interaction.author.mention}, the user [{member.mention}] is already banned from your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.red()
                     )
-                    await interaction.response.send_message(
-                        embed=already_banned_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=already_banned_embed
                     )
             else:
                 not_owner_embed = disnake.Embed(
                     description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=not_owner_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=not_owner_embed
                 )
 
     @join_to_create.sub_command(
@@ -484,9 +469,8 @@ class joinToCreate(commands.Cog):
     )
     async def vc_unban(self, interaction: disnake.ApplicationCommandInteraction, member: disnake.Member):
         if interaction.author.voice is None:
-            return await interaction.response.send_message(
-                content="You are not in a voice channel",
-                ephemeral=True
+            return await interaction.edit_original_message(
+                content="You are not in a voice channel"
             )
         else:
             with open("json/join_to_create.json", "r") as json_file:
@@ -506,27 +490,24 @@ class joinToCreate(commands.Cog):
                         description=f"{interaction.author.mention}, I unbanned the user [{member.mention}] from your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.green()
                     )
-                    await interaction.response.send_message(
-                        embed=unban_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=unban_embed
                     )
                 else:
                     already_unbanned_embed = disnake.Embed(
                         description=f"{interaction.author.mention}, the user [{member.mention}] is already unbanned from your voice channel [<#{voice_channel_id}>]",
                         color=disnake.Color.red()
                     )
-                    await interaction.response.send_message(
-                        embed=already_unbanned_embed,
-                        ephemeral=True
+                    await interaction.edit_original_message(
+                        embed=already_unbanned_embed
                     )
             else:
                 not_owner_embed = disnake.Embed(
                     description=f"{interaction.author.mention}, you are not the owner of the voice channel [<#{voice_channel_id}>]",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=not_owner_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=not_owner_embed
                 )
 
 

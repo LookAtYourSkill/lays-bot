@@ -18,6 +18,8 @@ class Owner(commands.Cog):
     @commands.is_owner()
     @set.sub_command(name="license", description="Activates/Deactivates the license system")
     async def update_license(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
 
@@ -26,9 +28,8 @@ class Owner(commands.Cog):
                 description="License check is now `enabled`",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=on_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=on_embed
             )
 
             general["license_check"] = True
@@ -40,9 +41,8 @@ class Owner(commands.Cog):
                 description="License check is now `disabled`",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=off_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=off_embed
             )
 
             general["license_check"] = False
@@ -59,6 +59,8 @@ class Owner(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         msg = "```js\n"
         msg += "|        Informationen zu allen Server        |--------|----------------------|\n"
         msg += "|---------------------|-----------------------|--------|----------------------|\n"
@@ -81,7 +83,7 @@ class Owner(commands.Cog):
         msg += "|---------------------|-----------------------|--------|----------------------|\n"
         msg += "|      Insgesamt      |-----------------------| {!s:>6s} |----------------------|\n".format(len(set(self.bot.get_all_members())))
         msg += "```"
-        await interaction.response.send_message(msg)
+        await interaction.edit_original_message(msg)
 
     @commands.is_owner()
     @set.sub_command(name="send", description="Sends a message to a user")
@@ -92,15 +94,16 @@ class Owner(commands.Cog):
         *,
         message: str
     ):
+        await interaction.response.defer(ephemeral=True)
+
         user = await self.bot.fetch_user(user_id)
         embed = disnake.Embed(
             description=message,
             color=disnake.Color.green()
         )
         await user.send(embed=embed)
-        await interaction.response.send_message(
-            f"Message sent to {user.mention}",
-            ephemeral=True
+        await interaction.edit_original_message(
+            f"Message sent to {user.mention}"
         )
 
 

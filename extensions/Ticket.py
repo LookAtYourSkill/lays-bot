@@ -720,6 +720,8 @@ class TicketSystem(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         if interaction.author.guild_permissions.manage_channels:
 
             # Create embed
@@ -731,14 +733,13 @@ class TicketSystem(commands.Cog):
             )
 
             # send embed with buttons
-            await interaction.send(
+            await interaction.edit_original_message(
                 embed=ticket_embed,
                 view=view
             )
         else:
-            await interaction.response.send_message(
-                content="You don't have the permissions to use this command!",
-                ephemeral=True
+            await interaction.edit_original_message(
+                content="You don't have the permissions to use this command!"
             )
 
     @ticket.sub_command_group(

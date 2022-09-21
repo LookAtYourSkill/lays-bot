@@ -28,13 +28,14 @@ class Setup(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Fetching data from server...",
             color=disnake.Color.orange()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -102,6 +103,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -115,18 +118,16 @@ class Setup(commands.Cog):
                 description=f"Der `Moderation Log Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Moderation Log Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['mod_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um ihn zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @channel.sub_command(
@@ -139,6 +140,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.TextChannel,
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -152,18 +155,16 @@ class Setup(commands.Cog):
                 description=f"Der `Message Log Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Message Log Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['msg_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um ihn zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @channel.sub_command(
@@ -176,6 +177,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.TextChannel,
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -189,18 +192,16 @@ class Setup(commands.Cog):
                 description=f"Der `Ticket Log Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Ticket Log Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['ticket_log_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @channel.sub_command(
@@ -213,6 +214,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -226,18 +229,16 @@ class Setup(commands.Cog):
                 description=f"Der `Ticket Save Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Ticket Save Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @channel.sub_command(
@@ -250,6 +251,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.VoiceChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -263,18 +266,16 @@ class Setup(commands.Cog):
                 description=f"Der `Join To Create Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Join To Create Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['join_to_create_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @channel.sub_command(
@@ -287,6 +288,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -300,18 +303,16 @@ class Setup(commands.Cog):
                 description=f"Der `Notification Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Notification Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['notify_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um ihn zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @channel.sub_command(
@@ -324,6 +325,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -337,18 +340,16 @@ class Setup(commands.Cog):
                 description=f"Der `Welcome Channel` wurde auf {channel.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Der `Welcome Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['welcome_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @category.sub_command(
@@ -361,6 +362,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         category: disnake.CategoryChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -374,18 +377,16 @@ class Setup(commands.Cog):
                 description=f"Die `Ticket Category` wurde auf `{category}` gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.send(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Die `Ticket Category` wurde bereits auf `{guild_data[str(interaction.guild.id)]['ticket_category']}` festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.send(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @category.sub_command(
@@ -398,6 +399,8 @@ class Setup(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         category: disnake.CategoryChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -411,18 +414,16 @@ class Setup(commands.Cog):
                 description=f"Die `Closed Ticket Category` wurde erfolgreich auf `{category}` geändert!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=change_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=change_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Die `Closed Ticket Category` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['closed_ticket_category']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @category.sub_command(
@@ -435,6 +436,8 @@ class Setup(commands.Cog):
         interaction: disnake.CommandInteraction,
         category: disnake.CategoryChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
@@ -448,18 +451,16 @@ class Setup(commands.Cog):
                 description=f"Die `Join To Create Category` wurde auf `{category}` gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.send(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Die `Join To Create Category` wurde bereits auf `{guild_data[str(interaction.guild.id)]['join_to_create_category']}` festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.send(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
     @role.sub_command(
@@ -472,8 +473,10 @@ class Setup(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         role: disnake.Role
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-                guild_data = json.load(data_file)
+            guild_data = json.load(data_file)
 
         if not guild_data[str(interaction.guild.id)]["join_role"]:
 
@@ -485,18 +488,16 @@ class Setup(commands.Cog):
                 description=f"Die `Join-Role` wurde auf {role.mention} gesetzt!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=set_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=set_embed
             )
         else:
             already_embed = disnake.Embed(
                 description=f"Die `Join-Role` wurde bereits auf <@&{guild_data[str(interaction.guild.id)]['join_role']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
-                embed=already_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=already_embed
             )
 
 
@@ -547,13 +548,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -591,13 +593,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -635,13 +638,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -679,13 +683,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction, 
         role: disnake.Role
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -723,13 +728,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -767,13 +773,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         channel: disnake.VoiceChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -811,13 +818,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         category: disnake.CategoryChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -855,13 +863,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         category: disnake.CategoryChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
         await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -899,13 +908,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction, 
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -943,13 +953,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         channel: disnake.TextChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
@@ -987,13 +998,14 @@ class Change(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         category: disnake.CategoryChannel
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Setting everything up...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:

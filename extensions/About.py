@@ -34,20 +34,17 @@ class About(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open("json/general.json", "r") as general_info:
             general = json.load(general_info)
-        with open("json/guild.json", "r") as guild_info:
-            guild_data = json.load(guild_info)
-        with open("json/settings.json", "r") as settngs_info:
-            settings_data = json.load(settngs_info)
 
         loading_embed = disnake.Embed(
             description="Fetching information about the bot...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
         owner = self.bot.get_user(493370963807830016)
 

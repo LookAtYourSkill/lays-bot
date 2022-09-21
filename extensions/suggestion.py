@@ -19,9 +19,10 @@ class Suggest(commands.Cog):
 
     @suggest.sub_command(name="idea", description="Command to suggest an idea")
     async def suggest_idea(self, interaction: disnake.ApplicationCommandInteraction, *, idea: str):
-        await interaction.response.send_message(
-            "Suggestion sent to the bot owner successfully!",
-            ephemeral=True
+        await interaction.response.defer(ephemeral=True)
+
+        await interaction.edit_original_message(
+            "Suggestion sent to the bot owner successfully!"
         )
         sugest_channel = self.bot.get_channel(self.suggest_channel)
 
@@ -44,9 +45,10 @@ class Suggest(commands.Cog):
 
     @suggest.sub_command(name="bug", description="Command to report a bug")
     async def suggest_bug(self, interaction: disnake.ApplicationCommandInteraction, *, bug: str):
-        await interaction.response.send_message(
-            "Bug report sent to the bot owner successfully!",
-            ephemeral=True
+        await interaction.response.defer(ephemeral=True)
+
+        await interaction.edit_original_message(
+            "Bug report sent to the bot owner successfully!"
         )
         bug_report_channel = self.bot.get_channel(self.bug_channel)
 

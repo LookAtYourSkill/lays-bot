@@ -40,13 +40,14 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Füge Streamer zur Watchlist hinzu...",
             color=disnake.Color.blurple()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         try:
@@ -98,13 +99,14 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Entferne Steramer von Watchlist...",
             color=disnake.Color.blurple()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         try:
@@ -116,9 +118,8 @@ class Twitch(commands.Cog):
                     description=f"Der Streamer [`{streamer}`] **ist nicht** in der **Watchlist**!",
                     color=disnake.Color.red()
                 )
-                await interaction.response.send_message(
-                    embed=alreday_streamer_error_embed,
-                    ephemeral=True
+                await interaction.edit_original_message(
+                    embed=alreday_streamer_error_embed
                 )
             elif streamer in data[str(interaction.guild.id)]["watchlist"]:
                 data[str(interaction.guild.id)]["watchlist"].remove(streamer.lower())
@@ -143,13 +144,14 @@ class Twitch(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Erhalte Daten von Twitch...",
             color=disnake.Color.blurple()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open("json/guild.json", "r", encoding="UTF-8") as data_file:
@@ -210,13 +212,14 @@ class Twitch(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         streamer: str
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Erhalte Daten von Twitch...",
             color=disnake.Color.blurple()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         try:
@@ -330,13 +333,14 @@ class Twitch(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
-            description="Lade Antwort...",
+            description="Loading answer...",
             color=disnake.Color.blurple()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         with open("json/guild.json", "r", encoding="UTF-8") as file:
@@ -731,7 +735,7 @@ class Twitch(commands.Cog):
                                 url=f"https://www.twitch.tv/{streamer}"
                             )
                             embed.add_field(
-                                name="Stream Information",
+                                name="Information",
                                 value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
                                       f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
                                       f"**Games played**: {newline}{f'{newline}'.join(gamelist)}\n",
@@ -776,7 +780,7 @@ class Twitch(commands.Cog):
                                     url=f"https://www.twitch.tv/{streamer}"
                                 )
                                 embed.add_field(
-                                    name="Stream Information",
+                                    name="Information",
                                     value=f"**Streamer**: `{twitch_data[streamer][server]['user_name']}`\n"
                                           f"**Viewer**: `{twitch_data[streamer][server]['viewer_count']}`\n"
                                           f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",

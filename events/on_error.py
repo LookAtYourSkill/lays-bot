@@ -46,7 +46,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -60,7 +60,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -74,7 +74,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -97,7 +97,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -108,7 +108,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -139,7 +139,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -153,7 +153,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -167,7 +167,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -181,7 +181,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )
@@ -195,7 +195,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_message(
                 embed=embed,
                 ephemeral=True
             )

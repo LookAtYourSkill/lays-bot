@@ -30,6 +30,8 @@ class Timer(commands.Cog):
 
     @timer.sub_command(name="set", description="Creates a timer for yourself or a user")
     async def set(interaction: disnake.ApplicationCommandInteraction, time, member: disnake.Member = None, *, message: str):
+        await interaction.response.defer()
+
         with open("json/timer.json", "r") as timer_info:
             timers = json.load(timer_info)
 
@@ -69,7 +71,7 @@ class Timer(commands.Cog):
             name=interaction.author.name,
             icon_url=interaction.author.avatar.url
         )
-        await interaction.response.send_message(
+        await interaction.edit_original_message(
             embed=embed
         )
 

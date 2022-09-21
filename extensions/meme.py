@@ -2,13 +2,14 @@ import disnake
 import requests
 from disnake.ext import commands
 
-from checks._check_license import license_check
+from checks._check_license import check_license
 
 
 class Meme(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @check_license()
     @commands.slash_command(name="meme", description="Get a random meme")
     async def meme(self, interaction: disnake.ApplicationCommandInteraction):
         pass
@@ -18,54 +19,43 @@ class Meme(commands.Cog):
         description="Get a random meme from reddit",
     )
     async def meme_reddit(self, interaction: disnake.ApplicationCommandInteraction):
-        if not license_check(interaction.author):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner"
-            )
-            await interaction.response.send_message(
-                embed=no_licesnse_embed,
-                ephemeral=True
-            )
-        else:
-            loading_embed = disnake.Embed(
-                description="Getting memes from Reddit...",
+        await interaction.response.defer(ephemeral=True)
+
+        loading_embed = disnake.Embed(
+            description="Getting memes from Reddit...",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=loading_embed
+        )
+
+        URL = "https://some-random-api.ml/meme"
+        response = requests.get(
+            URL
+        )
+        if response.status_code == 200:
+            data = response.json()
+
+            meme_embed = disnake.Embed(
+                title=data["caption"],
+                description=f"Category: {data['category']}",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=loading_embed,
-                ephemeral=True
+            meme_embed.set_image(url=data["image"])
+
+            await interaction.edit_original_message(
+                embed=meme_embed
             )
-
-            URL = "https://some-random-api.ml/meme"
-            response = requests.get(
-                URL
-            )
-            if response.status_code == 200:
-                data = response.json()
-
-                meme_embed = disnake.Embed(
-                    title=data["caption"],
-                    description=f"Category: {data['category']}",
-                    color=disnake.Color.green()
-                )
-                meme_embed.set_image(url=data["image"])
-
-                await interaction.edit_original_message(
-                    embed=meme_embed
-                )
-            else:
-                await interaction.edit_original_message(f"Die API gibt den Status:{response.status_code}.")
+        else:
+            await interaction.edit_original_message(f"Die API gibt den Status:{response.status_code}.")
 
     @meme.sub_command(
         name="heroku",
         description="Get a random meme from heruko",
     )
     async def meme(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         URL = "https://meme-api.herokuapp.com/gimme"
         response = requests.get(
             URL
@@ -77,7 +67,7 @@ class Meme(commands.Cog):
                 color=disnake.Color.green()
             )
             meme_embed.set_image(url=data['url'])
-            await interaction.response.send_message(embed=meme_embed)
+            await interaction.edit_original_message(embed=meme_embed)
 
 
 def setup(bot):

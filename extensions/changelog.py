@@ -25,13 +25,14 @@ class Changelog(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Fetching latest changelog...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         changelog_embed = disnake.Embed(

@@ -30,13 +30,14 @@ class Roles(commands.Cog):
         role: disnake.Role,
         reason="Role remove/add per Command"
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Fetching roles from user...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         if interaction.author.top_role.position > role.position:

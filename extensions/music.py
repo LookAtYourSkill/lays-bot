@@ -505,6 +505,8 @@ class Music(commands.Cog):
         description="Clear the queue"
     )
     async def clear_queue(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         vc: wavelink.Player = interaction.guild.voice_client
 
         if interaction.guild.voice_client is None:
@@ -512,9 +514,8 @@ class Music(commands.Cog):
                 description="You are not connected to a voice channel!",
                 color=disnake.Color.red()
             )
-            return await interaction.response.send_message(
-                embed=bad_embed,
-                ephemeral=True
+            return await interaction.edit_original_message(
+                embed=bad_embed
             )
 
         elif vc.queue.is_empty:
@@ -533,9 +534,8 @@ class Music(commands.Cog):
                 description="Deleted all tracks from the queue!",
                 color=disnake.Color.green()
             )
-            await interaction.response.send_message(
-                embed=clear_embed,
-                ephemeral=True
+            await interaction.edit_original_message(
+                embed=clear_embed
             )
 
     @queue_group.sub_command(

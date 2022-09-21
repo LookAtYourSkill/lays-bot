@@ -38,13 +38,14 @@ class Moderation(commands.Cog):
         reason=None,
         delete_message_days: int = None
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Preparing to ban the member...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         try:
@@ -77,13 +78,14 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         user
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Preparing to unban the member...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
         if not user.isdigit():
             member_name, member_discriminator = user.split("#")
@@ -132,13 +134,14 @@ class Moderation(commands.Cog):
         time: str,
         reason: str
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Preparing to timeout the member...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         time = humanfriendly.parse_timespan(time)
@@ -175,13 +178,14 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         member: disnake.Member
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description="Preparing to timeout the member...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         try:
@@ -214,13 +218,14 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description=f"Deleting {amount} embeds...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         check = lambda msg: msg.embeds
@@ -254,13 +259,14 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description=f"Deleting {amount} pinned messages...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         check = lambda msg: msg.pinned and not msg.embeds
@@ -276,8 +282,7 @@ class Moderation(commands.Cog):
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
-                embed=purge_embed,
-                ephemeral=True
+                embed=purge_embed
             )
         else:
             purge_embed = disnake.Embed(
@@ -285,8 +290,7 @@ class Moderation(commands.Cog):
                 color=disnake.Color.red()
             )
             await interaction.edit_original_message(
-                embed=purge_embed,
-                ephemeral=True
+                embed=purge_embed
             )
 
     @clear.sub_command(description="Clears all messages in a channel")
@@ -296,19 +300,19 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description=f"Deleting {amount} messages...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         check = lambda msg: not msg.pinned and not msg.embeds
 
         await interaction.channel.purge(
-
             limit=amount,
             check=check
         )
@@ -337,19 +341,19 @@ class Moderation(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         amount: int
     ):
+        await interaction.response.defer(ephemeral=True)
+
         loading_embed = disnake.Embed(
             description=f"Deleting {amount} images...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         check = lambda msg: not msg.pinned and msg.attachments
 
         await interaction.channel.purge(
-
             limit=amount,
             check=check
         )

@@ -38,6 +38,7 @@ class Info(commands.Cog):
         interaction: disnake.ApplicationCommandInteraction,
         user: disnake.User
     ):
+        await interaction.response.defer(ephemeral=True)
 
         string = f"{user.created_at}"
         LastDate = dateutil.parser.parse(string)
@@ -49,9 +50,8 @@ class Info(commands.Cog):
             description="Fetching information about the user...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         members = sorted(interaction.guild.members, key=lambda m: m.joined_at)
@@ -107,6 +107,8 @@ class Info(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
+        await interaction.response.defer(ephemeral=True)
+
         with open("json/guild.json", "r") as f:
             guild_data = json.load(f)
         with open("json/settings.json", "r") as f:
@@ -116,9 +118,8 @@ class Info(commands.Cog):
             description="Fetching information about the server...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=loading_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=loading_embed
         )
 
         server_embed = disnake.Embed(
@@ -162,13 +163,14 @@ class Info(commands.Cog):
 
     @info.sub_command(name="ping", description="Pings the bot")
     async def ping(self, interaction: disnake.ApplicationCommandInteraction):
+        await interaction.response.defer(ephemeral=True)
+
         search_embed = disnake.Embed(
             description="Pinging...",
             color=disnake.Color.green()
         )
-        await interaction.response.send_message(
-            embed=search_embed,
-            ephemeral=True
+        await interaction.edit_original_message(
+            embed=search_embed
         )
         ping_embed = disnake.Embed(
             description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: {disnake.utils.format_dt(startTime, style='R')}",
