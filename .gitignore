@@ -1,4 +1,4 @@
 __pycache__
 json
 etc/config.json
-extensions/test.py
+test.py
