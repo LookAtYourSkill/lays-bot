@@ -140,6 +140,7 @@ def update_streams():
                             "profile_pic": all_infos[0]["profile_image_url"],
                             "user_id": stream[streamer]["user_id"],
                             "user_name": stream[streamer]["user_name"],
+                            "sended": False,
                             "status": "live",
                             "message_id": None
                         }
@@ -169,6 +170,7 @@ def update_streams():
                                 "profile_pic": all_infos[0]["profile_image_url"],
                                 "user_id": stream[streamer]["user_id"],
                                 "user_name": stream[streamer]["user_name"],
+                                "sended": False,
                                 "status": "live",
                                 "message_id": None
                             }

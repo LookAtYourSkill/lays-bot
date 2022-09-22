@@ -634,18 +634,22 @@ class Twitch(commands.Cog):
                                                         # send embed to channel
                                                         # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
                                                         try:
-                                                            role_list = []
-                                                            for role in guild["twitch_ping_role"]:
-                                                                role_list.append(f"<@&{role}>")
-                                                            notifications += 1
-                                                            message: disnake.Message = await notify_channel.send(
-                                                                f"{' '.join(role_list)} " if guild["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if guild["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if guild["twitch_with_everyone_or_pingrole"] == "everyone" else "",
-                                                                embed=embed
-                                                            )
+                                                            if twitch_data[stream['user_login']][guild['server_id']]['sended'] is False:
+                                                                role_list = []
+                                                                for role in guild["twitch_ping_role"]:
+                                                                    role_list.append(f"<@&{role}>")
+                                                                notifications += 1
+                                                                message: disnake.Message = await notify_channel.send(
+                                                                    f"{' '.join(role_list)} " if guild["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if guild["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if guild["twitch_with_everyone_or_pingrole"] == "everyone" else "",
+                                                                    embed=embed
+                                                                )
 
-                                                            twitch_data[stream["user_login"]][guild["server_id"]]["message_id"] = message.id
-                                                            with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
-                                                                json.dump(twitch_data, f, indent=4)
+                                                                twitch_data[stream["user_login"]][guild["server_id"]]["message_id"] = message.id
+                                                                twitch_data[stream["user_login"]][guild["server_id"]]["sended"] = True
+                                                                with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
+                                                                    json.dump(twitch_data, f, indent=4)
+                                                            else:
+                                                                continue
 
                                                         except Exception as e:
                                                             # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
