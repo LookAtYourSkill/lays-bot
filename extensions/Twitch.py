@@ -582,7 +582,7 @@ class Twitch(commands.Cog):
                                             # convert time aswell to readable format
                                             started_at = time.mktime(giga_time.timetuple()) + giga_time.microsecond / 1E6
                                             # check if username is the streamer, which get asked for
-                                            print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
+                                            # ! print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
                                                 if time.time() - started_at < 350:
@@ -725,6 +725,29 @@ class Twitch(commands.Cog):
                             newline = '\n'
                             gamelist = []
 
+                            started_date = datetime.fromtimestamp(twitch_data_copy[streamer][server]["started_at"])
+                            ended_date = datetime.fromtimestamp(twitch_data_copy[streamer][server]["ended_at"])
+
+                            # create time differnce between start and end
+                            raw_time_difference = ended_date - started_date
+                            # convert time difference to string
+                            without_end_time_difference = str(raw_time_difference).split('.')[0]
+                            # split time difference into days, hours, minutes and seconds
+                            # ! EXAMPLE : 5 days, 7:22:48
+                            # check if there are days in the time difference
+                            hours = without_end_time_difference.split(":")[0]
+                            minutes = without_end_time_difference.split(":")[1]
+                            seconds = without_end_time_difference.split(":")[2]
+
+                            if "days" in without_end_time_difference:
+                                days = without_end_time_difference.split(",")[0].split(" ")[0]
+                                hours = without_end_time_difference.split(",")[1].split(":")[0].strip()
+                                minutes = without_end_time_difference.split(":")[1]
+                                seconds = without_end_time_difference.split(":")[2]
+                                day_string = f"{days}d {hours}h {minutes}m {seconds}s"
+                            else:
+                                day_string = f"{hours}h {minutes}m {seconds}s"
+
                             for game in twitch_data_copy[streamer][server]["game_list"]:
                                 gamelist.append(f"- `{game}`")
 
@@ -748,15 +771,15 @@ class Twitch(commands.Cog):
                             )
                             embed.add_field(
                                 name="__Durations__",
-                                value=f"`Started`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='R')}\n"
-                                      f"`Ended`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['ended_at'], style='R')}\n"
-                                      f"`Last Update`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['last_update'], style='R')}",
+                                value=f"`Started`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='F')}\n"
+                                      f"`Ended`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['ended_at'], style='F')}\n"
+                                      f"`Duration`: `{day_string}`",
                                 inline=False
                             )
                             embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                             embed.set_footer(
-                                text="Live Notifications by Lays Bot",
-                                icon_url=self.bot.user.avatar.url
+                                text="Live Notifications by Lays Bot"
+                                # icon_url=self.bot.user.avatar.url
                             )
                             await message.edit(
                                 embed=embed
@@ -771,13 +794,13 @@ class Twitch(commands.Cog):
                             with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                 json.dump(twitch_data, f, indent=4)
                         else:
-                            print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
+                            # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
                             try:
 
                                 channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data[streamer][server]["channel_id"])
                                 message: disnake.Message = channel.get_partial_message(twitch_data[streamer][server]["message_id"])
 
-                                print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Creating embed for {streamer}! {colorama.Fore.RESET}")
+                                # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Creating embed for {streamer}! {colorama.Fore.RESET}")
                                 embed = disnake.Embed(
                                     title=f"{twitch_data[streamer][server]['title']}",
                                     color=disnake.Color.purple(),
@@ -811,7 +834,7 @@ class Twitch(commands.Cog):
                                 await message.edit(
                                     embed=embed
                                 )
-                                print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Message updated for {streamer}! {colorama.Fore.RESET}")
+                                # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Message updated for {streamer}! {colorama.Fore.RESET}")
 
                             except Exception as e:
 
@@ -826,7 +849,8 @@ class Twitch(commands.Cog):
                                     embed=error_embed
                                 )
                     else:
-                        print(f"{colorama.Fore.RED} [TWITCH UPDATE] [ERROR] No message and no channel found... , '{streamer}' {colorama.Fore.RESET}")
+                        continue
+                        # ! print(f"{colorama.Fore.RED} [TWITCH UPDATE] [ERROR] No message and no channel found... , '{streamer}' {colorama.Fore.RESET}")
                 else:
                     continue
         print(f"{colorama.Fore.MAGENTA} [TWITCH UPDATE] [DONE] Finished updating messages! {colorama.Fore.RESET}")
