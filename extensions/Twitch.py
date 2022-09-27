@@ -22,6 +22,7 @@ class Twitch(commands.Cog):
         self.error_channel = 882721258301685790
         self.check_streams.start()
         self.update.start()
+        self.bot_png = "https://cdn.discordapp.com/avatars/947634210657681478/5b9dd998fbec81dcaf58340de0b98d9b.png?size=1024"
 
     @check_license()
     @commands.slash_command(
@@ -628,7 +629,7 @@ class Twitch(commands.Cog):
                                                         )
                                                         embed.set_footer(
                                                             text="Live Notifications by Lays Bot",
-                                                            icon_url=self.bot.user.avatar.url
+                                                            icon_url=self.bot_png
                                                         )
 
                                                         # send embed to channel
@@ -779,7 +780,7 @@ class Twitch(commands.Cog):
                             embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                             embed.set_footer(
                                 text="Live Notifications by Lays Bot",
-                                icon_url="https://cdn.discordapp.com/avatars/947634210657681478/5b9dd998fbec81dcaf58340de0b98d9b.png?size=1024"
+                                icon_url=self.bot_png
                             )
                             await message.edit(
                                 embed=embed
@@ -829,7 +830,7 @@ class Twitch(commands.Cog):
                                 )
                                 embed.set_footer(
                                     text="Live Notifications by Lays Bot",
-                                    icon_url="https://cdn.discordapp.com/avatars/947634210657681478/5b9dd998fbec81dcaf58340de0b98d9b.png?size=1024"
+                                    icon_url=self.bot_png
                                 )
                                 await message.edit(
                                     embed=embed
