@@ -778,8 +778,8 @@ class Twitch(commands.Cog):
                             )
                             embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
                             embed.set_footer(
-                                text="Live Notifications by Lays Bot"
-                                # icon_url=self.bot.user.avatar.url
+                                text="Live Notifications by Lays Bot",
+                                icon_url="https://cdn.discordapp.com/avatars/947634210657681478/5b9dd998fbec81dcaf58340de0b98d9b.png?size=1024"
                             )
                             await message.edit(
                                 embed=embed
@@ -829,7 +829,7 @@ class Twitch(commands.Cog):
                                 )
                                 embed.set_footer(
                                     text="Live Notifications by Lays Bot",
-                                    icon_url=self.bot.user.avatar.url
+                                    icon_url="https://cdn.discordapp.com/avatars/947634210657681478/5b9dd998fbec81dcaf58340de0b98d9b.png?size=1024"
                                 )
                                 await message.edit(
                                     embed=embed
