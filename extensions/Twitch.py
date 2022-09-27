@@ -739,7 +739,7 @@ class Twitch(commands.Cog):
                             minutes = without_end_time_difference.split(":")[1]
                             seconds = without_end_time_difference.split(":")[2]
 
-                            if "days" in without_end_time_difference:
+                            if "days" in without_end_time_difference or "day" in without_end_time_difference:
                                 days = without_end_time_difference.split(",")[0].split(" ")[0]
                                 hours = without_end_time_difference.split(",")[1].split(":")[0].strip()
                                 minutes = without_end_time_difference.split(":")[1]
