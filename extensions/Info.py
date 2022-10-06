@@ -10,10 +10,13 @@ from checks._check_license import check_license
 
 class Info(commands.Cog):
     '''
-    Shows the information for users or a server
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
 
     @commands.Cog.listener()
     async def on_ready(self):

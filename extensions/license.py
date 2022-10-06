@@ -28,10 +28,13 @@ class Times(str, Enum):
 
 class LicenseSystem(commands.Cog):
     '''
-    The License System, which the bot is based on
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         # self.license_check.start()
         # self.license_check_expired.start()
 
