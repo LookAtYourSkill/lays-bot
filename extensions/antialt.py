@@ -6,8 +6,14 @@ from checks._check_license import check_license
 
 
 class AntiAlt(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    '''
+    Status: Working
+    '''
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
 
     @check_license()
     @commands.has_permissions(administrator=True)

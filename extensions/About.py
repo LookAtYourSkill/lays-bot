@@ -9,13 +9,13 @@ from checks._check_license import check_license
 
 class About(commands.Cog):
     '''
-    Gives information about the bot.
+    Status: Working
     '''
     def __init__(
         self,
         bot
     ):
-        self.bot = bot
+        self.bot: commands.Bot = bot
         self.version = "EARLY ACCESS"
         self.prefix = "/"
 

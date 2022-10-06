@@ -4,10 +4,13 @@ from disnake.ext import commands
 
 class Changelog(commands.Cog):
     '''
-    Shows the changelog for the bot
+    Status: Being Removed
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         self.version = "EARLY ACCESS"
 
     @commands.slash_command(
