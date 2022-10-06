@@ -109,8 +109,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
             channel = self.bot.get_channel(self.error_channel)
@@ -120,7 +119,7 @@ class onError(commands.Cog):
                 description=f"```{error}``` \nGuild: `{interaction.guild.name}` \nChannel: `{interaction.channel.name}` \nUser: `{interaction.author}` \nID: `{interaction.author.id}`",
                 color=disnake.Color.red()
             )
-            await channel.send(embed=error_embed)
+            # await channel.send(embed=error_embed)
 
     @commands.Cog.listener()
     async def on_wavelink_track_exception(
