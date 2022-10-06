@@ -26,83 +26,32 @@ class Cogs(str, Enum):
     Twitter = "Twitter"
 
 
-class DropDownMenu(disnake.ui.Select):
-    def __init__(self):
-        thng_list = []
-        for cog in cogs:
-            thng_list.append(disnake.SelectOption(label=cog.qualified_name, description=cog.description))
-
-        super().__init__(
-            placeholder="Wähle ein Cog aus.",
-            max_values=1,
-            min_values=1,
-            options=thng_list,
-            custom_id="cog"
-        )
-
-    async def callback(self, interaction: disnake.Interaction):
-        print(cogs)
-        cog_embed = disnake.Embed(
-            # get the name of the cog
-            title=f"__{self.values[0].qualified_name}__",
-            # get the description of the cog if it have one
-            description=f"`{self.values[0].description if self.values[0].description else 'No description'}`",
-            color=interaction.author.color
-        )
-        # get all commands of the cog
-        cmd_list = []
-        # loop through all slash commands
-        for cmd in self.values[0].get_application_commands():
-            # add the command's name to the list
-            cmd_list.append(f" - `{cmd.qualified_name}`\n")
-
-        # add the list of commands to the embed
-        cog_embed.add_field(
-            name="__Commands__",
-            value="".join(cmd_list),
-        )
-        await interaction.edit_original_message(
-            embed=cog_embed
-        )
-
-
-class DropDownMenuView(disnake.ui.View):
-    def __init__(self):
-        super().__init__()
-        self.add_item(DropDownMenu())
-
-
-cogs = []
-
-
 class Help(commands.Cog):
     '''
-    Gives out this help command
+    Status: Working
     '''
     def __init__(
         self,
         bot
     ):
-        self.bot = bot
-        for cog in self.bot.cogs.values():
-            cog: commands.Cog
-            if len(cog.get_application_commands()) > 0:
-                cogs.append(cog)
+        self.bot: commands.Bot = bot
 
     @commands.slash_command(
         description="Shows help for a command"
     )
-    async def help_2(
+    async def help(
         self,
         interaction: disnake.ApplicationCommandInteraction,
         cog: (Optional[str]) = commands.Param(
             None,
             name="cog",
             description="Chose the cog you want help from!",
-            choices=cogs,
+            choices=Cogs,
         )
         # command: (Optional[str]) = None
     ):
+        cog: commands.Cog
+
         await interaction.response.defer(ephemeral=True)
 
         lol_embed = disnake.Embed(
@@ -115,7 +64,7 @@ class Help(commands.Cog):
 
         embed = disnake.Embed(
             title="Help",
-            description="This is the help command. Use `/help` to get help for a command.",
+            description="This is the help command. Use `/help` to get help for an extension.",
             color=interaction.author.color
         )
 
@@ -125,16 +74,20 @@ class Help(commands.Cog):
             cog_filter = [
                 cog for cog in self.bot.cogs.values() if len(cog.get_application_commands()) > 0
             ]
+            cog_list = []
 
             # going through all cogs
             for cog in cog_filter:
                 # emoji = getattr(cog, "COG_EMOJI", None)
                 # add a field for the cog
-                embed.add_field(
-                    name=f"__{cog.qualified_name}__",
-                    value=f"`{cog.description if cog.description else 'No description'}`",
-                    inline=False
-                )
+                cog_list.append("- `{!s:15s}` | `{!s:25s}`\n".format(cog.qualified_name, cog.description))
+                # cog_list.append(f"- `{cog.qualified_name}` | `{cog.description}`\n")
+
+            embed.add_field(
+                name=f"__All cogs ({len(cog_list)})__",
+                value=f"{' '.join(cog_list)}",
+                inline=False
+            )
 
             await interaction.edit_original_message(
                 embed=embed
@@ -157,56 +110,35 @@ class Help(commands.Cog):
                 )
 
             else:
+                # ! print([i.qualified_name for i in __cog.get_application_commands()])
                 # if cog exists
                 cog_embed = disnake.Embed(
                     # get the name of the cog
                     title=f"__{__cog.qualified_name}__",
                     # get the description of the cog if it have one
-                    description=f"`{__cog.description if __cog.description else 'No description'}`",
+                    description=f"`{__cog.description or 'Cog has no description'}`\n",
+                    #  description=f"`{__cog.description if __cog.description else '`No description`'}`",
                     color=interaction.author.color
                 )
                 # get all commands of the cog
                 cmd_list = []
                 # loop through all slash commands
+                # for cmd in __cog.get_application_commands():
                 for cmd in __cog.get_application_commands():
-                    # add the command's name to the list
-                    cmd_list.append(f" - `{cmd.qualified_name}`\n")
+                    # check if qualified name is longer than one word
+                    if len(cmd.qualified_name.split()) > 1:
+                        # if it is, add the command to the list
+                        cmd_list.append(f" - `{cmd.qualified_name}`\n")
 
                 # add the list of commands to the embed
                 cog_embed.add_field(
                     name="__Commands__",
-                    value="".join(cmd_list),
+                    value=f"{' '.join(cmd_list)}",
                 )
+
                 await interaction.edit_original_message(
                     embed=cog_embed
                 )
-
-    @commands.slash_command(
-        description="Shows help for a command"
-    )
-    async def help(
-        self,
-        interaction: disnake.ApplicationCommandInteraction
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        lol_embed = disnake.Embed(
-            description="Gettings everything ready...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=lol_embed
-        )
-
-        embed = disnake.Embed(
-            title="Help",
-            description="Select one cog form the dropdown menu to get help for it.",
-            color=interaction.author.color
-        )
-        await interaction.edit_original_message(
-            embed=embed,
-            view=DropDownMenuView()
-        )
 
 
 def setup(bot):
