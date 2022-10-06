@@ -12,10 +12,13 @@ from checks._check_license import check_license
 
 class Music(commands.Cog):
     '''
-    Music commands for more fun in a voice channel
+    Status: Working
     '''
-    def __init__(self, client: disnake.Client):
-        self.client = client
+    def __init__(
+        self,
+        client: disnake.Client
+    ):
+        self.client: disnake.Client = client
         self.loop = False
         self.channel = None
         self.QUEUE_COMMAND = "/queue list"

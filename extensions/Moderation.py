@@ -11,10 +11,13 @@ from checks._check_license import check_license
 
 class Moderation(commands.Cog):
     '''
-    Moderation command to manage users
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
 
     @check_license()
     @commands.slash_command(
