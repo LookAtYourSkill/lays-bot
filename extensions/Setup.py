@@ -5,10 +5,13 @@ import json
 
 class Setup(commands.Cog):
     '''
-    Command to set up your server probably for the bot
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         self.PATH = "json/guild.json"
         self.prefix = "/"
 
@@ -503,10 +506,13 @@ class Setup(commands.Cog):
 
 class Change(commands.Cog):
     '''
-    Changes the settings of the bot
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         self.PATH = "json/guild.json"
         self.prefix = "/"
 

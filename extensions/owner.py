@@ -6,10 +6,13 @@ from disnake.ext import commands
 
 class Owner(commands.Cog):
     '''
-    Commands for the owner of the bot
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
 
     @commands.slash_command(name="set")
     async def set(self, interaction: disnake.ApplicationCommandInteraction):
