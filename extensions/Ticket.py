@@ -694,10 +694,13 @@ class ticket_message(disnake.ui.View):
 
 class TicketSystem(commands.Cog):
     '''
-    The Ticket System with which the bot can create tickets and support them
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         self.persistent_views_added = False
 
     @check_license()

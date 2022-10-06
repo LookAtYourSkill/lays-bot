@@ -3,8 +3,14 @@ from disnake.ext import commands
 
 
 class Suggest(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    '''
+    Status: Working
+    '''
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         self.bot_guild = 935539295580717067
         self.bot_owner = 493370963807830016
         self.category = 997632888256348270

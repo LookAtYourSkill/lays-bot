@@ -14,9 +14,12 @@ from checks._check_license import check_license
 
 class Timer(commands.Cog):
     '''
-    Timer for users per chat
+    Status: Working
     '''
-    def __init__(self, bot):
+    def __init__(
+        self,
+        bot
+    ):
         self.bot = bot
         self.check_timers.start()
 

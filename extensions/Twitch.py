@@ -15,10 +15,13 @@ from utils.twitch import get_streams, get_users, get_all_user_info, get_follower
 
 class Twitch(commands.Cog):
     '''
-    Twitch notifications from the servers watchlist
+    Status: Working
     '''
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(
+        self,
+        bot
+    ):
+        self.bot: commands.Bot = bot
         self.error_channel = 882721258301685790
         self.check_streams.start()
         self.update.start()
