@@ -1,5 +1,4 @@
 import asyncio
-from turtle import color
 
 import colorama
 import disnake
