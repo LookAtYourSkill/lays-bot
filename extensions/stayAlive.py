@@ -22,25 +22,15 @@ class stayAlive(commands.Cog):
         self.owner = 493370963807830016
         self.zdt.start()
 
-    @loop(hours=24)
+    @loop(seconds=86400)
     async def zdt(self):  # ZDT = Zero Down Time
-        Twitch.check_streams.stop()
-        Twitch.update.stop()
+        Twitch.check_streams.restart()
+        Twitch.update.restart()
 
-        Timer.check_timers.stop()
+        Timer.check_timers.restart()
 
-        LicenseSystem.license_check_expired.stop()
-        LicenseSystem.license_check.stop()
-
-        await asyncio.sleep(5)
-
-        Twitch.check_streams.start(self)
-        Twitch.update.start(self)
-
-        Timer.check_timers.start(self)
-
-        LicenseSystem.license_check_expired.start(self)
-        LicenseSystem.license_check.start(self)
+        LicenseSystem.license_check_expired.restart()
+        LicenseSystem.license_check.restart()
 
         print(f" {colorama.Fore.GREEN}Restarted all tasks {colorama.Fore.RESET}")
 
