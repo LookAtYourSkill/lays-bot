@@ -47,8 +47,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -61,8 +60,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -75,8 +73,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -98,8 +95,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         else:
@@ -139,8 +135,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -153,8 +148,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -167,8 +161,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -181,8 +174,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         if isinstance(
@@ -195,8 +187,7 @@ class onError(commands.Cog):
             )
 
             await interaction.edit_original_message(
-                embed=embed,
-                ephemeral=True
+                embed=embed
             )
 
         else:
