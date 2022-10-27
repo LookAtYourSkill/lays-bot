@@ -155,7 +155,38 @@ class Music(commands.Cog):
         description="Play a song"
     )
     async def play(self, interaction: disnake.ApplicationCommandInteraction, *, query: str):
-        vc: wavelink.Player = await interaction.author.voice.channel.connect(cls=wavelink.Player)
+        await interaction.response.defer()
+
+        vc: wavelink.Player = interaction.guild.voice_client if interaction.guild.voice_client else await interaction.author.voice.channel.connect(cls=wavelink.Player)
+
+        """
+        if not vc.is_connected:
+            await vc.connect(interaction.author.voice.channel)
+        if not vc.is_playing:
+            try:
+                track = await vc.node.get_tracks(f"ytsearch:{query}")
+                if not track:
+                    await interaction.response.send_message("No tracks found.", ephemeral=True)
+                    return
+
+                track = track[0]
+                await vc.play(track)
+                await interaction.response.send_message(f"Playing {track.title}", ephemeral=True)
+            except wavelink.ZeroConnectedNodes:
+                await interaction.response.send_message("No nodes available.", ephemeral=True)
+        else:
+            try:
+                track = await vc.node.get_tracks(f"ytsearch:{query}")
+                if not track:
+                    await interaction.response.send_message("No tracks found.", ephemeral=True)
+                    return
+
+                track = track[0]
+                vc.queue.put(track)
+                await interaction.response.send_message(f"Added {track.title} to the queue.", ephemeral=True)
+            except wavelink.ZeroConnectedNodes:
+                await interaction.response.send_message("No nodes available.", ephemeral=True)
+        """
         source = query
         if not vc.is_playing and vc.queue.is_empty:
             if "youtube" in source or "youtu.be" in source:
@@ -208,6 +239,61 @@ class Music(commands.Cog):
                     embed=play_embed
                 )
                 await vc.play(track)
+
+        else:
+            if "youtube" in source or "youtu.be" in source:
+                track: wavelink.YouTubeTrack = await wavelink.YouTubeTrack.search(source, return_first=True)
+                vc.queue.put(track)
+                queue_embed = disnake.Embed(
+                    description=f":white_check_mark: | Added [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}`` to the queue",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=queue_embed
+                )
+
+            elif "soundcloud" in source:
+                track: wavelink.SoundCloudTrack = await wavelink.SoundCloudTrack.search(query=source, return_first=True)
+                vc.queue.put(track)
+                queue_embed = disnake.Embed(
+                    description=f":white_check_mark: | Added [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}`` to the queue",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=queue_embed
+                )
+
+            elif "spotify" in source:
+                decoded = spotify.decode_url(source)
+                if decoded and decoded['type'] is spotify.SpotifySearchType.track:
+                    track = await spotify.SpotifyTrack.search(query=decoded["id"], type=decoded["type"], return_first=True)
+                    vc.queue.put(track)
+                    queue_embed = disnake.Embed(
+                        description=f":white_check_mark: | Added [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}`` to the queue",
+                        color=disnake.Color.green()
+                    )
+                    await interaction.edit_original_message(
+                        embed=queue_embed
+                    )
+
+                elif decoded['type'] is spotify.SpotifySearchType.unusable:
+                    bad_embed = disnake.Embed(
+                        description="Invalid spotify url!",
+                        color=disnake.Color.red()
+                    )
+                    return await interaction.edit_original_message(
+                        embed=bad_embed
+                    )
+            else:
+                track: wavelink.YouTubeTrack = await wavelink.YouTubeTrack.search(query, return_first=True)
+                vc.queue.put(track)
+                queue_embed = disnake.Embed(
+                    description=f":white_check_mark: | Added [{track.title}]({track.uri}) - ``{str(datetime.timedelta(seconds=track.length))}`` to the queue",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=queue_embed
+                )
 
 
     @check_license()
