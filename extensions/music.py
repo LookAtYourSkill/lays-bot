@@ -96,7 +96,7 @@ class Music(commands.Cog):
         if vc.queue.is_empty:
             # await vc.stop()
             empty = disnake.Embed(
-                description="There are no more tracks in the queue.\nIf you add a song use ``/music settings skip`` to resume the queue!",
+                description="There are no more tracks in the queue.\nIf you add a song use ``/music settings shuffle`` to resume the queue!",
                 color=disnake.Color.red()
             )
             channel = await self.client.fetch_channel(self.channel)
