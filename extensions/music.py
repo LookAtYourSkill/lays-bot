@@ -53,47 +53,57 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
-        now_playing = disnake.Embed(
-            title="Now Playing",
-            # track.title is with author
-            description=f"``{track.title}``",
-            color=0x00ff00
-        )
-        now_playing.add_field(
-            name="Duration",
-            value=f"``{str(datetime.timedelta(seconds=track.length))}``"
-        )
-        now_playing.add_field(
-            name="Stream",
-            value=f"``{'Yes' if track.is_stream else 'No'}``",
-            inline=False
-        )
-        now_playing.add_field(
-            name="URL",
-            value=f"{track.uri}",
-            inline=False
-        )
-        now_playing.set_footer(
-            text=f"Bot provided by {self.provider}",
-            icon_url=self.avatar
-        )
-        if self.announce:
+
+        with open("etc/settings.json", "r") as settings_file:
+            settings_data = json.load(settings_file)
+
+        if settings_data["music_announce"]:
+
+            now_playing = disnake.Embed(
+                title="Now Playing",
+                # track.title is with author
+                description=f"``{track.title}``",
+                color=0x00ff00
+            )
+            now_playing.add_field(
+                name="Duration",
+                value=f"``{str(datetime.timedelta(seconds=track.length))}``"
+            )
+            now_playing.add_field(
+                name="Stream",
+                value=f"``{'Yes' if track.is_stream else 'No'}``",
+                inline=False
+            )
+            now_playing.add_field(
+                name="URL",
+                value=f"{track.uri}",
+                inline=False
+            )
+            now_playing.set_footer(
+                text=f"Bot provided by {self.provider}",
+                icon_url=self.avatar
+            )
+
+            if settings_data[str(player.guild.id)]["music_announce_channel"]:
+                channel_id = settings_data[str(player.guild.id)]["music_announce_channel"]
+                channel = await self.client.fetch_channel(channel_id)
+                await channel.send(embed=now_playing)
+        else:
             pass
-            # channel = await self.client.fetch_channel(self.channel)
-            # await channel.send(embed=now_playing)
 
     @commands.Cog.listener()
     async def on_wavelink_track_end(self, vc: wavelink.Player, track: wavelink.Track, reason):
 
+        with open("json/settings.json", "r") as settings_file:
+            settings_data = json.load(settings_file)
+
         print(f"Track {track.title} ended with reason {reason}")
-        # if not self.loop:
-            # vc.queue.__delitem__(0)
-            # self.skipping = False
 
-        # elif self.loop:
-            # await vc.play(track)
+        # ! vc.guild.id is the guild id, where the track ended
+        if settings_data[str(vc.guild.id)]["music_loop"]:
+            await vc.play(track)
 
-        if vc.queue.is_empty:
+        elif vc.queue.is_empty:
             # await vc.stop()
             empty = disnake.Embed(
                 description="There are no more tracks in the queue.\nIf you add a song use ``/music settings shuffle`` to resume the queue!",
@@ -107,7 +117,7 @@ class Music(commands.Cog):
 
         elif reason == "FINISHED":
             # ! CASE FINISHED
-            print("[FINISHED] Song wurde fertig abgespielt")
+            # finished song
             if vc.queue.is_empty:
                 empty = disnake.Embed(
                     description="There are no more tracks in the queue.",
@@ -117,15 +127,15 @@ class Music(commands.Cog):
                 await channel.send(embed=empty)
 
             elif track.title == vc.queue[0].title:
-                print("[FINISHED] Gleicher Song nochmal in queue")
+                # same song in queue
                 vc.queue.__delitem__(0)
-                print("[FINISHED] Song wurde aus queue entfernt")
+                # removed song from queue
                 nextSong = vc.queue[0]
-                print("[FINISHED] Song wird gegettet")
+                # next song in queue
                 await vc.play(nextSong)
-                print("[FINISHED] Song wird abgespielt")
+                # playing next song
                 vc.queue.__delitem__(0)
-                print("[FINISHED] Aktueller Song wurde aus queue entfernt")
+                # removed song from queue
             # when song names are not the same
             else:
                 # get new song
@@ -1191,6 +1201,9 @@ class Music(commands.Cog):
     async def looping(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
+        with open("json/settings.json", "r") as settings_file:
+            settings_data = json.load(settings_file)
+
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
@@ -1209,8 +1222,11 @@ class Music(commands.Cog):
             #     await interaction.edit_original_message(
             #         embed=embed
             #     )
-            if self.loop is False:
-                self.loop = True
+            if settings_data[str(interaction.guild.id)]["music_loop"] is False:
+                settings_data[str(interaction.guild.id)]["music_loop"] = True
+                with open("json/settings.json", "w") as settings_file:
+                    json.dump(settings_data, settings_file, indent=4)
+
                 embed = disnake.Embed(
                     description="Enabled track loop",
                     color=disnake.Color.green()
@@ -1219,7 +1235,10 @@ class Music(commands.Cog):
                     embed=embed
                 )
             else:
-                self.loop = False
+                settings_data[str(interaction.guild.id)]["music_loop"] = False
+                with open("json/settings.json", "w") as settings_file:
+                    json.dump(settings_data, settings_file, indent=4)
+
                 embed = disnake.Embed(
                     description="Disabled track loop",
                     color=disnake.Color.red()
@@ -1235,8 +1254,24 @@ class Music(commands.Cog):
     async def announcement(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
-        if self.announce:
-            self.announce = False
+        with open("json/settings.json", "r") as settings_file:
+            settings_data = json.load(settings_file)
+
+        if settings_data[str(interaction.guild.id)]["music_announce"] is False:
+            settings_data[str(interaction.guild.id)]["music_announce"] = True
+            with open("json/settings.json", "w") as settings_file:
+                json.dump(settings_data, settings_file, indent=4)
+
+            embed = disnake.Embed(
+                description="Enabled track announcement",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+        else:
+            settings_data[str(interaction.guild.id)]["music_announce"] = False
             embed = disnake.Embed(
                 description="Disabled track announcement",
                 color=disnake.Color.red()
@@ -1245,10 +1280,33 @@ class Music(commands.Cog):
                 embed=embed
             )
 
-        else:
-            self.announce = True
+    @settings.sub_command(
+        name="announce_channel",
+        description="Enables/Disables the announcement of the current track"
+    )
+    async def announcement_channel(self, interaction: disnake.ApplicationCommandInteraction, channel: disnake.TextChannel):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/settings.json", "r") as settings_file:
+            settings_data = json.load(settings_file)
+
+        if settings_data[str(interaction.guild.id)]["music_announce_channel"] is False:
+            settings_data[str(interaction.guild.id)]["music_announce_channel"] = channel.id
+            with open("json/settings.json", "w") as settings_file:
+                json.dump(settings_data, settings_file, indent=4)
+
             embed = disnake.Embed(
-                description="Enabled track announcement",
+                description=f"Track Announcement Channel set to {channel}",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+        else:
+            settings_data[str(interaction.guild.id)]["music_announce_channel"] = channel.id
+            embed = disnake.Embed(
+                description=f"Track Announcement Channel changed to {channel}",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
