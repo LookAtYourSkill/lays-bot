@@ -1053,6 +1053,9 @@ class Music(commands.Cog):
     async def nowplaying(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
+        with open("json/settings.json", "r") as settings_file:
+            settings_data = json.load(settings_file)
+
         if interaction.guild.voice_client is None:
             bad_embed = disnake.Embed(
                 description="You are not connected to a voice channel!",
@@ -1087,7 +1090,7 @@ class Music(commands.Cog):
             )
             embed.add_field(
                 name="Loop",
-                value=f"``{'Yes' if self.loop else 'No'}``",
+                value=f"``{'Yes' if settings_data[str(interaction.guild.id)]['music_announce'] else 'No'}``",
                 inline=True
             )
             embed.add_field(
