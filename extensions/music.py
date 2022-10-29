@@ -54,10 +54,10 @@ class Music(commands.Cog):
     @commands.Cog.listener()
     async def on_wavelink_track_start(self, player: wavelink.Player, track: wavelink.Track):
 
-        with open("etc/settings.json", "r") as settings_file:
+        with open("json/settings.json", "r") as settings_file:
             settings_data = json.load(settings_file)
 
-        if settings_data["music_announce"]:
+        if settings_data[str(player.guild.id)]["music_announce"] is True:
 
             now_playing = disnake.Embed(
                 title="Now Playing",
@@ -71,7 +71,7 @@ class Music(commands.Cog):
             )
             now_playing.add_field(
                 name="Stream",
-                value=f"``{'Yes' if track.is_stream else 'No'}``",
+                value=f"``{'Yes' if track.is_stream is True else 'No'}``",
                 inline=False
             )
             now_playing.add_field(
@@ -84,7 +84,7 @@ class Music(commands.Cog):
                 icon_url=self.avatar
             )
 
-            if settings_data[str(player.guild.id)]["music_announce_channel"]:
+            if settings_data[str(player.guild.id)]["music_announce_channel"] is not None:
                 channel_id = settings_data[str(player.guild.id)]["music_announce_channel"]
                 channel = await self.client.fetch_channel(channel_id)
                 await channel.send(embed=now_playing)
@@ -1090,7 +1090,7 @@ class Music(commands.Cog):
             )
             embed.add_field(
                 name="Loop",
-                value=f"``{'Yes' if settings_data[str(interaction.guild.id)]['music_announce'] else 'No'}``",
+                value=f"``{'Yes' if settings_data[str(interaction.guild.id)]['music_loop'] is True else 'No'}``",
                 inline=True
             )
             embed.add_field(
@@ -1115,7 +1115,7 @@ class Music(commands.Cog):
             )
             embed.add_field(
                 name="Announce Status",
-                value=f"``{'Yes' if self.announce else 'No'}``",
+                value=f"``{'Yes' if settings_data[str(interaction.guild.id)]['music_announce'] else 'No'}``",
                 inline=True
             )
             embed.set_author(
@@ -1293,13 +1293,13 @@ class Music(commands.Cog):
         with open("json/settings.json", "r") as settings_file:
             settings_data = json.load(settings_file)
 
-        if settings_data[str(interaction.guild.id)]["music_announce_channel"] is False:
+        if settings_data[str(interaction.guild.id)]["music_announce_channel"] is None:
             settings_data[str(interaction.guild.id)]["music_announce_channel"] = channel.id
             with open("json/settings.json", "w") as settings_file:
                 json.dump(settings_data, settings_file, indent=4)
 
             embed = disnake.Embed(
-                description=f"Track Announcement Channel set to {channel}",
+                description=f"Track Announcement Channel **set** to {channel.mention}",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
@@ -1308,8 +1308,11 @@ class Music(commands.Cog):
 
         else:
             settings_data[str(interaction.guild.id)]["music_announce_channel"] = channel.id
+            with open("json/settings.json", "w") as settings_file:
+                json.dump(settings_data, settings_file, indent=4)
+
             embed = disnake.Embed(
-                description=f"Track Announcement Channel changed to {channel}",
+                description=f"Track Announcement Channel **changed** to {channel.mention}",
                 color=disnake.Color.green()
             )
             await interaction.edit_original_message(
