@@ -13,7 +13,7 @@ bot = commands.Bot(
     command_prefix=commands.when_mentioned_or("%"),
     owner_id=493370963807830016,
     sync_commands=True,
-    sync_commands_debug=True
+    command_sync_flags=True
 )
 
 
