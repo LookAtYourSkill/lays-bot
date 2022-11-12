@@ -427,8 +427,12 @@ class ticket_message(disnake.ui.View):
                 value=interaction.author.mention,
                 inline=True
             )
+            role_list = []
+            for role in ticket_data[str(interaction.guild.id)]['ping_roles']:
+                role_list.append(f"<@&{role}>")
+
             await ticket.send(
-                content=f"{interaction.author.mention} please ask your question!",
+                content=f"{interaction.author.mention} please ask your question!\n{' '.join(role_list) if role_list else ''}",
                 embed=begin_embed,
                 view=close_message()
             )
@@ -542,8 +546,12 @@ class ticket_message(disnake.ui.View):
                 value=interaction.author.mention,
                 inline=True
             )
+            role_list = []
+            for role in ticket_data[str(interaction.guild.id)]['ping_roles']:
+                role_list.append(f"<@&{role}>")
+
             await ticket.send(
-                content=f"{interaction.author.mention} please ask your question!",
+                content=f"{interaction.author.mention} please ask your question!\n{' '.join(role_list) if role_list else ''}",
                 embed=begin_embed,
                 view=close_message()
             )
@@ -654,8 +662,13 @@ class ticket_message(disnake.ui.View):
                 value=interaction.author.mention,
                 inline=True
             )
+
+            role_list = []
+            for role in ticket_data[str(interaction.guild.id)]['ping_roles']:
+                role_list.append(f"<@&{role}>")
+
             await ticket.send(
-                content=f"{interaction.author.mention} please ask your question!",
+                content=f"{interaction.author.mention} please ask your question!\n{' '.join(role_list) if role_list else ''}",
                 embed=begin_embed,
                 view=close_message()
             )
@@ -903,6 +916,126 @@ class TicketSystem(commands.Cog):
         embed = disnake.Embed(
             title="Ticket System",
             description=f"`»`Support members:\n{support_members}\n`»`Support roles:\n{support_roles}",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=embed
+        )
+
+    @ticket.sub_command_group(
+        name="pingroles",
+        description="adds pingroles"
+    )
+    async def pingroles(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        pass
+
+    @pingroles.sub_command(
+        name="add",
+        description="Add a category to the ticket system"
+    )
+    async def pingrole_add(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        role: disnake.Role = None
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/tickets.json", "r") as f:
+            ticket_data = json.load(f)
+
+        for i in ticket_data[str(interaction.guild.id)]["ping_roles"]:
+            print(i)
+
+        if role:
+            ticket_data[str(interaction.guild.id)]["ping_roles"] += [role.id]
+
+            with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                json.dump(ticket_data, f, indent=4)
+
+            embed = disnake.Embed(
+                title="Ticket System",
+                description=f"{role.mention} added to ping roles",
+                color=disnake.Color.green()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+        else:
+            embed = disnake.Embed(
+                title="Ticket System",
+                description="Please specify a member or a role!",
+                color=disnake.Color.red()
+            )
+            await interaction.edit_original_message(
+                embed=embed
+            )
+
+    @pingroles.sub_command(
+        name="remove",
+        description="Remove a role or member from the ticket system"
+    )
+    async def pingrole_remove(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        role: disnake.Role = None
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/tickets.json", "r") as f:
+            ticket_data = json.load(f)
+
+        if role:
+            if role.id in ticket_data[str(interaction.guild.id)]["ping_roles"]:
+
+                ticket_data[str(interaction.guild.id)]["ping_roles"].remove(role.id)
+
+                with open("json/tickets.json", "w", encoding="UTF-8") as f:
+                    json.dump(ticket_data, f, indent=4)
+
+                embed = disnake.Embed(
+                    title="Ticket System",
+                    description=f"{role.mention} removed from ping roles",
+                    color=disnake.Color.green()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+
+            elif role.id not in ticket_data[str(interaction.guild.id)]["ping_roles"]:
+                embed = disnake.Embed(
+                    title="Ticket System",
+                    description=f"{role.mention} is not in ping roles",
+                    color=disnake.Color.red()
+                )
+                await interaction.edit_original_message(
+                    embed=embed
+                )
+
+    @pingroles.sub_command(
+        name="list",
+        description="List all the roles and members in the ticket system"
+    )
+    async def pingrole_list(
+        self,
+        interaction: disnake.ApplicationCommandInteraction
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        with open("json/tickets.json", "r") as f:
+            ticket_data = json.load(f)
+
+        ping_roles = ""
+
+        for i in ticket_data[str(interaction.guild.id)]["ping_roles"]:
+            ping_roles += f"- {interaction.guild.get_role(i).mention}\n"
+
+        embed = disnake.Embed(
+            title="Ticket System",
+            description=f"`»`Pinged roles:\n{ping_roles}",
             color=disnake.Color.green()
         )
         await interaction.edit_original_message(
