@@ -1,7 +1,7 @@
 import json
 import requests
 import colorama
-from datetime import datetime
+import datetime
 
 
 with open("json/watchlist.json", 'r', encoding='UTF-8') as data_file:
@@ -116,7 +116,11 @@ def update_streams():
                     # get started at info
                     twitchTime = stream[streamer]["started_at"]
                     # format to timestamp
-                    finalTime = datetime.strptime(twitchTime, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+                    prefinalTime = datetime.datetime.strptime(twitchTime, "%Y-%m-%dT%H:%M:%SZ")
+                    # remove 3 hours from prefinalTime
+                    remixfinalTime = prefinalTime - datetime.timedelta(hours=3)
+                    # create timestamp
+                    finalTime = remixfinalTime.timestamp()
 
                     # ! print(finalTime)
 
@@ -134,7 +138,7 @@ def update_streams():
                             "viewer_count": stream[streamer]["viewer_count"],
                             "started_at": finalTime,
                             "ended_at": None,
-                            "last_update": datetime.now().timestamp(),
+                            "last_update": datetime.datetime.now().timestamp(),
                             "thumbnail_url": stream[streamer]["thumbnail_url"],
                             "offline_url": all_infos[0]["offline_image_url"],
                             "profile_pic": all_infos[0]["profile_image_url"],
@@ -164,7 +168,7 @@ def update_streams():
                                 "viewer_count": stream[streamer]["viewer_count"],
                                 "started_at": finalTime,
                                 "ended_at": None,
-                                "last_update": datetime.now().timestamp(),
+                                "last_update": datetime.datetime.now().timestamp(),
                                 "thumbnail_url": stream[streamer]["thumbnail_url"],
                                 "offline_url": all_infos[0]["offline_image_url"],
                                 "profile_pic": all_infos[0]["profile_image_url"],
@@ -214,7 +218,7 @@ def update_streams():
                         if guild['server_id'] in twitch_updates[streamer]:
                             # change status to offline
                             twitch_updates[streamer][guild['server_id']]['status'] = "offline"
-                            twitch_updates[streamer][guild['server_id']]['ended_at'] = datetime.now().timestamp()
+                            twitch_updates[streamer][guild['server_id']]['ended_at'] = datetime.datetime.now().timestamp()
 
                             with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                 json.dump(twitch_updates, file, indent=4)
