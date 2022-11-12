@@ -109,6 +109,21 @@ class Owner(commands.Cog):
             f"Message sent to {user.mention}"
         )
 
+    @commands.is_owner()
+    @set.sub_command(name="leave", description="Leaves a server")
+    async def leave(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        guild_id
+    ):
+        await interaction.response.defer(ephemeral=True)
+
+        guild = self.bot.get_guild(guild_id)
+        await guild.leave()
+        await interaction.edit_original_message(
+            f"Left {guild.name}"
+        )
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
