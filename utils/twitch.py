@@ -138,7 +138,7 @@ def update_streams():
                             "viewer_count": stream[streamer]["viewer_count"],
                             "started_at": finalTime,
                             "ended_at": None,
-                            "last_update": datetime.datetime.now().timestamp(),
+                            "last_update": datetime.datetime.now(tz=None).timestamp(),
                             "thumbnail_url": stream[streamer]["thumbnail_url"],
                             "offline_url": all_infos[0]["offline_image_url"],
                             "profile_pic": all_infos[0]["profile_image_url"],
