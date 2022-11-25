@@ -64,7 +64,7 @@ class open_message(disnake.ui.View):
                 color=disnake.Color.green()
             )
             view = close_message()
-            await interaction.edit_original_response(
+            await interaction.followup.send(
                 embed=open_embed,
                 view=view
             )
@@ -130,7 +130,7 @@ class open_message(disnake.ui.View):
                 description="Ticket will be deleted in a few seconds",
                 color=disnake.Color.red()
             )
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 embed=delete_embed
             )
 
@@ -228,7 +228,7 @@ class open_message(disnake.ui.View):
                         description=f"Ticket Saved in <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}>",
                         color=disnake.Color.blue()
                     )
-                    await interaction.edit_original_response(
+                    await interaction.followup.send(
                         embed=save_embed
                     )
 
@@ -330,7 +330,7 @@ class close_message(disnake.ui.View):
             color=disnake.Color.yellow()
         )
         view = open_message()
-        await interaction.edit_original_response(
+        await interaction.followup.send(
             embed=close_embed,
             view=view
         )
@@ -467,8 +467,7 @@ class ticket_message(disnake.ui.View):
             )
 
             await interaction.edit_original_response(
-                content=f"_General Ticket successfully created!_ <#{ticket.id}>",
-                ephemeral=True
+                content=f"_General Ticket successfully created!_ <#{ticket.id}>"
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
@@ -594,8 +593,7 @@ class ticket_message(disnake.ui.View):
             )
 
             await interaction.edit_original_response(
-                content=f"_Moderation ticket successfully created!_ <#{ticket.id}>",
-                ephemeral=True
+                content=f"_Moderation ticket successfully created!_ <#{ticket.id}>"
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
@@ -719,8 +717,7 @@ class ticket_message(disnake.ui.View):
             )
 
             await interaction.edit_original_response(
-                content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
-                ephemeral=True
+                content=f"_Support Ticket successfully created!_ <#{ticket.id}>"
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
@@ -774,7 +771,7 @@ class tjan_ticket(disnake.ui.View):
         interaction: disnake.MessageInteraction
     ):
 
-        await interaction.edit_original_response(ephemeral=True)
+        await interaction.response.defer(ephemeral=True)
 
         # Load all jsons
         with open("json/guild.json", "r", encoding="UTF-8") as f:
@@ -800,7 +797,7 @@ class tjan_ticket(disnake.ui.View):
                 }
             )
             # 929752696834117733 -> mcteam role
-            await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=855436241332076554), read_messages=True, send_messages=True)
+            await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=929752696834117733), read_messages=True, send_messages=True)
 
             # Json Stuff
             ticket_data[str(interaction.guild.id)][ticket.id] = {}
@@ -835,7 +832,7 @@ class tjan_ticket(disnake.ui.View):
                 inline=True
             )
 
-            role_list = ["<@&855436241332076554>"]
+            role_list = ["<@&929752696834117733>"]
 
             await ticket.send(
                 content=f"{interaction.author.mention} please ask your question!\n||Pingroles: {' '.join(role_list) if role_list else 'N/A'}||",
@@ -844,8 +841,7 @@ class tjan_ticket(disnake.ui.View):
             )
 
             await interaction.edit_original_response(
-                content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
-                ephemeral=True
+                content=f"_Support Ticket successfully created!_ <#{ticket.id}>"
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
@@ -920,8 +916,8 @@ class tjan_ticket(disnake.ui.View):
 
             # 925692997247590420 -> developer role
             # 929752696834117733 -> mcteam role
-            await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=855436241332076554), read_messages=True, send_messages=True)
-            await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=1042074375723176026), read_messages=True, send_messages=True)
+            await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=925692997247590420), read_messages=True, send_messages=True)
+            await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=929752696834117733), read_messages=True, send_messages=True)
 
             # Json Stuff
             ticket_data[str(interaction.guild.id)][ticket.id] = {}
@@ -955,7 +951,7 @@ class tjan_ticket(disnake.ui.View):
                 value=interaction.author.mention,
                 inline=True
             )
-            role_list = ["<@&1042074375723176026>"]
+            role_list = ["<@&925692997247590420>"]
 
             await ticket.send(
                 content=f"{interaction.author.mention} please ask your question!\n||Pingroles: {' '.join(role_list) if role_list else 'N/A'}||",
@@ -964,8 +960,7 @@ class tjan_ticket(disnake.ui.View):
             )
 
             await interaction.edit_original_response(
-                content=f"_Ticket successfully created!_ <#{ticket.id}>",
-                ephemeral=True
+                content=f"_Ticket successfully created!_ <#{ticket.id}>"
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
@@ -1032,7 +1027,7 @@ class TicketSystem(commands.Cog):
         self,
         interaction: disnake.ApplicationCommandInteraction
     ):
-        await interaction.response.defer(ephemeral=True)
+        await interaction.response.defer()
 
         if interaction.author.guild_permissions.manage_channels:
 
@@ -1045,16 +1040,16 @@ class TicketSystem(commands.Cog):
             )
 
             # send embed with buttons
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=ticket_embed,
                 view=view
             )
         else:
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 content="You don't have the permissions to use this command!"
             )
 
-    @right_guild(855160466452381666)
+    @right_guild(813318225655496724)
     @ticket.sub_command(
         name="custom",
         description="Create a custom ticket category"
@@ -1075,12 +1070,12 @@ class TicketSystem(commands.Cog):
             )
 
             # send embed with buttons
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=ticket_embed,
                 view=view
             )
         else:
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 content="You don't have the permissions to use this command!"
             )
 
@@ -1119,7 +1114,7 @@ class TicketSystem(commands.Cog):
                 description=f"{member.mention} added to support members",
                 color=disnake.Color.green()
             )
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -1134,7 +1129,7 @@ class TicketSystem(commands.Cog):
                 description=f"{role.mention} added to support roles",
                 color=disnake.Color.green()
             )
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -1144,7 +1139,7 @@ class TicketSystem(commands.Cog):
                 description="Please specify a member or a role!",
                 color=disnake.Color.red()
             )
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -1176,7 +1171,7 @@ class TicketSystem(commands.Cog):
                     description=f"{member.mention} removed from support members",
                     color=disnake.Color.green()
                 )
-                await interaction.edit_original_message(
+                await interaction.edit_original_response(
                     embed=embed
                 )
 
@@ -1186,7 +1181,7 @@ class TicketSystem(commands.Cog):
                     description=f"{member.mention} is not in support members",
                     color=disnake.Color.red()
                 )
-                await interaction.edit_original_message(
+                await interaction.edit_original_response(
                     embed=embed
                 )
 
@@ -1203,7 +1198,7 @@ class TicketSystem(commands.Cog):
                     description=f"{role.mention} removed from support roles",
                     color=disnake.Color.green()
                 )
-                await interaction.edit_original_message(
+                await interaction.edit_original_response(
                     embed=embed
                 )
 
@@ -1213,7 +1208,7 @@ class TicketSystem(commands.Cog):
                     description=f"{role.mention} is not in support roles",
                     color=disnake.Color.red()
                 )
-                await interaction.edit_original_message(
+                await interaction.edit_original_response(
                     embed=embed
                 )
 
@@ -1244,7 +1239,7 @@ class TicketSystem(commands.Cog):
             description=f"`»`Support members:\n{support_members}\n`»`Support roles:\n{support_roles}",
             color=disnake.Color.green()
         )
-        await interaction.edit_original_message(
+        await interaction.edit_original_response(
             embed=embed
         )
 
@@ -1286,7 +1281,7 @@ class TicketSystem(commands.Cog):
                 description=f"{role.mention} added to ping roles",
                 color=disnake.Color.green()
             )
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -1296,7 +1291,7 @@ class TicketSystem(commands.Cog):
                 description="Please specify a member or a role!",
                 color=disnake.Color.red()
             )
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -1327,7 +1322,7 @@ class TicketSystem(commands.Cog):
                     description=f"{role.mention} removed from ping roles",
                     color=disnake.Color.green()
                 )
-                await interaction.edit_original_message(
+                await interaction.edit_original_response(
                     embed=embed
                 )
 
@@ -1337,7 +1332,7 @@ class TicketSystem(commands.Cog):
                     description=f"{role.mention} is not in ping roles",
                     color=disnake.Color.red()
                 )
-                await interaction.edit_original_message(
+                await interaction.edit_original_response(
                     embed=embed
                 )
 
@@ -1364,7 +1359,7 @@ class TicketSystem(commands.Cog):
             description=f"`»`Pinged roles:\n{ping_roles}",
             color=disnake.Color.green()
         )
-        await interaction.edit_original_message(
+        await interaction.edit_original_response(
             embed=embed
         )
 
