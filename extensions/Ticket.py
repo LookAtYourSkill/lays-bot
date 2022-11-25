@@ -26,6 +26,8 @@ class open_message(disnake.ui.View):
         interaction: disnake.MessageInteraction
     ):
 
+        await interaction.response.defer()
+
         # Load all jsons
         with open("json/tickets.json", "r") as f:
             ticket_data = json.load(f)
@@ -62,7 +64,7 @@ class open_message(disnake.ui.View):
                 color=disnake.Color.green()
             )
             view = close_message()
-            await interaction.response.send_message(
+            await interaction.edit_original_response(
                 embed=open_embed,
                 view=view
             )
@@ -107,6 +109,9 @@ class open_message(disnake.ui.View):
         button: disnake.ui.Button,
         interaction: disnake.MessageInteraction
     ):
+
+        await interaction.response.defer()
+
         if interaction.author.guild_permissions.manage_channels:
 
             # Load all jsons
@@ -180,6 +185,9 @@ class open_message(disnake.ui.View):
         button: disnake.ui.Button,
         interaction: disnake.MessageInteraction
     ):
+
+        await interaction.response.defer()
+
         if interaction.author.guild_permissions.manage_channels:
             # Load all jsons
             with open("json/tickets.json", "r") as f:
@@ -220,7 +228,7 @@ class open_message(disnake.ui.View):
                         description=f"Ticket Saved in <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}>",
                         color=disnake.Color.blue()
                     )
-                    await interaction.response.send_message(
+                    await interaction.edit_original_response(
                         embed=save_embed
                     )
 
@@ -287,6 +295,8 @@ class close_message(disnake.ui.View):
         interaction: disnake.MessageInteraction
     ):
 
+        await interaction.response.defer()
+
         # Load all jsons and json stuff
         with open("json/tickets.json", "r") as f:
             ticket_data = json.load(f)
@@ -320,7 +330,7 @@ class close_message(disnake.ui.View):
             color=disnake.Color.yellow()
         )
         view = open_message()
-        await interaction.response.send_message(
+        await interaction.edit_original_response(
             embed=close_embed,
             view=view
         )
@@ -383,6 +393,8 @@ class ticket_message(disnake.ui.View):
         button: disnake.ui.Button,
         interaction: disnake.MessageInteraction
     ):
+
+        await interaction.response.defer(ephemeral=True)
 
         # Load all jsons
         with open("json/guild.json", "r", encoding="UTF-8") as f:
@@ -454,7 +466,7 @@ class ticket_message(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_response(
                 content=f"_General Ticket successfully created!_ <#{ticket.id}>",
                 ephemeral=True
             )
@@ -507,6 +519,8 @@ class ticket_message(disnake.ui.View):
         button: disnake.ui.Button,
         interaction: disnake.MessageInteraction
     ):
+
+        await interaction.response.defer(ephemeral=True)
 
         # Load all jsons
         with open("json/guild.json", "r", encoding="UTF-8") as f:
@@ -579,7 +593,7 @@ class ticket_message(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_response(
                 content=f"_Moderation ticket successfully created!_ <#{ticket.id}>",
                 ephemeral=True
             )
@@ -628,6 +642,8 @@ class ticket_message(disnake.ui.View):
         button: disnake.ui.Button,
         interaction: disnake.MessageInteraction
     ):
+
+        await interaction.edit_original_response(ephermal=True)
 
         # Load all jsons
         with open("json/guild.json", "r", encoding="UTF-8") as f:
@@ -702,7 +718,7 @@ class ticket_message(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_response(
                 content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
                 ephemeral=True
             )
@@ -758,6 +774,8 @@ class tjan_ticket(disnake.ui.View):
         interaction: disnake.MessageInteraction
     ):
 
+        await interaction.edit_original_response(ephemeral=True)
+
         # Load all jsons
         with open("json/guild.json", "r", encoding="UTF-8") as f:
             guild_data = json.load(f)
@@ -772,7 +790,7 @@ class tjan_ticket(disnake.ui.View):
             )
 
             ticket = await interaction.guild.create_text_channel(
-                name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
+                name=f"mc-ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
                 reason="Ticketsystem",
                 category=ticket_category_id,
                 overwrites={
@@ -799,7 +817,7 @@ class tjan_ticket(disnake.ui.View):
 
             # Change channel name and create embed
             await ticket.edit(
-                topic=f"Support Ticket | {interaction.author.name}"
+                topic=f"Minecraft Support Ticket | {interaction.author.name}"
             )
             begin_embed = disnake.Embed(
                 description="Support will be shortly with you! To close the ticket react with 🔒\n"
@@ -825,7 +843,7 @@ class tjan_ticket(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_response(
                 content=f"_Support Ticket successfully created!_ <#{ticket.id}>",
                 ephemeral=True
             )
@@ -875,6 +893,8 @@ class tjan_ticket(disnake.ui.View):
         interaction: disnake.MessageInteraction
     ):
 
+        await interaction.response.defer(ephemeral=True)
+
         # Load all jsons
         with open("json/guild.json", "r", encoding="UTF-8") as f:
             guild_data = json.load(f)
@@ -888,7 +908,7 @@ class tjan_ticket(disnake.ui.View):
                 id=guild_data[str(interaction.guild.id)]["ticket_category"]
             )
             ticket = await interaction.guild.create_text_channel(
-                name=f"ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
+                name=f"mc-ticket-{ticket_data[str(interaction.guild.id)]['ticket_counter']}",
                 reason="Ticketsystem",
                 category=ticket_category_id,
                 overwrites={
@@ -918,7 +938,7 @@ class tjan_ticket(disnake.ui.View):
 
             # Change channel name and create embed
             await ticket.edit(
-                topic=f"Moderation Ticket | {interaction.author.name}"
+                topic=f"Minecraft Bug Ticket | {interaction.author.name}"
             )
             begin_embed = disnake.Embed(
                 description="Support will be shortly with you! To close the ticket react with 🔒\n"
@@ -943,7 +963,7 @@ class tjan_ticket(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.response.send_message(
+            await interaction.edit_original_response(
                 content=f"_Ticket successfully created!_ <#{ticket.id}>",
                 ephemeral=True
             )
