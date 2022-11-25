@@ -1069,7 +1069,7 @@ class TicketSystem(commands.Cog):
             # Create embed
             view = tjan_ticket()
             ticket_embed = disnake.Embed(
-                title="Ticketsystem",
+                title="Minecraft Ticketsystem",
                 description="Reagiere mit 🔨 oder ❔ um ein Ticket zu erstellen!",
                 color=disnake.Color.green()
             )
