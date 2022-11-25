@@ -46,7 +46,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -59,7 +59,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -72,7 +72,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -94,7 +94,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -104,7 +104,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -134,7 +134,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -147,7 +147,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -160,7 +160,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -173,7 +173,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
@@ -186,7 +186,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.edit_original_response(
                 embed=embed
             )
 
