@@ -797,12 +797,15 @@ class Twitch(commands.Cog):
                             # !! twitch_data[streamer][server]["game_list"] = []
 
                             # to delete the data -> less data traffic
-                            if twitch_data[streamer]:
-                                del twitch_data[streamer]
-                                with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
-                                    json.dump(twitch_data, f, indent=4)
-                            else:
-                                pass
+                            try:
+                                if twitch_data[streamer]:
+                                    del twitch_data[streamer]
+                                    with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
+                                        json.dump(twitch_data, f, indent=4)
+                                else:
+                                    pass
+                            except KeyError:
+                                print()
                         else:
                             # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
                             try:
