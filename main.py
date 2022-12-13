@@ -22,14 +22,14 @@ async def status_task():
             activity=disnake.Activity(
                 type=disnake.ActivityType.listening,
                 name=f"{len(bot.guilds)} servers"),
-            status=disnake.Status.idle
+            status=disnake.Status.online
         )
         await asyncio.sleep(1800)
         await bot.change_presence(
             activity=disnake.Activity(
                 type=disnake.ActivityType.listening,
                 name=f"{len(bot.guilds)} servers"),
-            status=disnake.Status.idle
+            status=disnake.Status.online
         )
         await asyncio.sleep(1800)
 
