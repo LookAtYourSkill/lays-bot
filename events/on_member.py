@@ -12,7 +12,7 @@ class onJoin(commands.Cog):
     @commands.Cog.listener()
     async def on_member_join(
         self,
-        member
+        member: disnake.Member
     ):
         with open("json/guild.json", "r") as f:
             guild_data = json.load(f)
@@ -112,7 +112,7 @@ class onJoin(commands.Cog):
                     embed.set_footer(
                         text=f"ID: {member.id}"
                     )
-                    channel = self.bot.get_channel(
+                    channel: disnake.TextChannel = self.bot.get_channel(
                         guild_data[str(member.guild.id)]["mod_channel"]
                     )
                     await channel.send(
