@@ -30,7 +30,7 @@ class join_to_create(commands.Cog):
                 try:
                     if after.channel.id == channel.id:
                         new_voice = await member.guild.create_voice_channel(
-                            name=f"║🔊・{member.name}'s channel",
+                            name=f"{member.name}'s channel",
                             category=category,
                             overwrites={
                                 member: disnake.PermissionOverwrite(
