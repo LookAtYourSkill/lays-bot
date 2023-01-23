@@ -7,7 +7,7 @@ from isodate import parse_duration
 with open("json/youtube-watchlist.json", 'r', encoding='UTF-8') as data_file:
     watchlist_data = json.load(data_file)
 
-with open('json/youtube-config.json', 'r', encoding='UTF-8') as config_file:
+with open('etc/youtube-config.json', 'r', encoding='UTF-8') as config_file:
     config = json.load(config_file)
 
 # ! WORKING
