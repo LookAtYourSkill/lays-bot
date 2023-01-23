@@ -104,11 +104,37 @@ class Youtube(commands.Cog):
                                                     data[youtuberName][discordServer][youtuberName]["videoTitle"] = newVideo[0]["snippet"]["title"]
                                                     data[youtuberName][discordServer][youtuberName]["thumbnail"] = newVideo[0]["snippet"]["thumbnails"]["high"]["url"]
                                                     data[youtuberName][discordServer][youtuberName]["videoId"] = newVideoId
-                                                    data[youtuberName][discordServer][youtuberName]["channelName"] = data[youtuberName][discordServer][youtuberName]["channelName"]
+                                                    data[youtuberName][discordServer][youtuberName]["channelName"] = youtuberName
 
                                                     # write to json file
                                                     with open("json/youtube.json", "w") as data_file:
                                                         json.dump(data, data_file, indent=4)
+
+                                                    date_string = data[youtuberName][discordServer][youtuberName]["publishedAt"]
+                                                    # make timestamp readable with datetime
+                                                    published = datetime.strptime(date_string, "%Y-%m-%dT%H:%M:%SZ").timestamp()
+
+                                                    notifyEmbed = disnake.Embed(
+                                                        title=data[youtuberName][discordServer][youtuberName]["videoTitle"],
+                                                        url=f"https://www.youtube.com/watch?v={data[youtuberName][discordServer][youtuberName]['videoId']}",
+                                                        color=disnake.Color.red()
+                                                    )
+                                                    notifyEmbed.add_field(
+                                                        name="Uploaded",
+                                                        value=disnake.utils.format_dt(datetime.fromtimestamp(published), style="F"),
+                                                        inline=False
+                                                    )
+                                                    notifyEmbed.set_image(url=data[youtuberName][discordServer][youtuberName]["thumbnail"])
+                                                    notifyEmbed.set_author(name=f"{youtuberName} hat ein neues Video", url=f"https://www.youtube.com/channel/{channelId}")
+
+                                                    # send notification
+                                                    notificationChannel: disnake.TextChannel = await self.bot.fetch_channel(int(guild[str(discordServer)]["youtube-notificationChannel"]))
+
+                                                    if notificationChannel:
+                                                        await notificationChannel.send(content="@everyone neuer Knüller OMG!!!!", embed=notifyEmbed)
+                                                    else:
+                                                        print("notificationChannel is None")
+                                                        pass
                                                 else:
                                                     print("oldTimeStamp is newer than newTimeStamp")
                                                     # oldTimeStamp is newer than newTimeStamp
