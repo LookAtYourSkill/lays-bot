@@ -102,7 +102,7 @@ class Youtube(commands.Cog):
                                                     data[youtuberName][discordServer][youtuberName] = {}
                                                     data[youtuberName][discordServer][youtuberName]["publishedAt"] = newVideo[0]["snippet"]["publishedAt"]
                                                     data[youtuberName][discordServer][youtuberName]["videoTitle"] = newVideo[0]["snippet"]["title"]
-                                                    data[youtuberName][discordServer][youtuberName]["thumbnail"] = newVideo[0]["snippet"]["thumbnails"]["high"]["url"]
+                                                    data[youtuberName][discordServer][youtuberName]["thumbnail"] = f"https://i3.ytimg.com/vi/{newVideoId}/maxresdefault.jpg "
                                                     data[youtuberName][discordServer][youtuberName]["videoId"] = newVideoId
                                                     data[youtuberName][discordServer][youtuberName]["channelName"] = youtuberName
 
@@ -124,7 +124,7 @@ class Youtube(commands.Cog):
                                                         value=disnake.utils.format_dt(datetime.fromtimestamp(published), style="F"),
                                                         inline=False
                                                     )
-                                                    notifyEmbed.set_image(url=data[youtuberName][discordServer][youtuberName]["thumbnail"])
+                                                    notifyEmbed.set_image(url=f"https://i3.ytimg.com/vi/{newVideoId}/maxresdefault.jpg")
                                                     notifyEmbed.set_author(name=f"{youtuberName} hat ein neues Video", url=f"https://www.youtube.com/channel/{channelId}")
 
                                                     # send notification
