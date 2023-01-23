@@ -104,7 +104,7 @@ class Youtube(commands.Cog):
                                                     data[youtuberName][discordServer][youtuberName]["videoTitle"] = newVideo[0]["snippet"]["title"]
                                                     data[youtuberName][discordServer][youtuberName]["thumbnail"] = newVideo[0]["snippet"]["thumbnails"]["high"]["url"]
                                                     data[youtuberName][discordServer][youtuberName]["videoId"] = newVideoId
-                                                    data[youtuberName][discordServer][youtuberName]["channelName"] = data[youtuberName][discordServer]["channelName"]
+                                                    data[youtuberName][discordServer][youtuberName]["channelName"] = data[youtuberName][discordServer][youtuberName]["channelName"]
 
                                                     # write to json file
                                                     with open("json/youtube.json", "w") as data_file:
