@@ -5,7 +5,6 @@ import datetime
 import disnake
 from disnake.ext import commands
 
-from archive.checks._check_license import check_license
 
 
 class Info(commands.Cog):
@@ -23,7 +22,6 @@ class Info(commands.Cog):
         global startTime
         startTime = round(datetime.datetime.timestamp(datetime.datetime.now()))
 
-    @check_license()
     @commands.slash_command(
         name="info",
         description="Command Group for info"

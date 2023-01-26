@@ -2,7 +2,6 @@ import disnake
 from disnake.ext import commands
 import json
 
-from archive.checks._check_license import check_license
 
 
 class joinToCreate(commands.Cog):
@@ -15,7 +14,6 @@ class joinToCreate(commands.Cog):
     ):
         self.bot: commands.Bot = bot
 
-    @check_license()
     @commands.slash_command(
         name="join_to_create",
     )

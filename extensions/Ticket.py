@@ -5,7 +5,6 @@ import json
 import pytz
 import os
 
-from archive.checks._check_license import check_license
 from checks._force_guild_check import right_guild
 
 
@@ -1007,7 +1006,6 @@ class TicketSystem(commands.Cog):
         self.bot: commands.Bot = bot
         self.persistent_views_added = False
 
-    @check_license()
     @commands.slash_command(
         name="ticket",
     )

@@ -4,8 +4,6 @@ import sys
 import disnake
 from disnake.ext import commands
 
-from archive.checks._check_license import check_license
-
 
 class About(commands.Cog):
     '''
@@ -19,7 +17,7 @@ class About(commands.Cog):
         self.version = "EARLY ACCESS"
         self.prefix = "/"
 
-    @check_license()
+    
     @commands.slash_command(
         name="about",
         description="Command Group for about the bot"

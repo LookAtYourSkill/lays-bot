@@ -2,7 +2,6 @@ import disnake
 import json
 from disnake.ext import commands
 
-from archive.checks._check_license import check_license
 
 
 class AntiAlt(commands.Cog):
@@ -15,7 +14,7 @@ class AntiAlt(commands.Cog):
     ):
         self.bot: commands.Bot = bot
 
-    @check_license()
+    
     @commands.has_permissions(administrator=True)
     @commands.slash_command(name="antialt", description="Anti Alt Group Command")
     async def antialt(self, interaction: disnake.ApplicationCommandInteraction):

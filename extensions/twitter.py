@@ -3,7 +3,6 @@ from disnake.ext import commands
 from datetime import datetime
 
 from utils.twitter import get_user
-from archive.checks._check_license import check_license
 
 
 class Twitter(commands.Cog):
@@ -16,7 +15,6 @@ class Twitter(commands.Cog):
     ):
         self.bot: commands.Bot = bot
 
-    @check_license()
     @commands.slash_command(
         name="twitter",
         description="Group command for Twitter"

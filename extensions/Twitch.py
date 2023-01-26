@@ -7,7 +7,6 @@ from textwrap import dedent
 
 import colorama
 import disnake
-from archive.checks._check_license import check_license
 from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams
@@ -27,7 +26,6 @@ class Twitch(commands.Cog):
         self.update.start()
         self.bot_png = "https://cdn.discordapp.com/avatars/947634210657681478/5b9dd998fbec81dcaf58340de0b98d9b.png?size=1024"
 
-    @check_license()
     @commands.slash_command(
         name="twitch",
         description="Group for twitch commands"
