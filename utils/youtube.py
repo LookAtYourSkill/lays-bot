@@ -4,14 +4,11 @@ import colorama
 import requests
 from isodate import parse_duration
 
-with open("json/youtube-watchlist.json", 'r', encoding='UTF-8') as data_file:
-    watchlist_data = json.load(data_file)
-
 with open('etc/youtube-config.json', 'r', encoding='UTF-8') as config_file:
     config = json.load(config_file)
 
 # ! WORKING
-def convert_usernamne_to_id(username, api_key = config["installed"]["client_secret"]):
+def convert_usernamne_to_id(username, api_key = config["apiKeyChannelId"]):
     # make request to youtube api with search parameters
     url = f"https://www.googleapis.com/youtube/v3/search?part=snippet&q={username}&type=channel&key={api_key}"
     # get response from request
@@ -35,7 +32,7 @@ def convert_usernamne_to_id(username, api_key = config["installed"]["client_secr
         print(f"{colorama.Fore.RED} [CONVERT ERROR] {e} {colorama.Fore.RESET}")
 
 # ! WORKING
-def get_channel_info(channel_id, api_key = config["installed"]["client_secret"]):
+def get_channel_info(channel_id, api_key = config["apiKeyChannelInfo"]):
     # make request to youtube api for channel info
     url = f"https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics&id={channel_id}&key={api_key}"
     # get response from request
@@ -63,7 +60,7 @@ def get_channel_info(channel_id, api_key = config["installed"]["client_secret"])
         print(f"{colorama.Fore.RED} [CHANNEL INFO ERROR] {e} {colorama.Fore.RESET}")
 
 # ! WORKING
-def get_latest_videos(channel_id, api_key = config["installed"]["client_secret"]):
+def get_latest_videos(channel_id, api_key = config["apiKeyLastestVideo"]):
     # make request to youtube api with search parameters
     url = f"https://www.googleapis.com/youtube/v3/search?key={api_key}&channelId={channel_id}&part=snippet,id&order=date&maxResults=1"
     # get response from request
@@ -92,7 +89,7 @@ def get_latest_videos(channel_id, api_key = config["installed"]["client_secret"]
 
 
 # ! WORKING 
-def is_short(video_id: str, checkTime: int = 60, api_key = config["installed"]["client_secret"]):
+def is_short(video_id: str, checkTime: int = 60, api_key = config["apiKeyChannelInfo"]):
     # make request to youtube api with search parameters
     url = f"https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id={video_id}&key={api_key}"
     # get response from request
@@ -106,7 +103,7 @@ def is_short(video_id: str, checkTime: int = 60, api_key = config["installed"]["
     # convert duration to seconds
     total_seconds = int(duration.total_seconds()) 
     # check if video duration is less than the checkTime parameter seconds
-    if total_seconds <= checkTime:
+    if total_seconds <= int(checkTime):
         # * video is short
         # return true if video is less than checkTime parameter seconds
         return True
@@ -116,7 +113,7 @@ def is_short(video_id: str, checkTime: int = 60, api_key = config["installed"]["
         return False
 
 # ! seems working
-def check_title(video_id: str, sentence: str = "Tjan Reaktion", api_key = config["installed"]["client_secret"]):
+def check_title(video_id: str, sentence: str = "Tjan Reaktion", api_key = config["apiKeyChannelInfo"]):
     # make request to youtube api with search parameters
     url = f"https://www.googleapis.com/youtube/v3/videos?part=snippet&id={video_id}&key={api_key}"
     # get response from request
