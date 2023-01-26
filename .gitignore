@@ -1,0 +1,8 @@
+__pycache__
+json
+etc/config.json
+test.py
+etc/youtube-config.json
+archive
+extensions/youtube.py
+utils/youtube.py
