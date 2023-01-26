@@ -9,4 +9,5 @@ def right_guild(target_id: disnake.Guild):
             return True
         else:
             raise commands.CheckFailure("You are not allowed to use this command.")
+
     return commands.check(predicate)
