@@ -515,9 +515,9 @@ class Twitch(commands.Cog):
     async def check_streams(self):
         await self.bot.wait_until_ready()
 
-        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH UPDATE] [TASK] Starting update... {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [TASK] Starting update... {colorama.Fore.RESET}")
         update_streams()
-        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH UPDATE] [DONE] Finished update! {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [DONE] Finished update! {colorama.Fore.RESET}")
 
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH NOTIFICATION] [TASK] Checking twitch streams...{colorama.Fore.RESET}")
 
@@ -700,7 +700,7 @@ class Twitch(commands.Cog):
 
     @loop(minutes=15)
     async def update(self):
-        print(f"{colorama.Fore.LIGHTMAGENTA_EX} [TWITCH UPDATE] [TASK] Starting message update... {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [TASK] Starting message update... {colorama.Fore.RESET}")
         # !! print(f"{colorama.Fore.MAGENTA} [TWITCH] [TASK] Starting update... {colorama.Fore.RESET}")
         # !! update_streams()
         # !! print(f"{colorama.Fore.MAGENTA} [TWITCH] [UPDATE] Files updated! {colorama.Fore.RESET}")
@@ -867,7 +867,7 @@ class Twitch(commands.Cog):
                         # ! print(f"{colorama.Fore.RED} [TWITCH UPDATE] [ERROR] No message and no channel found... , '{streamer}' {colorama.Fore.RESET}")
                 else:
                     continue
-        print(f"{colorama.Fore.MAGENTA} [TWITCH UPDATE] [DONE] Finished updating messages! {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [DONE] Finished updating messages! {colorama.Fore.RESET}")
 
         # TODO create function, that updates the embed as long as the streamer is live
         # TODO store the message in a json file, so it can be used later (for every streamer and server)
