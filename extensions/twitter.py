@@ -3,7 +3,7 @@ from disnake.ext import commands
 from datetime import datetime
 
 from utils.twitter import get_user
-from checks._check_license import check_license
+from archive.checks._check_license import check_license
 
 
 class Twitter(commands.Cog):

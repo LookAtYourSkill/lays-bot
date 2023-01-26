@@ -28,6 +28,7 @@ class on_guild_add(commands.Cog):
             "server_name": f"{str(guild.name)}",
             "server_id": f"{str(guild.id)}",
             "notify_channel": False,
+            "youtube-notificationChannel": False,
             "ticket_category": False,
             "closed_ticket_category": False,
             "ticket_log_channel": False,
@@ -38,8 +39,9 @@ class on_guild_add(commands.Cog):
             "mod_channel": False,
             "welcome_channel": False,
             "join_role": False,
-            "license": [],
             "watchlist": [],
+            "youtubeWatchlist": [],
+            "youtube_notifications": "off",
             "twitch_with_everyone_or_pingrole": "off",
             "twitch_notifications": "off",
             "twitch_ping_role": []
@@ -62,31 +64,6 @@ class on_guild_add(commands.Cog):
         with open("json/tickets.json", "w") as f:
             json.dump(ticket_data, f, indent=4)
 
-        with open("json/active_check.json", "r") as f:
-            active_data = json.load(f)
-
-        active_data[guild.id] = {
-            "about": True,
-            "antialt": True,
-            "changelog": True,
-            "help": True,
-            "info": True,
-            "license": True,
-            "meme": True,
-            "moderation": True,
-            "owner": False,
-            "music": False,
-            "roles": True,
-            "setup": True,
-            "suggestion": True,
-            "ticket": True,
-            "timer": False,
-            "twitter": False,
-            "twitch": True
-        }
-
-        with open("json/active_check.json", "w") as dumpfile:
-            json.dump(active_data, dumpfile, indent=4)
 
         with open("json/settings.json", "r") as f:
             settings_data = json.load(f)

@@ -7,7 +7,7 @@ from textwrap import dedent
 
 import colorama
 import disnake
-from checks._check_license import check_license
+from archive.checks._check_license import check_license
 from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams

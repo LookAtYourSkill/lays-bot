@@ -2,7 +2,7 @@ import disnake
 import json
 from disnake.ext import commands
 
-from checks._check_license import check_license
+from archive.checks._check_license import check_license
 
 
 class AntiAlt(commands.Cog):

@@ -5,7 +5,7 @@ import json
 import pytz
 import os
 
-from checks._check_license import check_license
+from archive.checks._check_license import check_license
 from checks._force_guild_check import right_guild
 
 
