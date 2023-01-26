@@ -9,6 +9,7 @@ from disnake.ext.tasks import loop
 
 from utils.youtube import (check_title, convert_usernamne_to_id,
                            get_latest_videos, is_short)
+from checks._force_guild_check import right_guild
 
 
 class Youtube(commands.Cog):
@@ -191,7 +192,7 @@ class Youtube(commands.Cog):
         
         print(f"{colorama.Fore.LIGHTMAGENTA_EX} [YOUTUBE NOTIFICATION] [DONE] Finished checking videos! {colorama.Fore.RESET}")
 
-    @commands.has_permissions(administrator=True)
+    @right_guild(813318225655496724)
     @commands.slash_command(name="youtube", description="Zeigt dir die neuesten Videos von einem Youtuber an")
     async def youtube(self, interaction: disnake.ApplicationCommandInteraction):
         pass
@@ -412,7 +413,7 @@ class Youtube(commands.Cog):
                 embed=embed
             )
     
-    @commands.has_permissions(administrator=True)
+    @right_guild(813318225655496724)
     @youtube.sub_command_group("set", description="Überkategorie für die Einstellungen der Watchlist")
     async def youtube_set(self, interaction: disnake.ApplicationCommandInteraction):
         pass
