@@ -722,7 +722,7 @@ class Twitch(commands.Cog):
                     # check if a message_id and a notificaion channel are set
                     if twitch_data_copy[streamer][server]["message_id"] is not None and guild_data[server]["notify_channel"] is not None:
 
-                        twitch_data_copy[streamer][server]["last_update"] = datetime.now().timestamp()
+                        twitch_data_copy[streamer][server]["last_update"] = datetime.now(tz=None).timestamp()
 
                         # check if status from the streamer is live or offline
                         if twitch_data_copy[streamer][server]["status"] == "offline":
