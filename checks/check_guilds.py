@@ -77,7 +77,8 @@ class guildCheck(commands.Cog):
                 # if not add it to the json file
                 # !! print(f"{___guild.name} has been added to the settings list")
                 settings_data[___guild.id] = {
-                    "anti_alt_days": 7
+                    "anti_alt_days": 7,
+                    "standard_avatar_check": False
                 }
 
                 with open("json/settings.json", "w") as dumpfile:

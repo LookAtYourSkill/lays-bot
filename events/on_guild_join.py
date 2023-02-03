@@ -69,7 +69,8 @@ class on_guild_add(commands.Cog):
             settings_data = json.load(f)
 
         settings_data[guild.id] = {
-            "anti_alt_days": 7
+            "anti_alt_days": 7,
+            "standard_avatar_check": False
         }
 
         with open("json/settings.json", "w") as dumpfile:
