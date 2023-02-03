@@ -511,6 +511,8 @@ class Twitch(commands.Cog):
                 embed=embed
             )
 
+    # TODO: add options to get only a few part of the embed such as viewers, game, title, etc.
+    # TODO: add commands to add those options
     @loop(seconds=300)
     async def check_streams(self):
         await self.bot.wait_until_ready()
