@@ -5,17 +5,21 @@ import json
 
 class onMessage(commands.Cog):
     def __init__(self, bot):
-        self.bot = bot
+        self.bot: disnake.Client = bot
 
     @commands.Cog.listener()
     async def on_message_delete(
         self,
-        message
+        message: disnake.Message
     ):
         with open("json/guild.json", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
         if message.author.bot:
+            return
+
+        # check if message is in dm
+        if message.channel.type.private:
             return
 
         elif message.attachments:
@@ -58,19 +62,24 @@ class onMessage(commands.Cog):
     @commands.Cog.listener()
     async def on_message_edit(
         self,
-        before,
-        after
+        before: disnake.Message,
+        after: disnake.Message
     ):
         with open("json/guild.json", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
         if before.author.bot:
             return
+        
+        # check if message is in dm
+        if before.channel.type.private:
+            return
 
         elif not guild_data[str(before.author.guild.id)]["msg_channel"]:
             return
 
         else:
+            # check if message is edited
             if before.content != after.content:
                 channel = self.bot.get_channel(
                     guild_data[str(after.guild.id)]["msg_channel"]
@@ -91,10 +100,13 @@ class onMessage(commands.Cog):
                 )
 
                 if guild_data[str(before.author.guild.id)]["msg_channel"]:
+                    # channel is set
                     await channel.send(embed=embed)
                 else:
+                    # channel isnt set
                     pass
             else:
+                # message isnt edited
                 pass
 
 
