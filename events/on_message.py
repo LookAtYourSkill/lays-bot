@@ -18,8 +18,7 @@ class onMessage(commands.Cog):
         if message.author.bot:
             return
 
-        # check if message is in dm
-        if message.channel.type.private:
+        if not message.guild:
             return
 
         elif message.attachments:
@@ -72,7 +71,7 @@ class onMessage(commands.Cog):
             return
         
         # check if message is in dm
-        if before.channel.type.private:
+        if not before.guild:
             return
 
         elif not guild_data[str(before.author.guild.id)]["msg_channel"]:
