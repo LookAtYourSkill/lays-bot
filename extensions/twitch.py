@@ -2,6 +2,7 @@ import json
 import time
 import copy
 from typing import Optional
+import datetime
 from datetime import datetime
 from textwrap import dedent
 
@@ -9,7 +10,7 @@ import colorama
 import disnake
 from disnake.ext import commands
 from disnake.ext.tasks import loop
-from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams
+from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams, averageCalculation
 
 
 class Twitch(commands.Cog):
@@ -534,6 +535,9 @@ class Twitch(commands.Cog):
         with open("json/twitch_updates.json", "r", encoding="UTF-8") as twitch_file:
             twitch_data: dict = json.load(twitch_file)
 
+        with open("json/settings.json", "r", encoding="UTF-8") as settings_file:
+            settings_data: dict = json.load(settings_file)
+
         with open("json/guild.json", "r", encoding="UTF-8") as file:
             for guild in json.load(file).values():
                 # ! print(f"{colorama.Fore.MAGENTA} -----------------------------------------------------: {i['server_name']} [{i['notify_channel']}] {colorama.Fore.RESET}")
@@ -595,41 +599,67 @@ class Twitch(commands.Cog):
                                                     online_users.append(user_name)
 
                                                     # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
+                                                    # catch exception if channel is not found
                                                     try:
+                                                        # check if channel is set
                                                         if guild["notify_channel"]:
+                                                            # check if streamer is in twitch_updates.json
                                                             if twitch_data[stream['user_login']]:
+                                                                # get the channel
                                                                 notify_channel = await self.bot.fetch_channel(guild["notify_channel"])
-
+                                                                
+                                                                # create embed
                                                                 embed = disnake.Embed(
                                                                     title=f"{stream['title']}",
                                                                     color=disnake.Color.purple(),
                                                                     url=f"https://www.twitch.tv/{stream['user_login']}"
                                                                 )
-                                                                embed.add_field(
-                                                                    name="Streamer",
-                                                                    value=f"`{stream['user_name']}`",
-                                                                    inline=True
-                                                                )
-                                                                embed.add_field(
-                                                                    name="Game",
-                                                                    value=f"`{stream['game_name']}`",
-                                                                    inline=True
-                                                                )
-                                                                embed.add_field(
-                                                                    name="Viewer",
-                                                                    value=f"`{stream['viewer_count']}`",
-                                                                    inline=True
-                                                                )
-                                                                embed.set_thumbnail(
-                                                                    url=twitch_data[stream['user_login']][guild['server_id']]['profile_pic']
-                                                                )
+
+                                                                # check if guild wants to see the streamers name in first embed
+                                                                if settings_data[guild['server_id']]["twitch_with_streamer"]:
+                                                                    # if so add a field with the streamers name
+                                                                    embed.add_field(
+                                                                        name="Streamer",
+                                                                        value=f"`{stream['user_name']}`",
+                                                                        inline=True
+                                                                    )
+
+                                                                # check if guild wants to see the game in first embed
+                                                                if settings_data[guild['server_id']]["twitch_with_game"]:
+                                                                    # if so add a field with the game
+                                                                    embed.add_field(
+                                                                        name="Game",
+                                                                        value=f"`{stream['game_name']}`",
+                                                                        inline=True
+                                                                    )
+
+                                                                # check if guild wants to see the viewer count in first embed
+                                                                if settings_data[guild['server_id']]["twitch_with_viewer"]:
+                                                                    # if so add a field with the viewer count
+                                                                    embed.add_field(
+                                                                        name="Viewer",
+                                                                        value=f"`{stream['viewer_count']}`",
+                                                                        inline=True
+                                                                    )
+
+                                                                # check if guild wants to see the thumbnail as a profile pircture in first embed
+                                                                if settings_data[guild['server_id']]["twitch_with_thumbnail"]:
+                                                                    # if so set the thumbnail to the streamers profile picture
+                                                                    embed.set_thumbnail(
+                                                                        url=twitch_data[stream['user_login']][guild['server_id']]['profile_pic']
+                                                                    )
+                                                                
+                                                                # set the author to the streamer, so link, icon and name
                                                                 embed.set_author(
                                                                     name=stream['user_login'],
                                                                     icon_url=twitch_data[stream['user_login']][guild['server_id']]['profile_pic'],
                                                                     url=f"https://www.twitch.tv/{stream['user_login']}"
                                                                 )
+                                                                # set the image to the stream thumbnail
+                                                                # ?state={datetime.datetime.now(tz=None).timestamp()} is used to get the preview image from the stream in real time
+                                                                # so there will be displayed the newest thumbnail
                                                                 embed.set_image(
-                                                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg"
+                                                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg?state={datetime.now(tz=None).timestamp()}"
                                                                 )
                                                                 embed.set_footer(
                                                                     text="Live Notifications by Lays Bot",
@@ -711,6 +741,8 @@ class Twitch(commands.Cog):
             twitch_data = json.load(f)
         with open("json/guild.json", "r", encoding='UTF-8') as f:
             guild_data = json.load(f)
+        with open("json/settings.json", "r", encoding='UTF-8') as f:
+            settings_data = json.load(f)
 
         # create copy to use data from file and make changes
         twitch_data_copy = copy.copy(twitch_data)
@@ -749,6 +781,8 @@ class Twitch(commands.Cog):
                             minutes = without_end_time_difference.split(":")[1]
                             seconds = without_end_time_difference.split(":")[2]
 
+                            # check if there are days in the time difference
+                            # if so split it into days, hours, minutes and seconds
                             if "days" in without_end_time_difference or "day" in without_end_time_difference:
                                 days = without_end_time_difference.split(",")[0].split(" ")[0]
                                 hours = without_end_time_difference.split(",")[1].split(":")[0].strip()
@@ -758,27 +792,35 @@ class Twitch(commands.Cog):
                             else:
                                 day_string = f"{hours}h {minutes}m {seconds}s"
 
+                            # loop through all games which were played and add them to a list
                             for game in twitch_data_copy[streamer][server]["game_list"]:
                                 gamelist.append(f"- `{game}`")
 
+                            # create embed
                             embed = disnake.Embed(
                                 title="Stream is offline",
                                 # !! url=f"https://www.twitch.tv/{streamer}",
                                 color=disnake.Color.purple()
                             )
+
+                            # set author to the streamer and add a link to the streamer aswell as a profile picture
                             embed.set_author(
                                 name=streamer,
                                 icon_url=twitch_data_copy[streamer][server]["profile_pic"],
                                 url=f"https://www.twitch.tv/{streamer}"
                             )
+
+                            # add a field for the streams information
                             embed.add_field(
                                 name="__Information__",
                                 value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
-                                      f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
+                                      f"**Average Viewer**: `{averageCalculation(twitch_data_copy[streamer][server]['viewer_count_list'])}\n"
                                       f"**Games played**: {newline}{f'{newline}'.join(gamelist)}\n",
                                       # !! f"**Games played**: {newline}`{f'{newline}- '.join(twitch_data_copy[streamer][server]['game_list'] if twitch_data_copy[streamer][server]['game_list'] else twitch_data_copy[streamer][server]['game_name'])}`\n",
                                 inline=False
                             )
+
+                            # add a field for the streams duration
                             embed.add_field(
                                 name="__Durations__",
                                 value=f"`Started`: {disnake.utils.format_dt(twitch_data_copy[streamer][server]['started_at'], style='F')}\n"
@@ -812,41 +854,56 @@ class Twitch(commands.Cog):
                         else:
                             # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
                             try:
-
+                                
+                                # define variables
                                 channel: disnake.TextChannel = await self.bot.fetch_channel(twitch_data[streamer][server]["channel_id"])
                                 message: disnake.Message = channel.get_partial_message(twitch_data[streamer][server]["message_id"])
 
+                                newline = "\n"
+
                                 # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Creating embed for {streamer}! {colorama.Fore.RESET}")
+                                # create the structure from the embed
                                 embed = disnake.Embed(
                                     title=f"{twitch_data[streamer][server]['title']}",
                                     color=disnake.Color.purple(),
                                     url=f"https://www.twitch.tv/{streamer}"
                                 )
+                                # add a field for basic information for the stream
                                 embed.add_field(
                                     name="__Information__",
-                                    value=f"**Streamer**: `{twitch_data[streamer][server]['user_name']}`\n"
-                                          f"**Viewer**: `{twitch_data[streamer][server]['viewer_count']}`\n"
-                                          f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
-                                    inline=False
+                                    value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
+                                        f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
+                                            # f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`{newline}" if settings_data[server]['twitch_with_viewer'] else ''
+                                            f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
+                                        inline=False
                                 )
+                                # add a field for the times which get displayed
                                 embed.add_field(
                                     name="__Durations__",
                                     value=f"`Started`: {disnake.utils.format_dt(twitch_data[streamer][server]['started_at'], style='R')}\n"
                                           f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
                                     inline=False
                                 )
+                                # set the author a twitch icon
                                 embed.set_author(
                                     name="Twitch Notification",
                                     icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png"
                                 )
+                                # set the thumbnail to the streamer profile picture
                                 embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
+                                
+                                # set the image to the stream thumbnail
+                                # ?state={datetime.datetime.now(tz=None).timestamp()} is used to get the preview image from the stream in real time
+                                # so there will be displayed the newest thumbnail
                                 embed.set_image(
-                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg"
+                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{streamer}-1920x1080.jpg?state={datetime.now(tz=None).timestamp()}"
                                 )
+                                # a little advertisement for my bot
                                 embed.set_footer(
                                     text="Live Notifications by Lays Bot",
                                     icon_url=self.bot_png
                                 )
+                                # and at its final edit the message
                                 await message.edit(
                                     embed=embed
                                 )
