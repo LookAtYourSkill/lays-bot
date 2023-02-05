@@ -70,7 +70,12 @@ class on_guild_add(commands.Cog):
 
         settings_data[guild.id] = {
             "anti_alt_days": 7,
-            "standard_avatar_check": False
+            "standard_avatar_check": False,
+            "twitch_with_viewer": True,
+            "twitch_with_game": True,
+            "twitch_with_streamer": True,
+            "twitch_with_avatar": True,
+            "twitch_with_thumbnail": True
         }
 
         with open("json/settings.json", "w") as dumpfile:

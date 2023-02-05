@@ -78,7 +78,12 @@ class guildCheck(commands.Cog):
                 # !! print(f"{___guild.name} has been added to the settings list")
                 settings_data[___guild.id] = {
                     "anti_alt_days": 7,
-                    "standard_avatar_check": False
+                    "standard_avatar_check": False,
+                    "twitch_with_viewer": True,
+                    "twitch_with_game": True,
+                    "twitch_with_streamer": True,
+                    "twitch_with_avatar": True,
+                    "twitch_with_thumbnail": True
                 }
 
                 with open("json/settings.json", "w") as dumpfile:
