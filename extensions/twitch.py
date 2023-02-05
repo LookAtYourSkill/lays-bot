@@ -814,7 +814,7 @@ class Twitch(commands.Cog):
                             embed.add_field(
                                 name="__Information__",
                                 value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
-                                      f"**Average Viewer**: `{averageCalculation(twitch_data_copy[streamer][server]['viewer_count_list'])}\n"
+                                      f"**Average Viewer**: `{averageCalculation(twitch_data_copy[streamer][server]['viewer_count_list'])}`\n"
                                       f"**Games played**: {newline}{f'{newline}'.join(gamelist)}\n",
                                       # !! f"**Games played**: {newline}`{f'{newline}- '.join(twitch_data_copy[streamer][server]['game_list'] if twitch_data_copy[streamer][server]['game_list'] else twitch_data_copy[streamer][server]['game_name'])}`\n",
                                 inline=False
