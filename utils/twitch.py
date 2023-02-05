@@ -93,6 +93,17 @@ def get_streams(users: dict):
         print(f"{colorama.Fore.RED} [ERROR] Failed to get streams from Twitch API, possible new access token needed {colorama.Fore.RESET}")
 
 
+def averageCalculation(list):
+    # check if the list which will be calculated is empty
+    if len(list) == 0:
+        # if empty return 0
+        return 0
+    else:
+        # if not empty return the average of the list
+        # with getting the sum of the list and dividing it by the length of the list
+        return sum(list) / len(list)
+
+
 def update_streams():
     with open("json/watchlist.json", 'r', encoding='UTF-8') as data_file:
         watchlist_data: dict = json.load(data_file)
@@ -136,6 +147,7 @@ def update_streams():
                             "game_name": stream[streamer]["game_name"],
                             "game_list": [],
                             "viewer_count": stream[streamer]["viewer_count"],
+                            "viewer_count_list": [],
                             "started_at": finalTime,
                             "ended_at": None,
                             "last_update": datetime.datetime.now(tz=None).timestamp(),
@@ -166,6 +178,7 @@ def update_streams():
                                 "game_name": stream[streamer]["game_name"],
                                 "game_list": [],
                                 "viewer_count": stream[streamer]["viewer_count"],
+                                "viewer_count_list": [],
                                 "started_at": finalTime,
                                 "ended_at": None,
                                 "last_update": datetime.datetime.now(tz=None).timestamp(),
@@ -199,10 +212,23 @@ def update_streams():
                                 with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                     json.dump(twitch_updates, file, indent=4)
 
+                                # define as a list
+                                # append all viewer counts to a list, which will be used to calculate the average viewer count
+                                list_of_viewer: list = twitch_updates[streamer][guild['server_id']]["viewer_count_list"]
+                                list_of_viewer.append(twitch_updates[streamer][guild['server_id']]["viewer_count"])
+
+                                # dump to json
+                                with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
+                                    json.dump(twitch_updates, file, indent=4)
+
+                                # check if game is in update file from streamer
                                 if stream[streamer]["game_name"] not in twitch_updates[streamer][guild['server_id']]["game_list"]:
+                                    # define as a list
+                                    # append the game to the list if it is not in the list
                                     list_of_games: list = twitch_updates[streamer][guild['server_id']]["game_list"]
                                     list_of_games.append(stream[streamer]["game_name"])
-
+                                    
+                                    # dump to json
                                     with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                         json.dump(twitch_updates, file, indent=4)
                                 else:
