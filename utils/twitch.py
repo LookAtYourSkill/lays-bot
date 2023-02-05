@@ -101,7 +101,8 @@ def averageCalculation(list):
     else:
         # if not empty return the average of the list
         # with getting the sum of the list and dividing it by the length of the list
-        return sum(list) / len(list)
+        const = sum(list) / len(list)
+        return round(const)
 
 
 def update_streams():
