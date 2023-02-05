@@ -1,10 +1,8 @@
 __pycache__
 json
-etc/config.json
-test.py
-etc/youtube-config.json
+tests
 archive
+etc/config.json
+etc/youtube-config.json
 extensions/youtube.py
 utils/youtube.py
-test2.py
-plot.png
