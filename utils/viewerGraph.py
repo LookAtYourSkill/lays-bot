@@ -35,7 +35,7 @@ def generateViewerGraph(viewerList: list, streamerName: str):
     ax.set_facecolor("gray")
 
     # set text for x and y axis
-    ax.set_xlabel('Time Elapsed (HH:MM)')
+    ax.set_xlabel('Time Passed (Hours)')
     ax.set_ylabel('Viewer Count')
 
     # set limits for x and y axis
