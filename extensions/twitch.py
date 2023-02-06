@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import copy
 from typing import Optional
@@ -11,6 +12,7 @@ import disnake
 from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams, averageCalculation
+from utils.viewerGraph import generateViewerGraph
 
 
 class Twitch(commands.Cog):
@@ -833,6 +835,11 @@ class Twitch(commands.Cog):
                                 text="Live Notifications by Lays Bot",
                                 icon_url=self.bot_png
                             )
+
+                            if guild_data[server]["beta_server"]:
+                                generateViewerGraph(twitch_data_copy[streamer][server]["viewer_count_list"], twitch_data_copy[streamer][server]["user_name"])
+                                embed.set_image(file=disnake.File(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png"))
+
                             await message.edit(
                                 embed=embed
                             )
@@ -843,6 +850,7 @@ class Twitch(commands.Cog):
 
                             # to delete the data -> less data traffic
                             try:
+                                os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
                                 if twitch_data[streamer]:
                                     del twitch_data[streamer]
                                     with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
@@ -850,7 +858,7 @@ class Twitch(commands.Cog):
                                 else:
                                     pass
                             except KeyError:
-                                print()
+                                print("KeyError, there is no file to delete")
                         else:
                             # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
                             try:
