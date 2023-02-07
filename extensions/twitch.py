@@ -816,11 +816,16 @@ class Twitch(commands.Cog):
                             embed.add_field(
                                 name="__Information__",
                                 value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
-                                      f"**Average Viewer**: `{averageCalculation(twitch_data_copy[streamer][server]['viewer_count_list'])}`\n"
                                       f"**Games played**: {newline}{f'{newline}'.join(gamelist)}\n",
                                       # !! f"**Games played**: {newline}`{f'{newline}- '.join(twitch_data_copy[streamer][server]['game_list'] if twitch_data_copy[streamer][server]['game_list'] else twitch_data_copy[streamer][server]['game_name'])}`\n",
                                 inline=False
                             )
+                            if settings_data[server]["twitch_with_viewer"]:
+                                embed.add_field(
+                                    name="__Viewer__",
+                                    value=f"**Average Viewer**: `{averageCalculation(twitch_data_copy[streamer][server]['viewer_count_list'])}`",
+                                    inline=False
+                                )
 
                             # add a field for the streams duration
                             embed.add_field(
@@ -880,11 +885,17 @@ class Twitch(commands.Cog):
                                 embed.add_field(
                                     name="__Information__",
                                     value=f"**Streamer**: `{twitch_data_copy[streamer][server]['user_name']}`\n"
-                                        f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`\n"
                                             # f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`{newline}" if settings_data[server]['twitch_with_viewer'] else ''
-                                            f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
+                                          f"**Game**: `{twitch_data[streamer][server]['game_name']}`\n",
                                         inline=False
                                 )
+
+                                if settings_data[server]["twitch_with_viewer"]:
+                                    embed.add_field(
+                                        name="__Viewer__",
+                                        value=f"**Viewer**: `{twitch_data_copy[streamer][server]['viewer_count']}`",
+                                        inline=False
+                                    )
                                 # add a field for the times which get displayed
                                 embed.add_field(
                                     name="__Durations__",
