@@ -17,9 +17,9 @@ class on_guild_add(commands.Cog):
             description="You sccessfully invited me to your server!\n"
                         "To set me perfectly up, use all of the `/setup` commands!"
         )
-        await guild.owner.send(
-            embed=on_join_embed
-        )
+        # await guild.owner.send(
+        #     embed=on_join_embed
+        # )
 
         with open("json/guild.json", "r") as f:
             guild_data = json.load(f)
@@ -69,7 +69,7 @@ class on_guild_add(commands.Cog):
             settings_data = json.load(f)
 
         settings_data[guild.id] = {
-            "anti_alt_days": 7,
+            "anti_alt_days": 0,
             "standard_avatar_check": False,
             "twitch_with_viewer": True,
             "twitch_with_game": True,
