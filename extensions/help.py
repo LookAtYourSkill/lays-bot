@@ -8,22 +8,16 @@ from disnake.ext import commands
 class Cogs(str, Enum):
     About = "About"
     AntiAlt = "AntiAlt"
-    Changelog = "Changelog"
     Help = "Help"
     Info = "Info"
     JoinToCreate = "joinToCreate"
-    LicenseSystem = "LicenseSystem"
-    Meme = "Meme"
-    Moderation = "Moderation"
     Owner = "Owner"
-    Roles = "Roles"
     Setup = "Setup"
     Suggest = "Suggest"
-    Change = "Change"
     TicketSystem = "TicketSystem"
-    Timer = "Timer"
     Twitch = "Twitch"
     Twitter = "Twitter"
+    Youtube = "Youtube"
 
 
 class Help(commands.Cog):
