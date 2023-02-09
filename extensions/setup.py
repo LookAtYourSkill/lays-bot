@@ -16,13 +16,13 @@ class Setup(commands.Cog):
         self.prefix = "/"
 
     @commands.slash_command()
-    async def setup(
+    async def set(
         self,
         interaction: disnake.CommandInteraction
     ):
         pass
 
-    @setup.sub_command(
+    @set.sub_command(
         name="check",
         description="Gives back, what channels are set and which are not"
     )
@@ -51,23 +51,23 @@ class Setup(commands.Cog):
         )
         check_embed.add_field(
             name="> Channels",
-            value=f"`Ticket Log`: <#{guild_data[str(interaction.author.guild.id)]['ticket_log_channel']}>\n"
-                  f"`Ticket Save`: <#{guild_data[str(interaction.author.guild.id)]['ticket_save_channel']}>\n"
-                  f"`Notification`: <#{guild_data[str(interaction.author.guild.id)]['notify_channel']}>\n"
-                  f"`Moderation`: <#{guild_data[str(interaction.author.guild.id)]['mod_channel']}>\n"
-                  f"`Message`: <#{guild_data[str(interaction.author.guild.id)]['msg_channel']}>\n"
-                  f"`Welcome`: <#{guild_data[str(interaction.author.guild.id)]['welcome_channel']}>",
+            value=f"`Ticket Log`: <#{guild_data[str(interaction.author.guild.id)]['ticket_log_channel'] if guild_data[str(interaction.author.guild.id)]['ticket_log_channel'] else '0'}>\n"
+                  f"`Ticket Save`: <#{guild_data[str(interaction.author.guild.id)]['ticket_save_channel'] if guild_data[str(interaction.author.guild.id)]['ticket_save_channel'] else '0'}>\n"
+                  f"`Notification`: <#{guild_data[str(interaction.author.guild.id)]['notify_channel'] if guild_data[str(interaction.author.guild.id)]['notify_channel'] else '0'}>\n"
+                  f"`Moderation`: <#{guild_data[str(interaction.author.guild.id)]['mod_channel'] if guild_data[str(interaction.author.guild.id)]['mod_channel'] else '0'}>\n"
+                  f"`Message`: <#{guild_data[str(interaction.author.guild.id)]['msg_channel'] if guild_data[str(interaction.author.guild.id)]['msg_channel'] else '0'}>\n"
+                  f"`Welcome`: <#{guild_data[str(interaction.author.guild.id)]['welcome_channel'] if guild_data[str(interaction.author.guild.id)]['welcome_channel'] else '0'}>",
             inline=False
         )
         check_embed.add_field(
             name="> Categories",
-            value=f"`Open Ticket`: <#{guild_data[str(interaction.author.guild.id)]['ticket_category']}>\n"
-                  f"`Closed Ticket`: <#{guild_data[str(interaction.author.guild.id)]['closed_ticket_category']}>",
+            value=f"`Open Ticket`: <#{guild_data[str(interaction.author.guild.id)]['ticket_category'] if guild_data[str(interaction.author.guild.id)]['ticket_category'] else '0'}>\n"
+                  f"`Closed Ticket`: <#{guild_data[str(interaction.author.guild.id)]['closed_ticket_category'] if guild_data[str(interaction.author.guild.id)]['closed_ticket_category'] else '0'}>",
             inline=False
         )
         check_embed.add_field(
             name="> Roles",
-            value=f"`Join`: <@&{guild_data[str(interaction.author.guild.id)]['join_role']}>",
+            value=f"`Join`: <@&{guild_data[str(interaction.author.guild.id)]['join_role'] if guild_data[str(interaction.author.guild.id)]['join_role'] else '0'}>",
             inline=False
         )
 
@@ -75,21 +75,21 @@ class Setup(commands.Cog):
             embed=check_embed
         )
 
-    @setup.sub_command_group()
+    @set.sub_command_group()
     async def channel(
         self,
         interaction: disnake.CommandInteraction
     ):
         pass
 
-    @setup.sub_command_group()
+    @set.sub_command_group()
     async def category(
         self,
         interaction: disnake.CommandInteraction
     ):
         pass
 
-    @setup.sub_command_group()
+    @set.sub_command_group()
     async def role(
         self,
         interaction: disnake.CommandInteraction
@@ -111,27 +111,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["mod_channel"]:
+        guild_data[str(interaction.guild.id)]["mod_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["mod_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Der `Moderation Log Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Moderation Log Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['mod_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um ihn zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Moderation Log Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @channel.sub_command(
         name="msg",
@@ -148,27 +138,18 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["msg_channel"]:
 
-            guild_data[str(interaction.guild.id)]["msg_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
+        guild_data[str(interaction.guild.id)]["msg_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            set_embed = disnake.Embed(
-                description=f"Der `Message Log Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Message Log Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['msg_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um ihn zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Message Log Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @channel.sub_command(
         name="ticket_log",
@@ -185,27 +166,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
+        guild_data[str(interaction.guild.id)]["ticket_log_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["ticket_log_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Der `Ticket Log Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Ticket Log Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['ticket_log_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Ticket Log Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @channel.sub_command(
         name="ticket_save",
@@ -222,27 +193,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["ticket_save_channel"]:
+        guild_data[str(interaction.guild.id)]["ticket_save_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["ticket_save_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Der `Ticket Save Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Ticket Save Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['ticket_save_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Ticket Save Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @channel.sub_command(
         name="join_to_create",
@@ -259,27 +220,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["join_to_create_channel"]:
+        guild_data[str(interaction.guild.id)]["join_to_create_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["join_to_create_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Der `Join To Create Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Join To Create Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['join_to_create_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Join To Create Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @channel.sub_command(
         name="notification",
@@ -296,27 +247,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["notify_channel"]:
+        guild_data[str(interaction.guild.id)]["notify_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["notify_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Der `Notification Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Notification Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['notify_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um ihn zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Notification Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @channel.sub_command(
         name="welcome",
@@ -333,27 +274,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["welcome_channel"]:
+        guild_data[str(interaction.guild.id)]["welcome_channel"] = int(channel.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["welcome_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Der `Welcome Channel` wurde auf {channel.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Der `Welcome Channel` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['welcome_channel']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Der `Welcome Channel` wurde auf {channel.mention} gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @category.sub_command(
         name="ticket_open",
@@ -370,27 +301,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["ticket_category"]:
+        guild_data[str(interaction.guild.id)]["ticket_category"] = int(category.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["ticket_category"] = int(category.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Die `Ticket Category` wurde auf `{category}` gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Die `Ticket Category` wurde bereits auf `{guild_data[str(interaction.guild.id)]['ticket_category']}` festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Die `Ticket Category` wurde auf `{category}` gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @category.sub_command(
         name="ticket_close",
@@ -407,27 +328,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["closed_ticket_category"]:
+        guild_data[str(interaction.guild.id)]["closed_ticket_category"] = int(category.id)
+        with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
+            json.dump(guild_data, dump_file, indent=4)
 
-            guild_data[str(interaction.guild.id)]["closed_ticket_category"] = int(category.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Die `Closed Ticket Category` wurde erfolgreich auf `{category}` geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Die `Closed Ticket Category` wurde bereits auf <#{guild_data[str(interaction.guild.id)]['closed_ticket_category']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        change_embed = disnake.Embed(
+            description=f"Die `Closed Ticket Category` wurde erfolgreich auf `{category}` geändert!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=change_embed
+        )
 
     @category.sub_command(
         name="join_to_create",
@@ -444,27 +355,17 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["join_to_create_category"]:
+        guild_data[str(interaction.guild.id)]["join_to_create_category"] = int(category.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["join_to_create_category"] = int(category.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Die `Join To Create Category` wurde auf `{category}` gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Die `Join To Create Category` wurde bereits auf `{guild_data[str(interaction.guild.id)]['join_to_create_category']}` festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
+        set_embed = disnake.Embed(
+            description=f"Die `Join To Create Category` wurde auf `{category}` gesetzt!",
+            color=disnake.Color.green()
+        )
+        await interaction.edit_original_message(
+            embed=set_embed
+        )
 
     @role.sub_command(
         name="join",
@@ -481,565 +382,18 @@ class Setup(commands.Cog):
         with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
             guild_data = json.load(data_file)
 
-        if not guild_data[str(interaction.guild.id)]["join_role"]:
+        guild_data[str(interaction.guild.id)]["join_role"] = int(role.id)
+        with open(f"{self.PATH}", "w") as f:
+            json.dump(guild_data, f, indent=4)
 
-            guild_data[str(interaction.guild.id)]["join_role"] = int(role.id)
-            with open(f"{self.PATH}", "w") as f:
-                json.dump(guild_data, f, indent=4)
-
-            set_embed = disnake.Embed(
-                description=f"Die `Join-Role` wurde auf {role.mention} gesetzt!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=set_embed
-            )
-        else:
-            already_embed = disnake.Embed(
-                description=f"Die `Join-Role` wurde bereits auf <@&{guild_data[str(interaction.guild.id)]['join_role']}> festgelegt! Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=already_embed
-            )
-
-
-class Change(commands.Cog):
-    '''
-    Status: Working
-    '''
-    def __init__(
-        self,
-        bot
-    ):
-        self.bot: commands.Bot = bot
-        self.PATH = "json/guild.json"
-        self.prefix = "/"
-
-    @commands.slash_command()
-    async def change(
-        self,
-        interaction: disnake.CommandInteraction
-    ):
-        pass
-
-    @change.sub_command_group()
-    async def channel(
-        self,
-        interaction: disnake.CommandInteraction
-    ):
-        pass
-
-    @change.sub_command_group()
-    async def role(
-        self,
-        interaction: disnake.CommandInteraction
-    ):
-        pass
-
-    @change.sub_command_group()
-    async def category(
-        self,
-        interaction: disnake.CommandInteraction
-    ):
-        pass
-
-    @channel.sub_command(
-        name="mod",
-        description="Changes the mod setup command"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_mod_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.TextChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
+        set_embed = disnake.Embed(
+            description=f"Die `Join-Role` wurde auf {role.mention} gesetzt!",
             color=disnake.Color.green()
         )
         await interaction.edit_original_message(
-            embed=loading_embed
+            embed=set_embed
         )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["mod_channel"]:
-
-            guild_data[str(interaction.guild.id)]["mod_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Moderation Log Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Moderation Log Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!.",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @channel.sub_command(
-        name="msg",
-        description="Changes the mod setup command"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_msg_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.TextChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["msg_channel"]:
-
-            guild_data[str(interaction.guild.id)]["msg_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Message Log Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Message Log Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @channel.sub_command(
-        name="notification",
-        description="Changes the mod setup command"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_notify_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.TextChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["notify_channel"]:
-
-            guild_data[str(interaction.guild.id)]["notify_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Notification Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Notification Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @role.sub_command(
-        name="join",
-        description="Changes join role"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_join_role(
-        self,
-        interaction: disnake.ApplicationCommandInteraction, 
-        role: disnake.Role
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["join_role"]:
-
-            guild_data[str(interaction.guild.id)]["join_role"] = int(role.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Die `Join Role` wurde erfolgreich auf <@&{role.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch keine `Join Role` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @channel.sub_command(
-        name="welcome",
-        description="Changes the welcome channel"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_welcome_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.TextChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["welcome_channel"]:
-
-            guild_data[str(interaction.guild.id)]["welcome_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Welcome Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Welcome Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @channel.sub_command(
-        name="join_to_create",
-        description="Changes the welcome channel"
-    )
-    @commands.has_permissions(administrator=True)
-    async def join_to_create_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.VoiceChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["join_to_create_channel"]:
-
-            guild_data[str(interaction.guild.id)]["join_to_create_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Join To Create Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Join To Create Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @category.sub_command(
-        name="ticket_open",
-        description="Changes the ticket category"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_ticket_category(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        category: disnake.CategoryChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["ticket_category"]:
-
-            guild_data[str(interaction.guild.id)]["ticket_category"] = int(category.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Die `Ticket Category` wurde erfolgreich auf <#{category.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch keine `Ticket Category` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @category.sub_command(
-        name="join_to_create",
-        description="Changes the ticket category"
-    )
-    @commands.has_permissions(administrator=True)
-    async def join_to_create_category(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        category: disnake.CategoryChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.response.send_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["join_to_create_category"]:
-
-            guild_data[str(interaction.guild.id)]["join_to_create_category"] = int(category.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Die `Join To Create Category` wurde erfolgreich auf <#{category.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch keine `Join To Create Category` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @category.sub_command(
-        name="ticket_log",
-        description="Changes the ticket log channel"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_ticket_log_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction, 
-        channel: disnake.TextChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
-
-            guild_data[str(interaction.guild.id)]["ticket_log_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Ticket Log Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Ticket Log Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @category.sub_command(
-        name="ticket_save",
-        description="Changes the ticket save channel"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_ticket_save_channel(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        channel: disnake.TextChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["ticket_save_channel"]:
-
-            guild_data[str(interaction.guild.id)]["ticket_save_channel"] = int(channel.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Der `Ticket Save Channel` wurde erfolgreich auf <#{channel.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch kein `Ticket Save Channel` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
-
-    @category.sub_command(
-        name="ticket_close",
-        description="Changes the ticket close category"
-    )
-    @commands.has_permissions(administrator=True)
-    async def change_ticket_close_category(
-        self,
-        interaction: disnake.ApplicationCommandInteraction,
-        category: disnake.CategoryChannel
-    ):
-        await interaction.response.defer(ephemeral=True)
-
-        loading_embed = disnake.Embed(
-            description="Setting everything up...",
-            color=disnake.Color.green()
-        )
-        await interaction.edit_original_message(
-            embed=loading_embed
-        )
-
-        with open(f"{self.PATH}", "r", encoding="UTF-8") as data_file:
-            guild_data = json.load(data_file)
-
-        if guild_data[str(interaction.guild.id)]["closed_ticket_category"]:
-
-            guild_data[str(interaction.guild.id)]["closed_ticket_category"] = int(category.id)
-            with open(f"{self.PATH}", "w", encoding="UTF-8") as dump_file:
-                json.dump(guild_data, dump_file, indent=4)
-
-            change_embed = disnake.Embed(
-                description=f"Die `Ticket Close Category` wurde erfolgreich auf <#{category.id}> geändert!",
-                color=disnake.Color.green()
-            )
-            await interaction.edit_original_message(
-                embed=change_embed
-            )
-        else:
-            not_channel_set_embed = disnake.Embed(
-                description="Für `diesen Server` wurde noch keine `Ticket Close Category` festgelgt. Benutze `den dazu gehörigen Change /-Command` um diese zu verändern!",
-                color=disnake.Color.red()
-            )
-            await interaction.edit_original_message(
-                embed=not_channel_set_embed
-            )
 
 
 def setup(bot):
     bot.add_cog(Setup(bot))
-    bot.add_cog(Change(bot))
