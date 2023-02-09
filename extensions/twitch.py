@@ -855,11 +855,11 @@ class Twitch(commands.Cog):
 
                             # to delete the data -> less data traffic
                             try:
-                                os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
                                 if twitch_data[streamer]:
                                     del twitch_data[streamer]
                                     with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                         json.dump(twitch_data, f, indent=4)
+                                    os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
                                 else:
                                     pass
                             except KeyError:
