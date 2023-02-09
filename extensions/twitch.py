@@ -751,13 +751,16 @@ class Twitch(commands.Cog):
 
         # loop through all streamer in the json file
         for streamer in twitch_data_copy:
+            # ! print("Streamer: ", streamer)
             # loop through all servers in the json file from the streamer
             for server in twitch_data_copy[streamer]:
+                # ! print("Server: ", server)
                 # check if the server has twitch notification enabled
                 if guild_data[server]["twitch_notifications"] == "on":
+                    # ! print(f"{server} has twitch notifications enabled")
                     # check if a message_id and a notificaion channel are set
                     if twitch_data_copy[streamer][server]["message_id"] is not None and guild_data[server]["notify_channel"] is not None:
-
+                        # ! print(f"{server} has a message_id and a notification channel set")
                         twitch_data_copy[streamer][server]["last_update"] = datetime.now(tz=None).timestamp()
 
                         # check if status from the streamer is live or offline
@@ -855,10 +858,15 @@ class Twitch(commands.Cog):
 
                             # to delete the data -> less data traffic
                             try:
+                                print(f"Deleting data for {streamer} in {server} (offline)")
                                 del twitch_data[streamer]
                                 with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                     json.dump(twitch_data, f, indent=4)
-                                os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
+                                print(f"Deleting data for {streamer} in {server} (offline) - DONE")
+
+                                if guild_data[server]["beta_server"]:
+                                    os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
+                                
                             except KeyError:
                                 print("KeyError, there is no file to delete")
                         else:
@@ -938,7 +946,23 @@ class Twitch(commands.Cog):
                                     embed=error_embed
                                 )
                     else:
-                        continue
+                        # remove the data from the json file
+                        try:
+                            # delete streamer from the json file
+                            # ! print(f"Deleting data for {streamer} in {server} (offline)")
+                            del twitch_data[streamer]
+                            # save the json file
+                            with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
+                                json.dump(twitch_data, f, indent=4)
+                            # ! print(f"Deleting data for {streamer} in {server} (offline) - DONE")
+
+                            # check if the server is a beta server and has the viewer graph enabled
+                            if guild_data[server]["beta_server"]:
+                                # delete the viewer graph if it has
+                                os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
+                            
+                        except KeyError:
+                            print("KeyError, there is no file to delete")
                         # ! print(f"{colorama.Fore.RED} [TWITCH UPDATE] [ERROR] No message and no channel found... , '{streamer}' {colorama.Fore.RESET}")
                 else:
                     continue
