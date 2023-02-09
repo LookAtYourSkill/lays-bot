@@ -86,5 +86,5 @@ log.info("Finished")
 
 
 if __name__ == "__main__":
-    bot.run(config["token"]["token"])
+    bot.run(config["token"]["lays_bot_2_0_token"])
     bot.wait_until_ready
