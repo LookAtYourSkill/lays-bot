@@ -103,7 +103,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_response(
+            await interaction.edit_original_message(
                 embed=embed
             )
 
