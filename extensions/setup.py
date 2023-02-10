@@ -50,13 +50,18 @@ class Setup(commands.Cog):
             color=disnake.Color.green()
         )
         check_embed.add_field(
-            name="> Channels",
+            name="> Text Channels",
             value=f"`Ticket Log`: <#{guild_data[str(interaction.author.guild.id)]['ticket_log_channel'] if guild_data[str(interaction.author.guild.id)]['ticket_log_channel'] else '0'}>\n"
                   f"`Ticket Save`: <#{guild_data[str(interaction.author.guild.id)]['ticket_save_channel'] if guild_data[str(interaction.author.guild.id)]['ticket_save_channel'] else '0'}>\n"
                   f"`Notification`: <#{guild_data[str(interaction.author.guild.id)]['notify_channel'] if guild_data[str(interaction.author.guild.id)]['notify_channel'] else '0'}>\n"
                   f"`Moderation`: <#{guild_data[str(interaction.author.guild.id)]['mod_channel'] if guild_data[str(interaction.author.guild.id)]['mod_channel'] else '0'}>\n"
                   f"`Message`: <#{guild_data[str(interaction.author.guild.id)]['msg_channel'] if guild_data[str(interaction.author.guild.id)]['msg_channel'] else '0'}>\n"
                   f"`Welcome`: <#{guild_data[str(interaction.author.guild.id)]['welcome_channel'] if guild_data[str(interaction.author.guild.id)]['welcome_channel'] else '0'}>",
+            inline=False
+        )
+        check_embed.add_field(
+            name="> Voice Channels",
+            value=f"`Join To Create`: <#{guild_data[str(interaction.author.guild.id)]['join_to_create_channel'] if guild_data[str(interaction.author.guild.id)]['join_to_create_channel'] else '0'}>",
             inline=False
         )
         check_embed.add_field(
