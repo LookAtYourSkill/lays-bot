@@ -908,10 +908,11 @@ class Twitch(commands.Cog):
                                           f"`Last Update`: {disnake.utils.format_dt(twitch_data[streamer][server]['last_update'], style='R')}",
                                     inline=False
                                 )
-                                # set the author a twitch icon
+                                # set the author a twitch icon and url for twitch streamer
                                 embed.set_author(
-                                    name="Twitch Notification",
-                                    icon_url="https://cdn.discordapp.com/attachments/920072174247751690/972897521745682472/unknown.png"
+                                    name=streamer,
+                                    icon_url=twitch_data_copy[streamer][server]["profile_pic"],
+                                    url=f"https://www.twitch.tv/{streamer}"
                                 )
                                 # set the thumbnail to the streamer profile picture
                                 embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
