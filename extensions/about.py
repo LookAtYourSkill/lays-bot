@@ -34,9 +34,6 @@ class About(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        with open("json/general.json", "r") as general_info:
-            general = json.load(general_info)
-
         loading_embed = disnake.Embed(
             description="Fetching information about the bot...",
             color=disnake.Color.green()
@@ -65,11 +62,6 @@ class About(commands.Cog):
         about_embed.add_field(
             name="> ❓ Bot Information",
             value=f"`»` Server: `{len(self.bot.guilds)}`\n`»` User: `{len(self.bot.users)}`",
-            inline=False
-        )
-        about_embed.add_field(
-            name="> ❓ Lizenz",
-            value=f"`»` Lizenz System Status: `{'Active' if general['license_check'] else 'Inactive'}`",
             inline=False
         )
         about_embed.set_author(
