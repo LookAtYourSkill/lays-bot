@@ -26,13 +26,6 @@ class on_guild_rmv(commands.Cog):
         with open("json/tickets.json", "w") as f:
             json.dump(ticket_data, f, indent=4)
 
-        with open("json/active_check.json", "r") as f:
-            active_data = json.load(f)
-
-        del active_data[str(guild.id)]
-        with open("json/active_check.json", "w") as f:
-            json.dump(active_data, f, indent=4)
-
         with open("json/settings.json", "r") as f:
             settings_data = json.load(f)
 
