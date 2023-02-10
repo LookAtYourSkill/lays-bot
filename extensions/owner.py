@@ -53,6 +53,34 @@ class Owner(commands.Cog):
         msg += "```"
         await interaction.edit_original_message(msg)
 
+    @owner.sub_command(
+        name="leave",
+        description="Leaves a server"
+    )
+    async def leave(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        guild_id
+    ):  
+        await interaction.response.defer(ephemeral=True)
+
+        await interaction.edit_original_message(
+            f"Leaving guild {guild_id}"
+        )
+
+        guild = self.bot.get_guild(int(guild_id))
+        if not guild:
+            await interaction.edit_original_message(
+                f"Guild with ID {guild_id} not found"
+            )
+
+        else:
+            await guild.leave()
+            print("Left guild")
+            await interaction.edit_original_message(
+                f"Left guild {guild.name}"
+            )
+
     @owner.sub_command(name="send", description="Sends a message to a user")
     async def send(
         self,
