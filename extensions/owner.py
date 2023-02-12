@@ -1,5 +1,3 @@
-import json
-
 import disnake
 from disnake.ext import commands
 
@@ -29,7 +27,7 @@ class Owner(commands.Cog):
     ):
         await interaction.response.defer(ephemeral=True)
 
-        msg = "```\n"
+        msg = "```json\n"
         msg += "|        Informationen zu allen Server        |--------|----------------------|\n"
         msg += "|---------------------|-----------------------|--------|----------------------|\n"
         msg += "| {!s:19s} | {!s:21s} | {!s:>6s} | {!s:20s} |\n".format("ID", "Name", "Member", "Owner")
@@ -64,21 +62,27 @@ class Owner(commands.Cog):
     ):  
         await interaction.response.defer(ephemeral=True)
 
-        await interaction.edit_original_message(
-            f"Leaving guild {guild_id}"
-        )
-
         guild = self.bot.get_guild(int(guild_id))
         if not guild:
+
+            embed = disnake.Embed(
+                description=f"Guild with ID {guild_id} not found",
+                color=disnake.Color.red()
+            )
+
             await interaction.edit_original_message(
-                f"Guild with ID {guild_id} not found"
+                embed=embed
             )
 
         else:
             await guild.leave()
-            print("Left guild")
+
+            embed = disnake.Embed(
+                description=f"Left guild {guild.name}",
+                color=disnake.Color.green()
+            )
             await interaction.edit_original_message(
-                f"Left guild {guild.name}"
+                embed=embed
             )
 
     @owner.sub_command(name="send", description="Sends a message to a user")
@@ -97,8 +101,14 @@ class Owner(commands.Cog):
             color=disnake.Color.green()
         )
         await user.send(embed=embed)
+
+        embed = disnake.Embed(
+            description=f"Message sent to {user.mention}",
+            color=disnake.Color.green()
+        )
+
         await interaction.edit_original_message(
-            f"Message sent to {user.mention}"
+            embed=embed
         )
 
 
