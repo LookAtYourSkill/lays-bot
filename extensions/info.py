@@ -37,7 +37,7 @@ class Info(commands.Cog):
     async def user_info(
         self,
         interaction: disnake.ApplicationCommandInteraction,
-        user: disnake.User
+        user: disnake.Member
     ):
         await interaction.response.defer(ephemeral=True)
 
