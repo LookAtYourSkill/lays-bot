@@ -2,6 +2,7 @@ __pycache__
 json
 tests
 archive
+logs
 etc/config.json
 etc/youtube-config.json
 extensions/youtube.py
