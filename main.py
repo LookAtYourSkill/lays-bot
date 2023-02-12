@@ -33,9 +33,6 @@ async def status_task():
         )
         await asyncio.sleep(1800)
 
-with open("etc/config.json", "r") as config_file:
-    config = json.load(config_file)
-
 
 @bot.event
 async def on_ready():
@@ -83,6 +80,10 @@ for filename in os.listdir("./checks"):
 print("----------------------------------------------------")
 log.info("Finished")
 
+
+
+with open("etc/config.json", "r") as config_file:
+    config = json.load(config_file)
 
 if __name__ == "__main__":
     bot.run(config["token"]["lays_bot_2_0_token"])
