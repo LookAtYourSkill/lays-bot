@@ -382,7 +382,7 @@ class ticket_message(disnake.ui.View):
 
     # BUTTONS
     @disnake.ui.button(
-        label="General",
+        label="Open a Ticket",
         style=disnake.ButtonStyle.green,
         emoji="📩",
         custom_id="persistent_view:general_ticket"
@@ -505,6 +505,7 @@ class ticket_message(disnake.ui.View):
                 ephemeral=True
             )
 
+    """
     # BUTTONS
     @disnake.ui.button(
         label="Moderation",
@@ -750,6 +751,7 @@ class ticket_message(disnake.ui.View):
                 content="_Ticket category not set!_ Skipped it!",
                 ephemeral=True
             )
+    """
 
 
 class tjan_ticket(disnake.ui.View):
@@ -1023,7 +1025,8 @@ class TicketSystem(commands.Cog):
     )
     async def send(
         self,
-        interaction: disnake.ApplicationCommandInteraction
+        interaction: disnake.ApplicationCommandInteraction,
+        category: str
     ):
         await interaction.response.defer()
 
@@ -1032,8 +1035,8 @@ class TicketSystem(commands.Cog):
             # Create embed
             view = ticket_message()
             ticket_embed = disnake.Embed(
-                title="Ticketsystem",
-                description="Reagiere mit 📩, 🔨 oder ❔ um ein Ticket zu erstellen!",
+                title=f"> {category} Ticketsystem",
+                description=f"Reagiere mit 📩 um ein {category} Ticket zu erstellen!",
                 color=disnake.Color.green()
             )
 
@@ -1062,7 +1065,7 @@ class TicketSystem(commands.Cog):
             # Create embed
             view = tjan_ticket()
             ticket_embed = disnake.Embed(
-                title="Minecraft Ticketsystem",
+                title="> Minecraft Ticketsystem",
                 description="Reagiere mit 🔨 oder ❔ um ein Ticket zu erstellen!",
                 color=disnake.Color.green()
             )
@@ -1108,7 +1111,7 @@ class TicketSystem(commands.Cog):
                 json.dump(ticket_data, f, indent=4)
 
             embed = disnake.Embed(
-                title="Ticket System",
+                title="> Ticketsystem",
                 description=f"{member.mention} added to support members",
                 color=disnake.Color.green()
             )
@@ -1123,7 +1126,7 @@ class TicketSystem(commands.Cog):
                 json.dump(ticket_data, f, indent=4)
 
             embed = disnake.Embed(
-                title="Ticket System",
+                title="> Ticketsystem",
                 description=f"{role.mention} added to support roles",
                 color=disnake.Color.green()
             )
@@ -1165,7 +1168,7 @@ class TicketSystem(commands.Cog):
                     json.dump(ticket_data, f, indent=4)
 
                 embed = disnake.Embed(
-                    title="Ticket System",
+                    title="> Ticketsystem",
                     description=f"{member.mention} removed from support members",
                     color=disnake.Color.green()
                 )
@@ -1175,7 +1178,7 @@ class TicketSystem(commands.Cog):
 
             elif member.id not in ticket_data[str(interaction.guild.id)]["support_members"]:
                 embed = disnake.Embed(
-                    title="Ticket System",
+                    title="> Ticketsystem",
                     description=f"{member.mention} is not in support members",
                     color=disnake.Color.red()
                 )
@@ -1192,7 +1195,7 @@ class TicketSystem(commands.Cog):
                     json.dump(ticket_data, f, indent=4)
 
                 embed = disnake.Embed(
-                    title="Ticket System",
+                    title="> Ticketsystem",
                     description=f"{role.mention} removed from support roles",
                     color=disnake.Color.green()
                 )
@@ -1202,7 +1205,7 @@ class TicketSystem(commands.Cog):
 
             elif role.id not in ticket_data[str(interaction.guild.id)]["support_roles"]:
                 embed = disnake.Embed(
-                    title="Ticket System",
+                    title="> Ticketsystem",
                     description=f"{role.mention} is not in support roles",
                     color=disnake.Color.red()
                 )
@@ -1233,7 +1236,7 @@ class TicketSystem(commands.Cog):
             support_roles += f"- {interaction.guild.get_role(i).mention}\n"
 
         embed = disnake.Embed(
-            title="Ticket System",
+            title="> Ticketsystem",
             description=f"`»`Support members:\n{support_members}\n`»`Support roles:\n{support_roles}",
             color=disnake.Color.green()
         )
@@ -1275,7 +1278,7 @@ class TicketSystem(commands.Cog):
                 json.dump(ticket_data, f, indent=4)
 
             embed = disnake.Embed(
-                title="Ticket System",
+                title="> Ticketsystem",
                 description=f"{role.mention} added to ping roles",
                 color=disnake.Color.green()
             )
@@ -1285,7 +1288,7 @@ class TicketSystem(commands.Cog):
 
         else:
             embed = disnake.Embed(
-                title="Ticket System",
+                title="> Ticketsystem",
                 description="Please specify a member or a role!",
                 color=disnake.Color.red()
             )
@@ -1316,7 +1319,7 @@ class TicketSystem(commands.Cog):
                     json.dump(ticket_data, f, indent=4)
 
                 embed = disnake.Embed(
-                    title="Ticket System",
+                    title="> Ticketsystem",
                     description=f"{role.mention} removed from ping roles",
                     color=disnake.Color.green()
                 )
@@ -1326,7 +1329,7 @@ class TicketSystem(commands.Cog):
 
             elif role.id not in ticket_data[str(interaction.guild.id)]["ping_roles"]:
                 embed = disnake.Embed(
-                    title="Ticket System",
+                    title="> Ticketsystem",
                     description=f"{role.mention} is not in ping roles",
                     color=disnake.Color.red()
                 )
@@ -1353,7 +1356,7 @@ class TicketSystem(commands.Cog):
             ping_roles += f"- {interaction.guild.get_role(i).mention}\n"
 
         embed = disnake.Embed(
-            title="Ticket System",
+            title="> Ticketsystem",
             description=f"`»`Pinged roles:\n{ping_roles}",
             color=disnake.Color.green()
         )
