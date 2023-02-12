@@ -40,7 +40,6 @@ with open("etc/config.json", "r") as config_file:
 @bot.event
 async def on_ready():
     print(f"Bot successfully set up!\nLogged in as {bot.user.name}\nCurrently in {len(bot.guilds)} servers")
-    log.info("Bot online")
     bot.loop.create_task(status_task())
 
 
