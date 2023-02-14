@@ -183,54 +183,6 @@ class onJoin(commands.Cog):
                 # if the user has a custom avatar
                 pass
 
-    @commands.Cog.listener()
-    async def on_member_ban(
-        self,
-        guild,
-        user
-    ):
-        with open("json/guild.json", "r") as f:
-            guild_data = json.load(f)
-
-        if guild_data[str(guild.id)]["mod_channel"]:
-            embed = disnake.Embed(
-                title="⚔️ User Ban",
-                description=f"`{user}` wurde von `{guild.me}` gebannt!",
-                color=disnake.Color.red()
-            )
-            channel: disnake.TextChannel = self.bot.get_channel(
-                guild_data[str(guild.id)]["mod_channel"]
-            )
-            await channel.send(
-                embed=embed
-            )
-        else:
-            return
-
-    @commands.Cog.listener()
-    async def on_member_unban(
-        self,
-        guild,
-        user
-    ):
-        with open("json/guild.json", "r") as f:
-            guild_data = json.load(f)
-
-        if guild_data[str(guild.id)]["mod_channel"]:
-            embed = disnake.Embed(
-                title="⚔️ User Unban",
-                description=f"`{user}` wurde von `{guild.me}` entbannt!",
-                color=disnake.Color.green()
-            )
-            channel: disnake.TextChannel = self.bot.get_channel(
-                guild_data[str(guild.id)]["mod_channel"]
-            )
-            await channel.send(
-                embed=embed
-            )
-        else:
-            return
-
 
 def setup(bot):
     bot.add_cog(onJoin(bot))
