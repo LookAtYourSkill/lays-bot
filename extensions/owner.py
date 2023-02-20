@@ -111,6 +111,24 @@ class Owner(commands.Cog):
             embed=embed
         )
 
+    @owner.sub_command(name="eval", description="Evaluates a code")
+    async def eval(
+        self,
+        interaction: disnake.ApplicationCommandInteraction,
+        *,
+        code: str
+    ):
+        await interaction.response.defer(ephemeral=True) 
+
+        try:
+            # eval the given code
+            result = eval(code)
+            await interaction.edit_original_message(f'Result: {result}')
+        
+        except Exception as e:
+            await interaction.edit_original_message(f'Error: {e}')
+
+
 
 def setup(bot):
     bot.add_cog(Owner(bot))
