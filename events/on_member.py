@@ -64,9 +64,10 @@ class onJoin(commands.Cog):
                 color=disnake.Color.random(),
                 timestamp=datetime.datetime.utcnow()
             )
-            embed.set_thumbnail(
-                url=member.avatar.url
-            )
+            if member.avatar.url:
+                embed.set_thumbnail(
+                    url=member.avatar.url
+                )
             embed.add_field(
                 name="Total members",
                 value=f"{member.guild.member_count}",
