@@ -50,7 +50,7 @@ class onMessage(commands.Cog):
             )
             embed.add_field(
                 name="Message",
-                value=f": {message.content}",
+                value=f"Content: \n{message.content}",
                 inline=False
             )
             if guild_data[str(message.author.guild.id)]["msg_channel"]:
@@ -109,5 +109,5 @@ class onMessage(commands.Cog):
                 pass
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(onMessage(bot))
