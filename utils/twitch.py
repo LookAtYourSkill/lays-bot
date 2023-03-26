@@ -10,6 +10,21 @@ with open("json/watchlist.json", 'r', encoding='UTF-8') as data_file:
 with open('etc/config.json', 'r', encoding='UTF-8') as config_file:
     config = json.load(config_file)
 
+def get_app_access_token():
+    params = {
+        "client_id": config["twitch"]["client_id"],
+        "client_secret": config["twitch"]["client_secret"],
+        "grant_type": "client_credentials"
+    }
+
+    response = requests.post("https://id.twitch.tv/oauth2/token", params=params)
+    if response.status_code == 200:
+        config["twitch"]["access_token"] = response.json()["access_token"]
+
+        with open('etc/config.json', 'w', encoding='UTF-8') as config_file:
+            json.dump(config, config_file, indent=4)
+    else:
+        print(f"Maybe need new client secret? {response.status_code} see the full response: {response.json()}")
 
 def get_users(login_names):
     params = {
@@ -29,7 +44,16 @@ def get_users(login_names):
     if response.status_code == 200:
         return {entry["login"]: entry["id"] for entry in response.json()["data"]}
     else:
-        print(f"{colorama.Fore.RED} [ERROR] Failed to get users from Twitch API, possible new access token needed {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.RED} [ERROR] Failed to get users from Twitch API {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.RED} [ERROR] {response.status_code} {response.json()} {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.RED} [ERROR] Trying to get new access token... {colorama.Fore.RESET}")
+
+        get_app_access_token()
+        print(f"{colorama.Fore.GREEN} [SUCCESS] Granted new Access Token {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLUE} [PENDING] Trying to get users again... {colorama.Fore.RESET}")
+
+        return get_users(login_names)
+
 
 
 def get_all_user_info(login_name):
