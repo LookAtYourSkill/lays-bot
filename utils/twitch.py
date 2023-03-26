@@ -55,6 +55,28 @@ def get_users(login_names):
         return get_users(login_names)
 
 
+def get_all_category_info(category_id):
+    # make request to twitch api
+    params = {
+        "id": category_id
+    }
+
+    headers = {
+        "Authorization": f'Bearer {config["twitch"]["access_token"]}',
+        "Client-Id": config["twitch"]["client_id"]
+    }
+
+    response = requests.get(
+        "https://api.twitch.tv/helix/games",
+        params=params,
+        headers=headers
+    )
+    if response.status_code == 200:
+        return [entry for entry in response.json()["data"]]
+    else:
+        print(f"{colorama.Fore.RED} [ERROR] Failed to get users from Twitch API {colorama.Fore.RESET}")
+        return False
+
 
 def get_all_user_info(login_name):
     params = {

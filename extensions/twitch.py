@@ -648,7 +648,7 @@ class Twitch(commands.Cog):
                                                                 if settings_data[guild['server_id']]["twitch_with_thumbnail"]:
                                                                     # if so set the thumbnail to the streamers profile picture
                                                                     embed.set_thumbnail(
-                                                                        url=twitch_data[stream['user_login']][guild['server_id']]['profile_pic']
+                                                                        url=f"https://static-cdn.jtvnw.net/ttv-boxart/{stream['game_id']}-120x120.jpg"
                                                                     )
                                                                 
                                                                 # set the author to the streamer, so link, icon and name
@@ -838,7 +838,9 @@ class Twitch(commands.Cog):
                                       f"`Duration`: `{day_string}`",
                                 inline=False
                             )
-                            embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
+                            embed.set_thumbnail(
+                                url=twitch_data_copy[streamer][server]["profile_pic"]
+                            )
                             embed.set_footer(
                                 text="Live Notifications by Lays Bot",
                                 icon_url=self.bot_png
@@ -870,7 +872,7 @@ class Twitch(commands.Cog):
                             except KeyError:
                                 print("KeyError, there is no file to delete")
                         else:
-                            # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer}! {colorama.Fore.RESET}")
+                            # ! print(f"{colorama.Fore.GREEN} [TWITCH UPDATE] [SUCCESS] Updating message for {streamer} in {server}! {colorama.Fore.RESET}")
                             try:
                                 
                                 # define variables
@@ -915,7 +917,9 @@ class Twitch(commands.Cog):
                                     url=f"https://www.twitch.tv/{streamer}"
                                 )
                                 # set the thumbnail to the streamer profile picture
-                                embed.set_thumbnail(url=twitch_data_copy[streamer][server]["profile_pic"])
+                                embed.set_thumbnail(
+                                    url=f"https://static-cdn.jtvnw.net/ttv-boxart/{twitch_data_copy[streamer][server]['game_id']}-120x120.jpg"
+                                )
                                 
                                 # set the image to the stream thumbnail
                                 # ?state={datetime.datetime.now(tz=None).timestamp()} is used to get the preview image from the stream in real time
