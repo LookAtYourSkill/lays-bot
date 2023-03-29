@@ -595,7 +595,7 @@ class Twitch(commands.Cog):
                                             # ! print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
-                                                if time.time() - started_at < 350:
+                                                if twitch_data[user_name][guild["server_id"]]["sended"] == False:
                                                     # if so append streamer to list, so its not sent again
                                                     notification.append(streams[user_name])
                                                     online_users.append(user_name)
@@ -708,8 +708,8 @@ class Twitch(commands.Cog):
                                                     except KeyError as e:
                                                         print("KeyError: ", e)
                                                         continue
-                                                else:
-                                                    continue
+                                                # else:
+                                                #     continue
                                                     # if stream is too long inthe past, do nothing
                                                     # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [6] Timeout: Stream started too long ago... , '{user_name}' {colorama.Fore.RESET}")
                                             else:

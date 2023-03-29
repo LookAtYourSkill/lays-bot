@@ -175,10 +175,8 @@ def update_streams():
                     twitchTime = stream[streamer]["started_at"]
                     # format to timestamp
                     prefinalTime = datetime.datetime.strptime(twitchTime, "%Y-%m-%dT%H:%M:%SZ")
-                    # remove 3 hours from prefinalTime
-                    remixfinalTime = prefinalTime - datetime.timedelta(hours=5)
-                    # create timestamp
-                    finalTime = remixfinalTime.timestamp()
+                    # remove timezone information so it can be converted to timestamp and there is no timezone error
+                    finalTime = (prefinalTime.replace(tzinfo=None) + datetime.timedelta(hours=2)).timestamp()
 
                     # ! print(finalTime)
 
