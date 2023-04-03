@@ -1,5 +1,3 @@
-import asyncio
-
 import colorama
 import disnake
 from disnake.ext.tasks import loop

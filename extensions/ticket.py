@@ -5,8 +5,6 @@ import json
 import pytz
 import os
 
-from checks._force_guild_check import right_guild
-
 
 class open_message(disnake.ui.View):
     def __init__(self):
