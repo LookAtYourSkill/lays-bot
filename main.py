@@ -1,12 +1,10 @@
 import json
-import logging
 import os
 import asyncio
 
 import disnake
 from disnake.ext import commands
 
-log = logging.getLogger(__name__)
 
 bot = commands.Bot(
     intents=disnake.Intents.all(),
@@ -40,7 +38,6 @@ async def on_ready():
     bot.loop.create_task(status_task())
 
 
-log.info("Loading extensions")
 for filename in os.listdir("./extensions"):
     if filename.endswith(".py"):
         try:
@@ -50,7 +47,6 @@ for filename in os.listdir("./extensions"):
             print(f"Failed to load extension {filename}, {e}")
 
 
-log.info("Loaded events")
 for filename in os.listdir("./events"):
     if filename.endswith(".py"):
         if filename.startswith("_"):
@@ -64,7 +60,6 @@ for filename in os.listdir("./events"):
         continue
 
 
-log.info("Loaded checks")
 for filename in os.listdir("./checks"):
     if filename.endswith(".py"):
         if filename.startswith("_"):
@@ -78,7 +73,6 @@ for filename in os.listdir("./checks"):
         continue
 
 print("----------------------------------------------------")
-log.info("Finished")
 
 
 
