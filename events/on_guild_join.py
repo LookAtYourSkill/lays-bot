@@ -10,7 +10,7 @@ class on_guild_add(commands.Cog):
     @commands.Cog.listener()
     async def on_guild_join(
         self,
-        guild
+        guild: disnake.Guild
     ):
 
         with open("json/guild.json", "r") as f:
