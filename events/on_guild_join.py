@@ -91,5 +91,5 @@ class on_guild_add(commands.Cog):
         )
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(on_guild_add(bot))
