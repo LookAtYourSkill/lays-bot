@@ -466,8 +466,9 @@ class ticket_message(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.edit_original_message(
-                content=f"_Ticket successfully created!_ {ticket.mention}"
+            await interaction.followup.send(
+                content=f"_Ticket successfully created!_ {ticket.mention}",
+                ephemeral=True
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
