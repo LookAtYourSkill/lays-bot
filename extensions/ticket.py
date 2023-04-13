@@ -417,11 +417,13 @@ class ticket_message(disnake.ui.View):
                 }
             )
 
-            for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
-                await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=i), read_messages=True, send_messages=True)
+            if ticket_data[str(interaction.guild.id)]["support_roles"]:
+                for i in ticket_data[str(interaction.guild.id)]["support_roles"]:
+                    await ticket.set_permissions(disnake.utils.get(interaction.guild.roles, id=i), read_messages=True, send_messages=True)
 
-            for i in ticket_data[str(interaction.guild.id)]["support_members"]:
-                await ticket.set_permissions(disnake.utils.get(interaction.guild.members, id=i), read_messages=True, send_messages=True)
+            if ticket_data[str(interaction.guild.id)]["support_members"]:
+                for i in ticket_data[str(interaction.guild.id)]["support_members"]:
+                    await ticket.set_permissions(disnake.utils.get(interaction.guild.members, id=i), read_messages=True, send_messages=True)
 
             # Json Stuff
             ticket_data[str(interaction.guild.id)][ticket.id] = {}
@@ -454,8 +456,9 @@ class ticket_message(disnake.ui.View):
                 inline=True
             )
             role_list = []
-            for role in ticket_data[str(interaction.guild.id)]['ping_roles']:
-                role_list.append(f"<@&{role}>")
+            if ticket_data[str(interaction.guild.id)]['ping_roles']:
+                for role in ticket_data[str(interaction.guild.id)]['ping_roles']:
+                    role_list.append(f"<@&{role}>")
 
             await ticket.send(
                 content=f"{interaction.author.mention} please ask your question!\n||Pingroles: {' '.join(role_list) if role_list else 'N/A'}||",
@@ -463,8 +466,8 @@ class ticket_message(disnake.ui.View):
                 view=close_message()
             )
 
-            await interaction.edit_original_response(
-                content=f"_General Ticket successfully created!_ <#{ticket.id}>"
+            await interaction.edit_original_message(
+                content=f"_Ticket successfully created!_ {ticket.mention}"
             )
 
             if guild_data[str(interaction.guild.id)]["ticket_log_channel"]:
@@ -543,17 +546,17 @@ class TicketSystem(commands.Cog):
             view = ticket_message()
             ticket_embed = disnake.Embed(
                 title=f"> {category} Ticketsystem",
-                description=f"Reagiere mit 📩 um ein {category} Ticket zu erstellen!",
+                description=f"Reagiere mit 📩 um ein `{category}` Ticket zu erstellen!",
                 color=disnake.Color.green()
             )
 
             # send embed with buttons
-            await interaction.edit_original_response(
+            await interaction.edit_original_message(
                 embed=ticket_embed,
                 view=view
             )
         else:
-            await interaction.edit_original_response(
+            await interaction.edit_original_message(
                 content="You don't have the permissions to use this command!"
             )
 
