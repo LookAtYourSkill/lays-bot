@@ -168,54 +168,24 @@ def update_streams():
 
             # loop through all streamers
             for streamer in watchlist_data["overall_watchlist"]:
-                # check if streamer is live and in watchlist from guild
-                if streamer in stream and streamer in guild["watchlist"]:
+                if guild["watchlist"] and stream:
+                    # check if streamer is live and in watchlist from guild
+                    if streamer in stream and streamer in guild["watchlist"]:
 
-                    # get started at info
-                    twitchTime = stream[streamer]["started_at"]
-                    # format to timestamp
-                    prefinalTime = datetime.datetime.strptime(twitchTime, "%Y-%m-%dT%H:%M:%SZ")
-                    # remove timezone information so it can be converted to timestamp and there is no timezone error
-                    finalTime = (prefinalTime.replace(tzinfo=None) + datetime.timedelta(hours=2)).timestamp()
+                        # get started at info
+                        twitchTime = stream[streamer]["started_at"]
+                        # format to timestamp
+                        prefinalTime = datetime.datetime.strptime(twitchTime, "%Y-%m-%dT%H:%M:%SZ")
+                        # remove timezone information so it can be converted to timestamp and there is no timezone error
+                        finalTime = (prefinalTime.replace(tzinfo=None) + datetime.timedelta(hours=2)).timestamp()
 
-                    # ! print(finalTime)
+                        # ! print(finalTime)
 
-                    # if streamer not in update file, add him
-                    if streamer not in twitch_updates:
-                        all_infos = get_all_user_info(streamer)
-
-                        twitch_updates[streamer] = {}
-                        twitch_updates[streamer][guild['server_id']] = {
-                            "title": stream[streamer]["title"],
-                            "channel_id": guild["notify_channel"],
-                            "game_id": stream[streamer]["game_id"],
-                            "game_name": stream[streamer]["game_name"],
-                            "game_list": [],
-                            "viewer_count": stream[streamer]["viewer_count"],
-                            "viewer_count_list": [],
-                            "started_at": finalTime,
-                            "ended_at": None,
-                            "last_update": datetime.datetime.now(tz=None).timestamp(),
-                            "thumbnail_url": stream[streamer]["thumbnail_url"],
-                            "offline_url": all_infos[0]["offline_image_url"],
-                            "profile_pic": all_infos[0]["profile_image_url"],
-                            "user_id": stream[streamer]["user_id"],
-                            "user_name": stream[streamer]["user_name"],
-                            "sended": False,
-                            "status": "live",
-                            "message_id": None
-                        }
-
-                        # !! print(f"{colorama.Fore.GREEN} [INFO] {i} is not in data! - {guild['server_name']} {colorama.Fore.RESET}")
-
-                        with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
-                            json.dump(twitch_updates, file, indent=4)
-                    else:
-                        # check if guild is in update file
-                        # if not add guild to streamer
-                        if guild['server_id'] not in twitch_updates[streamer]:
+                        # if streamer not in update file, add him
+                        if streamer not in twitch_updates:
                             all_infos = get_all_user_info(streamer)
 
+                            twitch_updates[streamer] = {}
                             twitch_updates[streamer][guild['server_id']] = {
                                 "title": stream[streamer]["title"],
                                 "channel_id": guild["notify_channel"],
@@ -237,63 +207,96 @@ def update_streams():
                                 "message_id": None
                             }
 
+                            # !! print(f"{colorama.Fore.GREEN} [INFO] {i} is not in data! - {guild['server_name']} {colorama.Fore.RESET}")
+
                             with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                 json.dump(twitch_updates, file, indent=4)
                         else:
                             # check if guild is in update file
-                            # if yes, update data for streamer
-                            if guild["server_id"] in twitch_updates[streamer]:
-                                # !! print(f"{colorama.Fore.GREEN} [INFO] {i} is in data but update! - {guild['server_name']} {colorama.Fore.RESET}")
-                                twitch_updates[streamer][guild['server_id']]['title'] = stream[streamer]["title"]
-                                twitch_updates[streamer][guild['server_id']]['game_id'] = stream[streamer]["game_id"]
-                                twitch_updates[streamer][guild['server_id']]['game_name'] = stream[streamer]["game_name"]
-                                twitch_updates[streamer][guild['server_id']]['viewer_count'] = stream[streamer]["viewer_count"]
-                                twitch_updates[streamer][guild['server_id']]['started_at'] = finalTime
-                                twitch_updates[streamer][guild['server_id']]['thumbnail_url'] = stream[streamer]["thumbnail_url"]
-                                twitch_updates[streamer][guild['server_id']]['user_id'] = stream[streamer]["user_id"]
-                                twitch_updates[streamer][guild['server_id']]['user_name'] = stream[streamer]["user_name"]
-                                twitch_updates[streamer][guild['server_id']]['status'] = "live"
+                            # if not add guild to streamer
+                            if guild['server_id'] not in twitch_updates[streamer]:
+                                all_infos = get_all_user_info(streamer)
+
+                                twitch_updates[streamer][guild['server_id']] = {
+                                    "title": stream[streamer]["title"],
+                                    "channel_id": guild["notify_channel"],
+                                    "game_id": stream[streamer]["game_id"],
+                                    "game_name": stream[streamer]["game_name"],
+                                    "game_list": [],
+                                    "viewer_count": stream[streamer]["viewer_count"],
+                                    "viewer_count_list": [],
+                                    "started_at": finalTime,
+                                    "ended_at": None,
+                                    "last_update": datetime.datetime.now(tz=None).timestamp(),
+                                    "thumbnail_url": stream[streamer]["thumbnail_url"],
+                                    "offline_url": all_infos[0]["offline_image_url"],
+                                    "profile_pic": all_infos[0]["profile_image_url"],
+                                    "user_id": stream[streamer]["user_id"],
+                                    "user_name": stream[streamer]["user_name"],
+                                    "sended": False,
+                                    "status": "live",
+                                    "message_id": None
+                                }
 
                                 with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                     json.dump(twitch_updates, file, indent=4)
+                            else:
+                                # check if guild is in update file
+                                # if yes, update data for streamer
+                                if guild["server_id"] in twitch_updates[streamer]:
+                                    # !! print(f"{colorama.Fore.GREEN} [INFO] {i} is in data but update! - {guild['server_name']} {colorama.Fore.RESET}")
+                                    twitch_updates[streamer][guild['server_id']]['title'] = stream[streamer]["title"]
+                                    twitch_updates[streamer][guild['server_id']]['game_id'] = stream[streamer]["game_id"]
+                                    twitch_updates[streamer][guild['server_id']]['game_name'] = stream[streamer]["game_name"]
+                                    twitch_updates[streamer][guild['server_id']]['viewer_count'] = stream[streamer]["viewer_count"]
+                                    twitch_updates[streamer][guild['server_id']]['started_at'] = finalTime
+                                    twitch_updates[streamer][guild['server_id']]['thumbnail_url'] = stream[streamer]["thumbnail_url"]
+                                    twitch_updates[streamer][guild['server_id']]['user_id'] = stream[streamer]["user_id"]
+                                    twitch_updates[streamer][guild['server_id']]['user_name'] = stream[streamer]["user_name"]
+                                    twitch_updates[streamer][guild['server_id']]['status'] = "live"
 
-                                # define as a list
-                                # append all viewer counts to a list, which will be used to calculate the average viewer count
-                                list_of_viewer: list = twitch_updates[streamer][guild['server_id']]["viewer_count_list"]
-                                list_of_viewer.append(twitch_updates[streamer][guild['server_id']]["viewer_count"])
+                                    with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
+                                        json.dump(twitch_updates, file, indent=4)
 
-                                # dump to json
-                                with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
-                                    json.dump(twitch_updates, file, indent=4)
-
-                                # check if game is in update file from streamer
-                                if stream[streamer]["game_name"] not in twitch_updates[streamer][guild['server_id']]["game_list"]:
                                     # define as a list
-                                    # append the game to the list if it is not in the list
-                                    list_of_games: list = twitch_updates[streamer][guild['server_id']]["game_list"]
-                                    list_of_games.append(stream[streamer]["game_name"])
-                                    
+                                    # append all viewer counts to a list, which will be used to calculate the average viewer count
+                                    list_of_viewer: list = twitch_updates[streamer][guild['server_id']]["viewer_count_list"]
+                                    list_of_viewer.append(twitch_updates[streamer][guild['server_id']]["viewer_count"])
+
                                     # dump to json
                                     with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
                                         json.dump(twitch_updates, file, indent=4)
+
+                                    # check if game is in update file from streamer
+                                    if stream[streamer]["game_name"] not in twitch_updates[streamer][guild['server_id']]["game_list"]:
+                                        # define as a list
+                                        # append the game to the list if it is not in the list
+                                        list_of_games: list = twitch_updates[streamer][guild['server_id']]["game_list"]
+                                        list_of_games.append(stream[streamer]["game_name"])
+                                        
+                                        # dump to json
+                                        with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
+                                            json.dump(twitch_updates, file, indent=4)
+                                    else:
+                                        continue
                                 else:
                                     continue
+
+                    else:
+                        # !! print(f"{colorama.Fore.RED} [INFO] {i} is not live! - {guild['server_name']} {colorama.Fore.RESET}")
+                        # check if streamer is in update file
+                        if streamer in twitch_updates:
+                            # check if guild id is in update file
+                            if guild['server_id'] in twitch_updates[streamer]:
+                                # change status to offline
+                                twitch_updates[streamer][guild['server_id']]['status'] = "offline"
+                                twitch_updates[streamer][guild['server_id']]['ended_at'] = datetime.datetime.now(tz=None).timestamp()
+
+                                with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
+                                    json.dump(twitch_updates, file, indent=4)
                             else:
                                 continue
-
-                else:
-                    # !! print(f"{colorama.Fore.RED} [INFO] {i} is not live! - {guild['server_name']} {colorama.Fore.RESET}")
-                    # check if streamer is in update file
-                    if streamer in twitch_updates:
-                        # check if guild id is in update file
-                        if guild['server_id'] in twitch_updates[streamer]:
-                            # change status to offline
-                            twitch_updates[streamer][guild['server_id']]['status'] = "offline"
-                            twitch_updates[streamer][guild['server_id']]['ended_at'] = datetime.datetime.now(tz=None).timestamp()
-
-                            with open("json/twitch_updates.json", "w", encoding="UTF-8") as file:
-                                json.dump(twitch_updates, file, indent=4)
                         else:
                             continue
-                    else:
-                        continue
+                else:
+                    continue
