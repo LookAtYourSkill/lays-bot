@@ -45,7 +45,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_response(
+            await interaction.response.edit_message(
                 embed=embed
             )
 
@@ -58,7 +58,7 @@ class onError(commands.Cog):
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_response(
+            await interaction.response.edit_message(
                 embed=embed
             )
 
@@ -79,31 +79,26 @@ class onError(commands.Cog):
             error,
             commands.CheckFailure
         ):
-            no_licesnse_embed = disnake.Embed(
-                title="No license ⛔",
-                description="You have not set a license for this server. Please use `/license activate <license>` to set a license.",
-                color=disnake.Color.red()
-            )
-            no_licesnse_embed.set_footer(
-                text="If you dont have a license, please contact the bot owner or the server owner"
-            )
-
             embed = disnake.Embed(
                 description=f"{interaction.author.mention} This command isnt allowed in this server ⛔",
                 color=disnake.Color.red()
             )
 
-            await interaction.edit_original_message(
+            await interaction.response.edit_message(
                 embed=embed
             )
 
         else:
             embed = disnake.Embed(
-                description=f"{interaction.author.mention} the error has been send to the developer and will be taken care of as soon as possible! I hope for your patience ⛔",
+                description=f"{interaction.author.mention} ⛔",
                 color=disnake.Color.red()
             )
+            embed.add_field(
+                name="Error",
+                value=f"```{error}```"
+            )
 
-            await interaction.edit_original_message(
+            await interaction.response.edit_message(
                 embed=embed
             )
 
