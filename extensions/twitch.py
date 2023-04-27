@@ -12,7 +12,6 @@ import disnake
 from disnake.ext import commands
 from disnake.ext.tasks import loop
 from utils.twitch import get_streams, get_users, get_all_user_info, get_followers, update_streams, averageCalculation
-from utils.viewerGraph import generateViewerGraph
 
 
 class Twitch(commands.Cog):
@@ -595,7 +594,7 @@ class Twitch(commands.Cog):
                                             # ! print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
-                                                if twitch_data[user_name][guild["server_id"]]["sended"] == False:
+                                                if time.time() - started_at < 350:
                                                     # if so append streamer to list, so its not sent again
                                                     notification.append(streams[user_name])
                                                     online_users.append(user_name)
@@ -708,8 +707,8 @@ class Twitch(commands.Cog):
                                                     except KeyError as e:
                                                         print("KeyError: ", e)
                                                         continue
-                                                # else:
-                                                #     continue
+                                                else:
+                                                    continue
                                                     # if stream is too long inthe past, do nothing
                                                     # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [6] Timeout: Stream started too long ago... , '{user_name}' {colorama.Fore.RESET}")
                                             else:
@@ -846,10 +845,6 @@ class Twitch(commands.Cog):
                                 icon_url=self.bot_png
                             )
 
-                            if guild_data[server]["beta_server"]:
-                                generateViewerGraph(twitch_data_copy[streamer][server]["viewer_count_list"], twitch_data_copy[streamer][server]["user_name"])
-                                embed.set_image(file=disnake.File(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png"))
-
                             await message.edit(
                                 embed=embed
                             )
@@ -865,9 +860,6 @@ class Twitch(commands.Cog):
                                 with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
                                     json.dump(twitch_data, f, indent=4)
                                 print(f"Deleting data for {streamer} in {server} (offline) - DONE")
-
-                                if guild_data[server]["beta_server"]:
-                                    os.remove(f"viewerGraph-{twitch_data_copy[streamer][server]['user_name']}.png")
                                 
                             except KeyError:
                                 print("KeyError, there is no file to delete")
