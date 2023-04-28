@@ -166,6 +166,15 @@ class Info(commands.Cog):
     async def ping(self, interaction: disnake.ApplicationCommandInteraction):
         await interaction.response.defer(ephemeral=True)
 
+        time = datetime.datetime.now(datetime.timezone.utc)
+
+        # Get the name of the timezone from the datetime object
+        location = time.astimezone().tzinfo.tzname(time)
+
+        # Get the time difference from UTC in seconds
+        diff = time.utcoffset().total_seconds()
+
+
         search_embed = disnake.Embed(
             description="Pinging...",
             color=disnake.Color.green()
@@ -174,7 +183,7 @@ class Info(commands.Cog):
             embed=search_embed
         )
         ping_embed = disnake.Embed(
-            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: {disnake.utils.format_dt(startTime, style='R')}",
+            description=f"Bot: ``{round(self.bot.latency * 1000)}ms``\nUptime: {disnake.utils.format_dt(startTime, style='R')}\nLocation: ``{location}``\nTime Difference: ``{diff}``",
             color=disnake.Color.green()
         )
         ping_embed.set_author(
