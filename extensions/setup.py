@@ -404,5 +404,5 @@ class Setup(commands.Cog):
         )
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Setup(bot))
