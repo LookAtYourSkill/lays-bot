@@ -59,11 +59,13 @@ class Setup(commands.Cog):
                   f"`Welcome`: <#{guild_data[str(interaction.author.guild.id)]['welcome_channel'] if guild_data[str(interaction.author.guild.id)]['welcome_channel'] else '0'}>",
             inline=False
         )
+        """
         check_embed.add_field(
             name="> Voice Channels",
             value=f"`Join To Create`: <#{guild_data[str(interaction.author.guild.id)]['join_to_create_channel'] if guild_data[str(interaction.author.guild.id)]['join_to_create_channel'] else '0'}>",
             inline=False
         )
+        """
         check_embed.add_field(
             name="> Categories",
             value=f"`Open Ticket`: <#{guild_data[str(interaction.author.guild.id)]['ticket_category'] if guild_data[str(interaction.author.guild.id)]['ticket_category'] else '0'}>\n"
@@ -210,6 +212,7 @@ class Setup(commands.Cog):
             embed=set_embed
         )
 
+    """
     @channel.sub_command(
         name="join_to_create",
         description="Sets the join to cteate channel"
@@ -236,6 +239,7 @@ class Setup(commands.Cog):
         await interaction.edit_original_message(
             embed=set_embed
         )
+    """
 
     @channel.sub_command(
         name="notification",
@@ -344,7 +348,7 @@ class Setup(commands.Cog):
         await interaction.edit_original_message(
             embed=change_embed
         )
-
+    """
     @category.sub_command(
         name="join_to_create",
         description="Sets the open ticket category"
@@ -371,7 +375,7 @@ class Setup(commands.Cog):
         await interaction.edit_original_message(
             embed=set_embed
         )
-
+    """
     @role.sub_command(
         name="join",
         description="Sets the join role"
