@@ -546,7 +546,7 @@ class TicketSystem(commands.Cog):
             # Create embed
             view = ticket_message()
             ticket_embed = disnake.Embed(
-                title=f"> {category} Ticketsystem",
+                title=f"> {category} | Ticketsystem",
                 description=f"Reagiere mit 📩 um ein `{category}` Ticket zu erstellen!",
                 color=disnake.Color.green()
             )
