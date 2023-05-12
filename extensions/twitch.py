@@ -608,7 +608,7 @@ class Twitch(commands.Cog):
                                                             if twitch_data[stream['user_login']]:
                                                                 # get the channel
                                                                 notify_channel = await self.bot.fetch_channel(guild["notify_channel"])
-                                                                
+                                                                """
                                                                 # create embed
                                                                 embed = disnake.Embed(
                                                                     title=f"{stream['title']}",
@@ -662,6 +662,55 @@ class Twitch(commands.Cog):
                                                                 embed.set_image(
                                                                     url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg?state={datetime.now(tz=None).timestamp()}"
                                                                 )
+                                                                embed.set_footer(
+                                                                    text="Live Notifications by Lays Bot",
+                                                                    icon_url=self.bot_png
+                                                                )
+                                                                """
+                                                                # create the structure from the embed
+                                                                embed = disnake.Embed(
+                                                                    title=f"{stream['title']}",
+                                                                    color=disnake.Color.purple(),
+                                                                    url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                                )
+                                                                # add a field for basic information for the stream
+                                                                embed.add_field(
+                                                                    name="__Information__",
+                                                                    value=f"**Streamer**: `{stream['user_name']}`\n"
+                                                                        f"**Game**: `{stream['game_name']}`\n",
+                                                                        inline=False
+                                                                )
+
+                                                                if settings_data[guild['server_id']]["twitch_with_viewer"]:
+                                                                    embed.add_field(
+                                                                        name="__Viewer__",
+                                                                        value=f"**Viewer**: `{stream['viewer_count']}`",
+                                                                        inline=False
+                                                                    )
+                                                                # add a field for the times which get displayed
+                                                                embed.add_field(
+                                                                    name="__Durations__",
+                                                                    value=f"`Started`: {disnake.utils.format_dt(stream['started_at'], style='R')}",
+                                                                    inline=False
+                                                                )
+                                                                # set the author a twitch icon and url for twitch streamer
+                                                                embed.set_author(
+                                                                    name=stream["user_name"],
+                                                                    icon_url=stream["profile_image_url"],
+                                                                    url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                                )
+                                                                # set the thumbnail to the streamer profile picture
+                                                                embed.set_thumbnail(
+                                                                    url=f"https://static-cdn.jtvnw.net/ttv-boxart/{stream['game_id']}-120x120.jpg"
+                                                                )
+                                                                
+                                                                # set the image to the stream thumbnail
+                                                                # ?state={datetime.datetime.now(tz=None).timestamp()} is used to get the preview image from the stream in real time
+                                                                # so there will be displayed the newest thumbnail
+                                                                embed.set_image(
+                                                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg?state={datetime.now(tz=None).timestamp()}"
+                                                                )
+                                                                # a little advertisement for my bot
                                                                 embed.set_footer(
                                                                     text="Live Notifications by Lays Bot",
                                                                     icon_url=self.bot_png
