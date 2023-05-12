@@ -696,7 +696,7 @@ class Twitch(commands.Cog):
                                                                 # set the author a twitch icon and url for twitch streamer
                                                                 embed.set_author(
                                                                     name=stream["user_name"],
-                                                                    icon_url=stream["profile_image_ul"],
+                                                                    icon_url=stream["profile_image_url"],
                                                                     url=f"https://www.twitch.tv/{stream['user_login']}"
                                                                 )
                                                                 # set the thumbnail to the streamer profile picture
