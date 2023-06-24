@@ -14,3 +14,5 @@ tmux new -s [name]
 tmux attach -t [name]
 tmux kill-session -t [name]
 tmux kill-server
+
+to exit tmux: strg + b ... wait and then d
