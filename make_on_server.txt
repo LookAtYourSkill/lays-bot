@@ -16,3 +16,15 @@ tmux kill-session -t [name]
 tmux kill-server
 
 to exit tmux: strg + b ... wait and then d
+
+just bash
+
+main console -> nohup python3 main.py & 
+
+optional jobs, fg oder bg -> console umleitung (eingabe ausgabe und log)
+nohup -> safes log
+& -> lets the process run on the parent progress
+
+kill [process_number] -> ps -ef führt zu process number
+
+#! use without tmux
