@@ -1,0 +1,16 @@
+
+adduser [username]
+usermod -aG sudo [username]
+
+sudo apt update
+sudo apt upgrade
+
+sudo apt install python3-pip
+sudo apt install tmux
+pip install -r requirements.txt
+
+tmux ls
+tmux new -s [name]
+tmux attach -t [name]
+tmux kill-session -t [name]
+tmux kill-server

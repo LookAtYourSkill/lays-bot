@@ -7,3 +7,4 @@ asyncio
 matplotlib
 python-dateutil
 pytz
+isodate
