@@ -690,9 +690,12 @@ class Twitch(commands.Cog):
                                                                             inline=False
                                                                         )
                                                                     # add a field for the times which get displayed
+                                                                    pre_timestamp = datetime.strptime(stream['started_at'], "%Y-%m-%dT%H:%M:%SZ")
+                                                                    timestamp = pre_timestamp.timestamp()
+
                                                                     embed.add_field(
                                                                         name="__Durations__",
-                                                                        value=f"`Started`: {disnake.utils.format_dt(stream['started_at'], style='R')}",
+                                                                        value=f"`Started`: {disnake.utils.format_dt(timestamp, style='R')}",
                                                                         inline=False
                                                                     )
                                                                     # set the author a twitch icon and url for twitch streamer
