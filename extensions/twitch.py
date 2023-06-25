@@ -591,7 +591,7 @@ class Twitch(commands.Cog):
                                             # convert time aswell to readable format
                                             started_at = time.mktime(giga_time.timetuple()) + giga_time.microsecond / 1E6
                                             # check if username is the streamer, which get asked for
-                                            # ! print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
+                                            print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
                                                 if time.time() - started_at < 8000:
@@ -601,7 +601,7 @@ class Twitch(commands.Cog):
                                                         notification.append(streams[user_name])
                                                         online_users.append(user_name)
 
-                                                        # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
+                                                        print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
                                                         # catch exception if channel is not found
                                                         try:
                                                             # check if channel is set
