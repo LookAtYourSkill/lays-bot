@@ -596,113 +596,113 @@ class Twitch(commands.Cog):
                                                 # check if stream is too long in past
                                                 if time.time() - started_at < 8000:
 
-                                                    if not bool(twitch_data[user_name][str(guild)]["sended"]):
-                                                        # if so append streamer to list, so its not sent again
-                                                        notification.append(streams[user_name])
-                                                        online_users.append(user_name)
+                                                    # ! if not bool(twitch_data[user_name][str(guild)]["sended"]):
+                                                    # if so append streamer to list, so its not sent again
+                                                    notification.append(streams[user_name])
+                                                    online_users.append(user_name)
 
-                                                        print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
-                                                        # catch exception if channel is not found
-                                                        try:
-                                                            # check if channel is set
-                                                            if guild["notify_channel"]:
-                                                                # check if streamer is in twitch_updates.json
-                                                                if twitch_data[stream['user_login']]:
-                                                                    # get the channel
-                                                                    notify_channel = await self.bot.fetch_channel(guild["notify_channel"])
+                                                    print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [5] Stream found... , {user_name} {colorama.Fore.RESET}")
+                                                    # catch exception if channel is not found
+                                                    try:
+                                                        # check if channel is set
+                                                        if guild["notify_channel"]:
+                                                            # check if streamer is in twitch_updates.json
+                                                            if twitch_data[stream['user_login']]:
+                                                                # get the channel
+                                                                notify_channel = await self.bot.fetch_channel(guild["notify_channel"])
 
-                                                                    # create the structure from the embed
-                                                                    embed = disnake.Embed(
-                                                                        title=f"{stream['title']}",
-                                                                        color=disnake.Color.purple(),
-                                                                        url=f"https://www.twitch.tv/{stream['user_login']}"
-                                                                    )
-                                                                    # add a field for basic information for the stream
+                                                                # create the structure from the embed
+                                                                embed = disnake.Embed(
+                                                                    title=f"{stream['title']}",
+                                                                    color=disnake.Color.purple(),
+                                                                    url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                                )
+                                                                # add a field for basic information for the stream
+                                                                embed.add_field(
+                                                                    name="__Information__",
+                                                                    value=f"**Streamer**: `{stream['user_name']}`\n"
+                                                                        f"**Game**: `{stream['game_name']}`\n",
+                                                                        inline=False
+                                                                )
+
+                                                                if settings_data[guild['server_id']]["twitch_with_viewer"]:
                                                                     embed.add_field(
-                                                                        name="__Information__",
-                                                                        value=f"**Streamer**: `{stream['user_name']}`\n"
-                                                                            f"**Game**: `{stream['game_name']}`\n",
-                                                                            inline=False
-                                                                    )
-
-                                                                    if settings_data[guild['server_id']]["twitch_with_viewer"]:
-                                                                        embed.add_field(
-                                                                            name="__Viewer__",
-                                                                            value=f"**Viewer**: `{stream['viewer_count']}`",
-                                                                            inline=False
-                                                                        )
-                                                                    # add a field for the times which get displayed
-
-                                                                    embed.add_field(
-                                                                        name="__Durations__",
-                                                                        value=f"`Started`: {disnake.utils.format_dt(twitch_data[stream['user_login']][guild['server_id']]['started_at'], style='R')}",
+                                                                        name="__Viewer__",
+                                                                        value=f"**Viewer**: `{stream['viewer_count']}`",
                                                                         inline=False
                                                                     )
-                                                                    # set the author a twitch icon and url for twitch streamer
-                                                                    embed.set_author(
-                                                                        name=stream["user_name"],
-                                                                        icon_url=twitch_data[stream['user_login']][guild['server_id']]["profile_pic"],
-                                                                        url=f"https://www.twitch.tv/{stream['user_login']}"
-                                                                    )
-                                                                    # set the thumbnail to the streamer profile picture
-                                                                    embed.set_thumbnail(
-                                                                        url=f"https://static-cdn.jtvnw.net/ttv-boxart/{stream['game_id']}-120x120.jpg"
-                                                                    )
-                                                                    
-                                                                    # set the image to the stream thumbnail
-                                                                    # ?state={datetime.datetime.now(tz=None).timestamp()} is used to get the preview image from the stream in real time
-                                                                    # so there will be displayed the newest thumbnail
-                                                                    embed.set_image(
-                                                                        url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg?state={datetime.now(tz=None).timestamp()}"
-                                                                    )
-                                                                    # a little advertisement for my bot
-                                                                    embed.set_footer(
-                                                                        text="Live Notifications by Lays Bot",
-                                                                        icon_url=self.bot_png
-                                                                    )
+                                                                # add a field for the times which get displayed
 
-                                                                    # send embed to channel
-                                                                    # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
-                                                                    try:
-                                                                        if twitch_data[stream['user_login']][guild['server_id']]['sended'] is False:
-                                                                            role_list = []
-                                                                            for role in guild["twitch_ping_role"]:
-                                                                                role_list.append(f"<@&{role}>")
-                                                                            notifications += 1
-                                                                            message: disnake.Message = await notify_channel.send(
-                                                                                f"{' '.join(role_list)} " if guild["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if guild["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if guild["twitch_with_everyone_or_pingrole"] == "everyone" else "",
-                                                                                embed=embed
-                                                                            )
+                                                                embed.add_field(
+                                                                    name="__Durations__",
+                                                                    value=f"`Started`: {disnake.utils.format_dt(twitch_data[stream['user_login']][guild['server_id']]['started_at'], style='R')}",
+                                                                    inline=False
+                                                                )
+                                                                # set the author a twitch icon and url for twitch streamer
+                                                                embed.set_author(
+                                                                    name=stream["user_name"],
+                                                                    icon_url=twitch_data[stream['user_login']][guild['server_id']]["profile_pic"],
+                                                                    url=f"https://www.twitch.tv/{stream['user_login']}"
+                                                                )
+                                                                # set the thumbnail to the streamer profile picture
+                                                                embed.set_thumbnail(
+                                                                    url=f"https://static-cdn.jtvnw.net/ttv-boxart/{stream['game_id']}-120x120.jpg"
+                                                                )
+                                                                
+                                                                # set the image to the stream thumbnail
+                                                                # ?state={datetime.datetime.now(tz=None).timestamp()} is used to get the preview image from the stream in real time
+                                                                # so there will be displayed the newest thumbnail
+                                                                embed.set_image(
+                                                                    url=f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{stream['user_login']}-1920x1080.jpg?state={datetime.now(tz=None).timestamp()}"
+                                                                )
+                                                                # a little advertisement for my bot
+                                                                embed.set_footer(
+                                                                    text="Live Notifications by Lays Bot",
+                                                                    icon_url=self.bot_png
+                                                                )
 
-                                                                            twitch_data[stream["user_login"]][guild["server_id"]]["message_id"] = message.id
-                                                                            twitch_data[stream["user_login"]][guild["server_id"]]["sended"] = True
-                                                                            with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
-                                                                                json.dump(twitch_data, f, indent=4)
-                                                                        else:
-                                                                            continue
-
-                                                                    except Exception as e:
-                                                                        # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
-                                                                        error_embed = disnake.Embed(
-                                                                            title=f"Error while sending {user_name} stream notification",
-                                                                            description=f"{e}",
-                                                                            color=disnake.Color.red()
+                                                                # send embed to channel
+                                                                # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
+                                                                try:
+                                                                    if twitch_data[stream['user_login']][guild['server_id']]['sended'] is False:
+                                                                        role_list = []
+                                                                        for role in guild["twitch_ping_role"]:
+                                                                            role_list.append(f"<@&{role}>")
+                                                                        notifications += 1
+                                                                        message: disnake.Message = await notify_channel.send(
+                                                                            f"{' '.join(role_list)} " if guild["twitch_with_everyone_or_pingrole"] == "pingrole" else f"@everyone \n{' '.join(role_list)}" if guild["twitch_with_everyone_or_pingrole"] == "everyone_and_pingrole" else "@everyone" if guild["twitch_with_everyone_or_pingrole"] == "everyone" else "",
+                                                                            embed=embed
                                                                         )
-                                                                        error_channel = await self.bot.fetch_channel(self.error_channel)
-                                                                        await error_channel.send(
-                                                                            embed=error_embed
-                                                                        )
-                                                                else:
-                                                                    print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [8] No data for {user_name} {colorama.Fore.RESET}")
+
+                                                                        twitch_data[stream["user_login"]][guild["server_id"]]["message_id"] = message.id
+                                                                        twitch_data[stream["user_login"]][guild["server_id"]]["sended"] = True
+                                                                        with open("json/twitch_updates.json", "w", encoding='UTF-8') as f:
+                                                                            json.dump(twitch_data, f, indent=4)
+                                                                    else:
+                                                                        continue
+
+                                                                except Exception as e:
+                                                                    # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] Error while sending : {e} {colorama.Fore.RESET}")
+                                                                    error_embed = disnake.Embed(
+                                                                        title=f"Error while sending {user_name} stream notification",
+                                                                        description=f"{e}",
+                                                                        color=disnake.Color.red()
+                                                                    )
+                                                                    error_channel = await self.bot.fetch_channel(self.error_channel)
+                                                                    await error_channel.send(
+                                                                        embed=error_embed
+                                                                    )
                                                             else:
-                                                                continue
-                                                                # if there's not a channel, do nothing
-                                                                # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
-                                                        except KeyError as e:
-                                                            print("KeyError: ", e)
+                                                                print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [8] No data for {user_name} {colorama.Fore.RESET}")
+                                                        else:
                                                             continue
-                                                    else:
+                                                            # if there's not a channel, do nothing
+                                                            # !! print(f"{colorama.Fore.RED} [TWITCH] [ERROR] [7] No channel found... , '{i['server_name']}' {colorama.Fore.RESET}")
+                                                    except KeyError as e:
+                                                        print("KeyError: ", e)
                                                         continue
+                                                    # !else:
+                                                        # ! continue
                                                         # if the stream already have been sended, -> value sended is True
                                                 else:
                                                     continue
