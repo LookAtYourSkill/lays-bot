@@ -593,7 +593,7 @@ class Twitch(commands.Cog):
                                             # check if username is the streamer, which get asked for
                                             print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
-                                                # check if stream is too long in past
+                                                # check if stream is too long in past !LIMTIT MIGHT BE 7800 but not sure
                                                 if time.time() - started_at < 9000:
 
                                                     # ! if not bool(twitch_data[user_name][str(guild)]["sended"]):
