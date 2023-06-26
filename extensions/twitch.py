@@ -664,7 +664,7 @@ class Twitch(commands.Cog):
                                                                 # send embed to channel
                                                                 # !! print(f"{colorama.Fore.GREEN} [TWITCH] [SUCCESS] [6] Sending message... , '{user_name}' {colorama.Fore.RESET}")
                                                                 try:
-                                                                    if twitch_data[stream['user_login']][guild['server_id']]['sended'] is False:
+                                                                    if bool(twitch_data[stream['user_login']][guild['server_id']]['sended']) is False:
                                                                         role_list = []
                                                                         for role in guild["twitch_ping_role"]:
                                                                             role_list.append(f"<@&{role}>")
@@ -733,9 +733,6 @@ class Twitch(commands.Cog):
         await self.bot.wait_until_ready()
 
         print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [TASK] Starting message update... {colorama.Fore.RESET}")
-        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [TASK] Starting file update... {colorama.Fore.RESET}")
-        update_streams()
-        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [DONE] Finished updating files! {colorama.Fore.RESET}")
 
         with open("json/twitch_updates.json", "r", encoding='UTF-8') as f:
             twitch_data = json.load(f)
