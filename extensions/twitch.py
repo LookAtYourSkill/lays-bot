@@ -730,10 +730,12 @@ class Twitch(commands.Cog):
 
     @loop(minutes=15)
     async def update(self):
+        await self.bot.wait_until_ready()
+
         print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [TASK] Starting message update... {colorama.Fore.RESET}")
-        # !! print(f"{colorama.Fore.MAGENTA} [TWITCH] [TASK] Starting file update... {colorama.Fore.RESET}")
-        # !! update_streams()
-        # !! print(f"{colorama.Fore.MAGENTA} [TWITCH] [UPDATE] Finished updating files! {colorama.Fore.RESET}")
+        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [TASK] Starting file update... {colorama.Fore.RESET}")
+        update_streams()
+        print(f"{colorama.Fore.BLUE} [TWITCH UPDATE] [DONE] Finished updating files! {colorama.Fore.RESET}")
 
         with open("json/twitch_updates.json", "r", encoding='UTF-8') as f:
             twitch_data = json.load(f)
