@@ -594,7 +594,7 @@ class Twitch(commands.Cog):
                                             print(f"{colorama.Fore.LIGHTGREEN_EX} [TWITCH NOTIFICATION] [CHECK] {time.time() - started_at, user_name} {colorama.Fore.RESET}")
                                             if user_name == stream["user_login"]:
                                                 # check if stream is too long in past
-                                                if time.time() - started_at < 8000:
+                                                if time.time() - started_at < 9000:
 
                                                     # ! if not bool(twitch_data[user_name][str(guild)]["sended"]):
                                                     # if so append streamer to list, so its not sent again
